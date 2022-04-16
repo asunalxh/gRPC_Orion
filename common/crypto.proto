@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package crypto;
+
+message GeneralMessage{}
+
+message OramMessage{
+    int64 data_structure = 1;
+    uint64 pos = 2;
+}
+
+message OramBucketMessage{
+    int64 data_structure = 1;
+    uint64 pos = 2;
+    bytes bucket = 3;
+}
+
+message BytesMessage{
+    bytes byte = 1;
+}
+
+
+service CryptoService{
+    rpc GetData(OramMessage) returns(BytesMessage) {};
+    rpc PutData(OramBucketMessage) returns(GeneralMessage) {}; 
+
+}
