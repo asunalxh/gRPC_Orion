@@ -16,8 +16,7 @@ using grpc::ServerBuilder;
 int main()
 {
     std::string server_address("0.0.0.0:50051");
-    Server service;
-    service.InitData(MAX_BUCKET_NUM);
+    Server service(MAX_BUCKET_NUM);
 
     ServerBuilder builder;
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());

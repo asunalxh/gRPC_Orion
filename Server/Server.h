@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SERVER_H
 #define SERVER_H
 
@@ -14,32 +15,31 @@
 
 using namespace crypto;
 using grpc::ServerContext;
-using grpc::Status;
 
 class Server final : public CryptoService::Service
 {
 public:
-    Server();
-    ~Server();
-    void Display_Repo();
-    void Display_M_I();
-    void Display_M_c();
+	Server(size_t blockNum);
+	~Server();
+	void Display_Repo();
+	void Display_M_I();
+	void Display_M_c();
 
-
-    void InitData(size_t blockNum);
-
-    Status GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp) override;
-    Status PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp) override;
-	Status Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
-	Status Retrieve_Encrypted_Doc(ServerContext* context, const BytesMessage* req, BytesMessage* resp) override;
+	grpc::Status GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp) override;
+	grpc::Status PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp) override;
+	grpc::Status Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
+	grpc::Status Retrieve_Encrypted_Doc(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
 
 private:
-    std::unordered_map<std::string, std::string> M_I;
-    std::unordered_map<std::string, std::string> M_c;
-    std::unordered_map<std::string, std::string> R_Doc;
+	std::unordered_map<std::string, std::string> M_I;
+	std::unordered_map<std::string, std::string> M_c;
+	std::unordered_map<std::string, std::string> R_Doc;
 
-    RAMStore *data_search;
-    RAMStore *data_update;
+	RAMStore *data_search;
+	RAMStore *data_update;
+
+	DBConnector *db_update;
+	DBConnector *db_search;
 };
 
 #endif

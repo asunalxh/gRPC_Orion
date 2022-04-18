@@ -1,10 +1,13 @@
+CXXFLAGS := -std=c++17
+
+######## RocksDB Settings ########
+RocksDB_Link_Flags = -L/opt/rocksdb -lrocksdb -lpthread
+
 
 ######## gRPC Settings ########
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
-CXX = g++
-CPPFLAGS += `pkg-config --cflags protobuf grpc`
-CXXFLAGS += -std=c++11
+
 ifeq ($(SYSTEM),Darwin)
 LDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
            -pthread\
@@ -19,6 +22,8 @@ endif
 PROTOC = protoc
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
+
+GRPC_LINK_FLAGS := -lssl -lcrypto
 
 PROTOS_PATH = common/
 
@@ -41,7 +46,7 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
-Link_Flags = $(LDFLAGS) -lssl -lcrypto
+Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags)
 
 .PHONY: all clean
 
@@ -54,19 +59,19 @@ $(PROTOS_PATH)/%.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 common/%.o: common/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Client/%.o: Client/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Server/%.o: Server/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(Client_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Client_Object_Files)
-	$(CXX) $^ $(Link_Flags) -o $@
+	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
 
 $(Server_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Server_Object_Files)
-	$(CXX) $^ $(Link_Flags) -o $@
+	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
 
 clean:
 	@rm -f common/*.o common/*.pb.cc common/*.pb.h

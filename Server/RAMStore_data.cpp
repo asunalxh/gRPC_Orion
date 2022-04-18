@@ -1,11 +1,14 @@
 #include "RAMStore_data.h"
 #include <iostream>
-// #include "ORAM.hpp"
+#include <cstring>
+#include <string>
+#include "../common/Utils.h"
 using namespace std;
 
-RAMStore::RAMStore(size_t count)
-		: data(count), emptyNodes(count)
+RAMStore::RAMStore(size_t count, DBConnector *conn)
+	: data(count), emptyNodes(count)
 {
+	this->conn = conn;
 }
 
 RAMStore::~RAMStore()
@@ -14,25 +17,26 @@ RAMStore::~RAMStore()
 
 BUCKET RAMStore::Read(size_t pos)
 {
-	return data.at(pos);
+	if (conn == NULL)
+		return data.at(pos);
+
+	string value = conn->Get(to_string(pos));
+	return StringToBucket(value);
 }
 
 void RAMStore::Write(size_t pos, BUCKET b)
 {
-	data[pos] = b;
+	if (conn == NULL)
+		data[pos] = b;
+	conn->Put(to_string(pos), BucketToString(b));
 }
 
-size_t RAMStore::GetBucketCount()
-{
-	return data.size();
-}
+//void RAMStore::ReduceEmptyNumbers()
+//{
+//	emptyNodes--;
+//}
 
-void RAMStore::ReduceEmptyNumbers()
-{
-	emptyNodes--;
-}
-
-size_t RAMStore::GetEmptySize()
-{
-	return emptyNodes;
-}
+//size_t RAMStore::GetEmptySize()
+//{
+//	return emptyNodes;
+//}

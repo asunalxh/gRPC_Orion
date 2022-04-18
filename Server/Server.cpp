@@ -2,12 +2,19 @@
 #include <algorithm> // for std::find
 #include <iterator>	 // for std::begin, std::end
 // #include "MysqlConnector.h"
+#include "RocksDBConnector.h"
 
-Server::Server()
+Server::Server(size_t blockNum)
 {
 	R_Doc.clear();
 	M_I.clear();
 	M_c.clear();
+
+	db_search = new RocksDBConnector("./database/search");
+	db_update = new RocksDBConnector("./database/update");
+
+	data_search = new RAMStore(blockNum, db_search);
+	data_update = new RAMStore(blockNum, db_update);
 }
 
 Server::~Server()
@@ -20,13 +27,7 @@ Server::~Server()
 	delete data_update;
 }
 
-void Server::InitData(size_t blockNum)
-{
-	data_search = new RAMStore(blockNum);
-	data_update = new RAMStore(blockNum);
-}
-
-Status Server::GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp)
+grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp)
 {
 	int data_structure = req->data_structure();
 	size_t pos = req->pos();
@@ -42,10 +43,10 @@ Status Server::GetData(ServerContext *context, const OramMessage *req, BytesMess
 	std::string bucket_str = BucketToString(bucket);
 	resp->set_byte(bucket_str);
 
-	return Status::OK;
+	return grpc::Status::OK;
 }
 
-Status Server::PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp)
+grpc::Status Server::PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp)
 {
 	int data_structure = req->data_structure();
 	size_t pos = req->pos();
@@ -60,7 +61,7 @@ Status Server::PutData(ServerContext *context, const OramBucketMessage *req, Gen
 	{
 		data_update->Write(pos, b);
 	}
-	return Status::OK;
+	return grpc::Status::OK;
 }
 
 // display utilities
@@ -103,23 +104,22 @@ void Server::Display_M_c()
 	}
 }
 
-Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
+grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
 {
 
-    std::string id = req->key();
-    std::string enc_content = req->value();
-    R_Doc.insert(std::pair<std::string, std::string>(id, enc_content));
+	std::string id = req->key();
+	std::string enc_content = req->value();
+	R_Doc.insert(std::pair<std::string, std::string>(id, enc_content));
 
-    // MysqlConnector mysql;
-    // mysql.insertValue(id.c_str(),enc_content.c_str());
-    
+	// MysqlConnector mysql;
+	// mysql.insertValue(id.c_str(),enc_content.c_str());
 
-    return Status::OK;
+	return grpc::Status::OK;
 }
 
-Status Server::Retrieve_Encrypted_Doc(ServerContext* context, const BytesMessage* req, BytesMessage* resp)
+grpc::Status Server::Retrieve_Encrypted_Doc(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
 {
 	std::string key = req->byte();
-    resp->set_byte(R_Doc.at(key));
-    return Status::OK;
+	resp->set_byte(R_Doc.at(key));
+	return grpc::Status::OK;
 }
