@@ -19,9 +19,15 @@ message BytesMessage{
     bytes byte = 1;
 }
 
+message BytesPairMessage{
+	bytes key =  1;
+	bytes value = 2;
+}
+
 
 service CryptoService{
     rpc GetData(OramMessage) returns(BytesMessage) {};
     rpc PutData(OramBucketMessage) returns(GeneralMessage) {}; 
-
+	rpc Receive_Encrypted_Doc(BytesPairMessage) returns(GeneralMessage) {};
+	rpc Retrieve_Encrypted_Doc(BytesMessage) returns(BytesMessage) {};
 }

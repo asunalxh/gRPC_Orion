@@ -102,3 +102,24 @@ void Server::Display_M_c()
 		print_bytes((uint8_t *)(it->second).c_str(), (uint32_t)it->second.length());
 	}
 }
+
+Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
+{
+
+    std::string id = req->key();
+    std::string enc_content = req->value();
+    R_Doc.insert(std::pair<std::string, std::string>(id, enc_content));
+
+    // MysqlConnector mysql;
+    // mysql.insertValue(id.c_str(),enc_content.c_str());
+    
+
+    return Status::OK;
+}
+
+Status Server::Retrieve_Encrypted_Doc(ServerContext* context, const BytesMessage* req, BytesMessage* resp)
+{
+	std::string key = req->byte();
+    resp->set_byte(R_Doc.at(key));
+    return Status::OK;
+}

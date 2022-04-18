@@ -150,3 +150,14 @@ void Client::PutData(int data_structure, size_t index,
 
 	stub_->PutData(&context, req, &resp);
 }
+
+void Client::SendEncDoc(entry *entry)
+{
+	ClientContext context;
+	BytesPairMessage req;
+	GeneralMessage resp;
+	req.set_key(std::string(entry->first.content, entry->first.content_length));
+	req.set_value(std::string(entry->second.message, entry->second.message_length));
+
+	stub_->Receive_Encrypted_Doc(&context, req, &resp);
+}

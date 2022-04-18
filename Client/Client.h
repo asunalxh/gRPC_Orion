@@ -40,6 +40,8 @@ public:
     void PutData(int data_structure, size_t index,
                  const unsigned char *data, size_t data_size);
 
+	void SendEncDoc(entry* entry);
+
 private:
     unsigned char KF[ENC_KEY_SIZE];
     int file_reading_counter;

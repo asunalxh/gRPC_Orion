@@ -30,6 +30,8 @@ public:
 
     Status GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp) override;
     Status PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp) override;
+	Status Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
+	Status Retrieve_Encrypted_Doc(ServerContext* context, const BytesMessage* req, BytesMessage* resp) override;
 
 private:
     std::unordered_map<std::string, std::string> M_I;
