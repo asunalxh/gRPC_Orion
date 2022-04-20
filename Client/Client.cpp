@@ -14,10 +14,10 @@
 
 using grpc::ClientContext;
 
-Client::Client(std::shared_ptr<Channel> channel) : stub_(CryptoService::NewStub(channel))
+Client::Client(std::shared_ptr<Channel> channel, const unsigned char *KF) : stub_(CryptoService::NewStub(channel))
 {
 	file_reading_counter = 0;
-	read_rand(KF, ENC_KEY_SIZE);
+	memcpy(this->KF, KF, ENC_KEY_SIZE);
 }
 
 void Client::getKFValue(unsigned char *outKey)
@@ -160,4 +160,25 @@ void Client::SendEncDoc(entry *entry)
 	req.set_value(std::string(entry->second.message, entry->second.message_length));
 
 	stub_->Receive_Encrypted_Doc(&context, req, &resp);
+}
+
+string Client::ReadDB(string key)
+{
+	ClientContext context;
+	BytesMessage req, resp;
+	req.set_byte(key);
+
+	stub_->ReadDB(&context, req, &resp);
+
+	return resp.byte();
+}
+void Client::WriteDB(string key, string value)
+{
+	ClientContext context;
+	BytesPairMessage req;
+	GeneralMessage resp;
+	req.set_key(key);
+	req.set_value(value);
+
+	stub_->WriteDB(&context, req, &resp);
 }

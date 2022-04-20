@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <chrono>
 #include <iostream>
+#include <fstream>
 
 // end for measurement
 
@@ -22,36 +23,33 @@ int del_no = (int)2;		// delete 50%
 Client *myClient;
 Orion *orion;
 
-int main()
+unsigned char KW[ENC_KEY_SIZE];
+unsigned char KC[ENC_KEY_SIZE];
+unsigned char KF[ENC_KEY_SIZE];
+
+void initKey(unsigned char *key, string filename)
 {
-	printf("======== Create Client ========\n");
-	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+	ifstream in(filename, ios::binary);
 
-	printf("======== Create Orion ========\n");
-	orion = new Orion(myClient);
+	if (in.good())
+		in.read((char *)key, ENC_KEY_SIZE);
+	else
+	{
+		ofstream out(filename, ios::binary);
+		read_rand(key, ENC_KEY_SIZE);
+		out.write((char *)key, ENC_KEY_SIZE);
+		out.close();
+	}
 
-	// test ORAM
+	in.close();
+}
 
-	/***
-	printf("batch Insertion time\n");
-	std::cout << timeSinceEpochMillisec() << std::endl;
-	ecall_testInsertFinal(eid);
-	std::cout << timeSinceEpochMillisec() << std::endl;
-
-	printf("batch Search time\n");
-	std::cout << timeSinceEpochMillisec() << std::endl;
-	ecall_oramtest(eid);
-	std::cout << timeSinceEpochMillisec() << std::endl;
-
-
-	***/
-	// end Test ORam
-
-	unsigned long long start, end;
+void addDoc(int start, int end)
+{
 	printf("======== Adding doc ========\n");
 
 	// Update Protocol with op = add
-	for (int i = 1; i <= total_file_no; i++)
+	for (int i = start; i <= end; i++)
 	{
 
 		docContent *fetch_data;
@@ -91,7 +89,10 @@ int main()
 			printf("Processing insertion %d\n", i);
 		}
 	}
+}
 
+void delDoc()
+{
 	// Update Protocol with op = del (id)
 	printf("\n======== Deleting doc ========\n");
 
@@ -107,7 +108,7 @@ int main()
 			printf("Processing deleting docs %d\n", del_index);
 		}
 		orion->delDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int,
-					 fetch_data->content, fetch_data->content_length);
+					  fetch_data->content, fetch_data->content_length);
 
 		// later need to free fetch_data
 		free(fetch_data->content);
@@ -116,12 +117,10 @@ int main()
 	}
 
 	printf("Finish deleting all docs\n");
+}
 
-	// Simulate setup start flushing
-	printf("======== flush ========\n");
-	orion->flush();
-
-	////search
+void search()
+{
 
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
 	std::string s_keyword[2] = {"word1", "word2"};
@@ -132,6 +131,36 @@ int main()
 
 		orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
 	}
+}
+
+int main()
+{
+
+	initKey(KW, "KW");
+	initKey(KC, "KC");
+	initKey(KF, "KF");
+
+	printf("======== Create Client ========\n");
+	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
+
+	printf("======== Create Orion ========\n");
+	orion = new Orion(myClient, KW, KC);
+
+	addDoc(1, 5);
+
+	// Simulate setup start flushing
+	printf("======== flush ========\n");
+	orion->flush();
+
+	auto temp1 = orion->UpdtCnt;
+	auto temp2 = orion->LastIND;
+	delete orion;
+
+	orion = new Orion(myClient, KW, KC, false);
+	orion->UpdtCnt = temp1;
+	orion->LastIND = temp2;
+
+	search();
 
 	// free omap and client and server
 	delete orion;

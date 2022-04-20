@@ -17,16 +17,17 @@
 #include "Omap.h"
 
 /*** setup */
-Orion::Orion(Client *client)
+Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial)
 {
+	memcpy(this->KW, KW, ENC_KEY_SIZE);
+	memcpy(this->KC, KC, ENC_KEY_SIZE);
 
-	read_rand(KW, ENC_KEY_SIZE);
-	read_rand(KC, ENC_KEY_SIZE);
+	this->client = client;
 
 	// 1: omap search
 	// 2: omap update
-	omap_search = new OMAP(KC, pow(2, numLeaf), 1, client); // 1024
-															// omap_update = new OMAP(KW,pow(2,numLeaf),2);//1024
+	omap_search = new OMAP(KC, pow(2, numLeaf), 1, client, initial); // 1024
+																	 // omap_update = new OMAP(KW,pow(2,numLeaf),2);//1024
 }
 
 Orion::~Orion()
@@ -56,7 +57,6 @@ void Orion::addDoc(char *doc_id, size_t id_length, unsigned int docInt, char *co
 
 		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_128);
 		Hash_SHA256(k_w.content, k_w.content_length, doc_id, id_length, k_id);
-
 
 		Bid key_kid = k_id;
 
@@ -102,6 +102,9 @@ void Orion::flush()
 		printf("FLushing Processing batch omap_search\n");
 		omap_search->batchInsert(setupPairs2);
 		setupPairs2.clear();
+
+		delete omap_search;
+		omap_search = new OMAP(KC, pow(2, numLeaf), 1, client, false); // 1024
 	}
 }
 

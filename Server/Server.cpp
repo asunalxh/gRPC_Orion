@@ -12,6 +12,7 @@ Server::Server(size_t blockNum)
 
 	db_search = new RocksDBConnector("./database/search");
 	db_update = new RocksDBConnector("./database/update");
+	db_info = new RocksDBConnector("./database/info");
 
 	data_search = new RAMStore(blockNum, db_search);
 	data_update = new RAMStore(blockNum, db_update);
@@ -25,6 +26,25 @@ Server::~Server()
 
 	delete data_search;
 	delete data_update;
+}
+
+grpc::Status Server::ReadDB(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
+{
+	std::string key = req->byte();
+
+	std::string value = db_info->Get(key);
+	resp->set_byte(value);
+
+	return grpc::Status::OK;
+}
+
+grpc::Status Server::WriteDB(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
+{
+	std::string key = req->key();
+	std::string value = req->value();
+	db_info->Put(key, value);
+
+	return grpc::Status::OK;
 }
 
 grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp)

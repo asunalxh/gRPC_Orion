@@ -16,87 +16,88 @@ using namespace std;
 class Node
 {
 public:
-    Node()
-    {
-    }
+	Node()
+	{
+	}
 
-    ~Node()
-    {
-    }
+	~Node()
+	{
+	}
 
-    Bid key;
-    unsigned int value;
-    unsigned int pos;
-    unsigned int height;
+	Bid key;
+	unsigned int value;
+	unsigned int pos;
+	unsigned int height;
 
-    Bid leftID;
-    unsigned int leftPos;
+	Bid leftID;
+	unsigned int leftPos;
 
-    Bid rightID;
-    unsigned int rightPos;
+	Bid rightID;
+	unsigned int rightPos;
 };
 
 class Oram
 {
 
 private:
-    int visitedOcallsWrite;
-    int visitedOcallsRead;
+	int visitedOcallsWrite;
+	int visitedOcallsRead;
 
-    size_t depth;
-    size_t blockSize;      // AVL Node size
-    size_t bucketSize;     // a bucket size = blockSize * Z
-    size_t enc_bucketSize; // this is bucketSize + AESGCM_MAC_SIZE + AESGCM_IV_SIZE
-    int bucketCount;
-    int numBucketLeaf;
+	size_t depth;
+	size_t blockSize;	   // AVL Node size
+	size_t bucketSize;	   // a bucket size = blockSize * Z
+	size_t enc_bucketSize; // this is bucketSize + AESGCM_MAC_SIZE + AESGCM_IV_SIZE
+	int bucketCount;
+	int numBucketLeaf;
 
-    bool batchWrite = false;
-    bool isWriteOnly = false;
+	bool batchWrite = false;
+	bool isWriteOnly = false;
 
-    // set<Bid> detRead; //fetched nodes during deterministic read isWriteOnly=true
-    std::map<Bid, Node *> cache;
+	// set<Bid> detRead; //fetched nodes during deterministic read isWriteOnly=true
+	std::map<Bid, Node *> cache;
 
-    // these leafList tracks the leafPos used during ORAM write operation and be reset after finaliseOperation()
-    vector<unsigned int> leafList;
-    vector<int> readviewmap;  // important map to track the bucketIndex has been read from outside, avoiding overwriting current nodes in cache
-    vector<int> writeviewmap; // important map to track the bucketIndex in finaliseOp to avoid overwriting new nodes to outside
-    set<Bid> modified;        // stored the AVL node key has been written and will be  assigned new ranPos in finaliseOperation()
+	// these leafList tracks the leafPos used during ORAM write operation and be reset after finaliseOperation()
+	vector<unsigned int> leafList;
+	vector<int> readviewmap;  // important map to track the bucketIndex has been read from outside, avoiding overwriting current nodes in cache
+	vector<int> writeviewmap; // important map to track the bucketIndex in finaliseOp to avoid overwriting new nodes to outside
+	set<Bid> modified;		  // stored the AVL node key has been written and will be  assigned new ranPos in finaliseOperation()
 
-    int readCnt = 0; // keep track number of leafRead for both cache hit/miss to do padding in finaliseOperation
+	int readCnt = 0; // keep track number of leafRead for both cache hit/miss to do padding in finaliseOperation
 
-    void to_bytes1(const Node &object, unsigned char *des);
-    void from_bytes1(const unsigned char *res, Node &object);
+	void to_bytes1(const Node &object, unsigned char *des);
+	void from_bytes1(const unsigned char *res, Node &object);
 
-    int GetNodeOnPath(unsigned int leaf, int depth);             //
-    std::vector<Bid> GetIntersectingBlocks(int leaf, int depth); //
+	int GetNodeOnPath(unsigned int leaf, int depth);			 //
+	std::vector<Bid> GetIntersectingBlocks(int leaf, int depth); //
 
-    void FetchPath(unsigned int leaf);            //
-    void WritePath(unsigned int leaf, int level); //
+	void FetchPath(unsigned int leaf);			  //
+	void WritePath(unsigned int leaf, int level); //
 
-    Node *ReadData(Bid id);       //
-    void WriteData(Bid, Node *b); //
+	Node *ReadData(Bid id);		  //
+	void WriteData(Bid, Node *b); //
 
-    void Access(Bid bid, Node *&node, unsigned int lastLeaf, unsigned int newLeaf); //
-    void Access(Bid, Node *&node);                                                  //
+	void Access(Bid bid, Node *&node, unsigned int lastLeaf, unsigned int newLeaf); //
+	void Access(Bid, Node *&node);													//
 
-    void deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNodes[Z]); //
+	void deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNodes[Z]); //
 
-    Bid empty_key;
+	Bid empty_key;
 
-    unsigned char KC[ENC_KEY_SIZE];
+	unsigned char KC[ENC_KEY_SIZE];
 
-    int data_structure;
+	int data_structure;
 
-    Client *client;
+	Client *client;
 
 public:
-    Oram(const unsigned char *treeKey, int _numBucketLeaf, int data_structure, Client *client); //
+	Oram(const unsigned char *treeKey, int _numBucketLeaf, int data_structure,
+		 Client *client, bool initial); //
 
-    unsigned int RandomPath();                                     //
-    Node *ReadNode(Bid bid, int lastLeaf, int newLeaf);            //
-    Node *ReadNode(Bid id);                                        //
-    int WriteNode(Bid bid, Node *n);                               //
-    void start(bool batchWrite);                                   //
-    void finalise(bool find, Bid &rootKey, unsigned int &rootPos); //
+	unsigned int RandomPath();									   //
+	Node *ReadNode(Bid bid, int lastLeaf, int newLeaf);			   //
+	Node *ReadNode(Bid id);										   //
+	int WriteNode(Bid bid, Node *n);							   //
+	void start(bool batchWrite);								   //
+	void finalise(bool find, Bid &rootKey, unsigned int &rootPos); //
 };
 #endif

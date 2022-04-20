@@ -22,7 +22,7 @@ private:
 
 
 public:
-    AVLTree(const unsigned char *key, int _numBucketLeaf, int data_structure, Client* client);//
+    AVLTree(const unsigned char *key, int _numBucketLeaf, int data_structure, Client* client,bool initial);//
     
     ~AVLTree();//
 

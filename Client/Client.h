@@ -23,29 +23,33 @@
 
 using namespace crypto;
 using grpc::Channel;
+using std::string;
 
 class Client
 {
 public:
-    Client(std::shared_ptr<Channel> channel);
-    void ReadNextDoc(docContent *fetch_data);
-    void Del_GivenDocIndex(const int del_index, docContent *fetch_data);
+	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
+	void ReadNextDoc(docContent *fetch_data);
+	void Del_GivenDocIndex(const int del_index, docContent *fetch_data);
 
-    void getKFValue(unsigned char *outKey);
-    void EncryptDoc(const docContent *data, entry *encrypted_doc);
-    void DecryptDocCollection(std::vector<std::string> Res);
+	void getKFValue(unsigned char *outKey);
+	void EncryptDoc(const docContent *data, entry *encrypted_doc);
+	void DecryptDocCollection(std::vector<std::string> Res);
 
-    void GetData(int data_structure, size_t index,
-                 unsigned char *bucket, size_t bucket_size);
-    void PutData(int data_structure, size_t index,
-                 const unsigned char *data, size_t data_size);
+	void GetData(int data_structure, size_t index,
+				 unsigned char *bucket, size_t bucket_size);
+	void PutData(int data_structure, size_t index,
+				 const unsigned char *data, size_t data_size);
 
-	void SendEncDoc(entry* entry);
+	void SendEncDoc(entry *entry);
+
+	string ReadDB(string key);
+	void WriteDB(string key,string value);
 
 private:
-    unsigned char KF[ENC_KEY_SIZE];
-    int file_reading_counter;
-    std::unique_ptr<CryptoService::Stub> stub_;
+	unsigned char KF[ENC_KEY_SIZE];
+	int file_reading_counter;
+	std::unique_ptr<CryptoService::Stub> stub_;
 };
 
 #endif

@@ -25,6 +25,9 @@ public:
 	void Display_M_I();
 	void Display_M_c();
 
+
+	grpc::Status ReadDB(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
+	grpc::Status WriteDB(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
 	grpc::Status GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp) override;
 	grpc::Status PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp) override;
 	grpc::Status Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
@@ -40,6 +43,7 @@ private:
 
 	DBConnector *db_update;
 	DBConnector *db_search;
+	DBConnector *db_info;
 };
 
 #endif
