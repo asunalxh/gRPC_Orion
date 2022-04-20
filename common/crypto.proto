@@ -26,6 +26,8 @@ message BytesPairMessage{
 
 
 service CryptoService{
+	rpc ReadDB(BytesMessage) returns(BytesMessage) {};
+    rpc WriteDB(BytesPairMessage) returns(GeneralMessage) {}; 
     rpc GetData(OramMessage) returns(BytesMessage) {};
     rpc PutData(OramBucketMessage) returns(GeneralMessage) {}; 
 	rpc Receive_Encrypted_Doc(BytesPairMessage) returns(GeneralMessage) {};
