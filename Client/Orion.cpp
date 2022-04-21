@@ -102,9 +102,6 @@ void Orion::flush()
 		printf("FLushing Processing batch omap_search\n");
 		omap_search->batchInsert(setupPairs2);
 		setupPairs2.clear();
-
-		delete omap_search;
-		omap_search = new OMAP(KC, pow(2, numLeaf), 1, client, false); // 1024
 	}
 }
 
@@ -198,7 +195,7 @@ void Orion::delDoc(char *doc_id, size_t id_length, unsigned int docInt, char *co
 }
 
 /*** search for a keyword */
-void Orion::search(const char *keyword, size_t keyword_len)
+vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 {
 
 	// init keys
@@ -239,4 +236,6 @@ void Orion::search(const char *keyword, size_t keyword_len)
 
 	// free memory
 	free(k_w.content);
+
+	return result;
 }

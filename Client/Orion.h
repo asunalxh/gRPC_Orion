@@ -12,7 +12,7 @@ public:
 	void addDoc(char *doc_id, size_t id_length, unsigned int docInt, char *content, int content_length);
 	void flush();
 	void delDoc(char *doc_id, size_t id_length, unsigned int docInt, char *content, int content_length);
-	void search(const char *keyword, size_t keyword_len);
+	vector<unsigned int> search(const char *keyword, size_t keyword_len);
 
 	std::unordered_map<std::string, int> UpdtCnt;		   // this is the ST[w]-> state
 	std::unordered_map<std::string, unsigned int> LastIND; // this is the ;astIND[w]-> most recently added id

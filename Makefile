@@ -1,5 +1,9 @@
 CXXFLAGS := -std=c++17
 
+######## Mysql Settings ########
+Mysql_Include_Path := -I/opt/lampp/include
+Mysql_Link_Flags = -L/opt/lampp/lib -lmysqlclient
+
 ######## RocksDB Settings ########
 RocksDB_Link_Flags = -L/opt/rocksdb -lrocksdb -lpthread
 
@@ -46,7 +50,9 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
-Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags)
+Include_Path := $(Mysql_Include_Path)
+
+Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags) $(Mysql_Link_Flags)
 
 .PHONY: all clean
 
@@ -65,7 +71,7 @@ Client/%.o: Client/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Server/%.o: Server/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
 
 $(Client_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Client_Object_Files)
 	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
