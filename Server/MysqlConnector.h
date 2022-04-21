@@ -9,7 +9,7 @@ public:
 	MysqlConnector(const char *host, const char *user, const char *passwd, const char *database);
 	~MysqlConnector();
 
-	void ChangeTable(string table);
+	void UseTable(string table);
 
 	string Get(string key);
 	bool Get(const void *key, int key_len, void *value);

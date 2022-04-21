@@ -14,14 +14,14 @@ MysqlConnector::MysqlConnector(const char *host, const char *user, const char *p
 	}
 
 	// 连接mysql
-	mysql = mysql_real_connect(mysql, host, user, passwd, database, 3306, nullptr, 0);
+	mysql = mysql_real_connect(mysql, host, user, passwd, database, 3306, NULL, 0);
 	if (!mysql)
 	{
 		printf("Mysql Connector Error %s\n", mysql_error(mysql));
 	}
 }
 
-void MysqlConnector::ChangeTable(string table)
+void MysqlConnector::UseTable(string table)
 {
 	this->table = table;
 }
@@ -54,12 +54,14 @@ bool MysqlConnector::Put(const void *key, int key_len, const void *value, int va
 
 bool MysqlConnector::InsertValue(string id, string value, string table)
 {
-	string sqlstr = "replace into " + table + "value(\"" + id + "\",\"" + value + "\")";
+	string sqlstr = "replace into " + table + " values(\"" + id + "\",\"" + value + "\")";
 	int ret = mysql_query(mysql, sqlstr.c_str());
 	if (ret)
 	{
 		printf("Mysql Insert Error: %s\n", mysql_error(mysql));
+		return false;
 	}
+	return true;
 }
 
 bool MysqlConnector::GetValue(string id, string &value, string table)
