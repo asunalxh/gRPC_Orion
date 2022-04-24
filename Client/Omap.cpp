@@ -95,7 +95,7 @@ void OMAP::batchInsert(map<Bid, unsigned int> pairs)
 			treeHandler->finishOperation(false, rootKey, rootPos);
 			treeHandler->startOperation(true);
 
-			myClient->WriteInfo(rootkey_id, string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_128));
+			myClient->WriteInfo(rootkey_id, string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_256));
 			myClient->WriteInfo(rootpos_id, to_string(rootPos));
 		}
 	}

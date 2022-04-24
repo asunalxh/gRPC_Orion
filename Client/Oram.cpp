@@ -215,7 +215,7 @@ void Oram::WritePath(unsigned int leaf, int d)
 			// memcpy the node_src to the bucket_src
 			memcpy(bucket_src + (z * blockSize), temp_node_src, blockSize);
 
-			memset(temp_node_src, '0', ENTRY_HASH_KEY_LEN_128);
+			memset(temp_node_src, '0', ENTRY_HASH_KEY_LEN_256);
 
 			// important to delete the pointer and cache here
 			Node *curNode = cache[key_str];
@@ -228,7 +228,7 @@ void Oram::WritePath(unsigned int leaf, int d)
 
 		for (int z = validBlocks.size(); z < Z; z++)
 		{
-			memset(temp_node_src, '0', ENTRY_HASH_KEY_LEN_128);
+			memset(temp_node_src, '0', ENTRY_HASH_KEY_LEN_256);
 			Node dummy_node;
 			dummy_node.key = empty_key;
 

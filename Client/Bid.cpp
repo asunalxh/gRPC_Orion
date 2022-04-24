@@ -3,25 +3,25 @@
 #include <random>
 
 Bid::Bid(){
-    memset(key,'0',ENTRY_HASH_KEY_LEN_128);
+    memset(key,'0',ENTRY_HASH_KEY_LEN_256);
 }
 Bid::Bid(const unsigned char *key_ptr){
-    memcpy(key,key_ptr,ENTRY_HASH_KEY_LEN_128);
+    memcpy(key,key_ptr,ENTRY_HASH_KEY_LEN_256);
 }
 Bid::~Bid(){
 
 }
 Bid& Bid::operator=(const Bid as){
-    memcpy(key,as.key,ENTRY_HASH_KEY_LEN_128);
+    memcpy(key,as.key,ENTRY_HASH_KEY_LEN_256);
     return *this;
 }
 Bid& Bid::operator=(const unsigned char *key_ptr){
-    memcpy(key,key_ptr,ENTRY_HASH_KEY_LEN_128);
+    memcpy(key,key_ptr,ENTRY_HASH_KEY_LEN_256);
     return *this;
 }
 
 bool Bid::operator!=(const Bid as) const{
-    int cmp_result = memcmp(key, as.key, ENTRY_HASH_KEY_LEN_128);
+    int cmp_result = memcmp(key, as.key, ENTRY_HASH_KEY_LEN_256);
     if(cmp_result!=0)
     {
             return true;
@@ -31,7 +31,7 @@ bool Bid::operator!=(const Bid as) const{
 }
 
 bool Bid::operator==(const Bid as) const{
-    int cmp_result = memcmp(key, as.key, ENTRY_HASH_KEY_LEN_128);
+    int cmp_result = memcmp(key, as.key, ENTRY_HASH_KEY_LEN_256);
     if(cmp_result==0)
     {
             return true;
@@ -40,7 +40,7 @@ bool Bid::operator==(const Bid as) const{
 }
 
 bool Bid::operator<(const Bid as) const{
-    int comp_result = memcmp(key, as.key, ENTRY_HASH_KEY_LEN_128);
+    int comp_result = memcmp(key, as.key, ENTRY_HASH_KEY_LEN_256);
     if(comp_result <0){
         return true;
     }
@@ -48,7 +48,7 @@ bool Bid::operator<(const Bid as) const{
 }
 
 bool Bid::operator>(const Bid as) const{
-    int comp_result= memcmp(key, as.key, ENTRY_HASH_KEY_LEN_128);
+    int comp_result= memcmp(key, as.key, ENTRY_HASH_KEY_LEN_256);
     if(comp_result > 0){
         return true;
     }

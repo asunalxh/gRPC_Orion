@@ -38,7 +38,7 @@ void clear(uint8_t *dest, uint32_t len)
 	}
 }
 
-//std::vector<std::string> wordTokenize(char *content, int content_length)
+// std::vector<std::string> wordTokenize(char *content, int content_length)
 //{
 //	char delim[] = ","; //" ,.-";
 //	std::vector<std::string> result;
@@ -107,11 +107,13 @@ int dec_aes_gcm(unsigned char *ciphertext, int ciphertext_len,
 
 void Hash_SHA256(const void *key, int key_len, const void *msg, int msg_len, void *value)
 {
-	unsigned int len;
-	HMAC_CTX *ctx = HMAC_CTX_new();
-	HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), NULL);
-	HMAC_Update(ctx, (unsigned char *)msg, msg_len);
-	HMAC_Final(ctx, (unsigned char *)value, &len);
+	// unsigned int len;
+	// HMAC_CTX *ctx = HMAC_CTX_new();
+	// HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), NULL);
+	// HMAC_Update(ctx, (unsigned char *)msg, msg_len);
+	// HMAC_Final(ctx, (unsigned char *)value, &len);
+
+	enc_aes_gcm((uint8_t *)msg, msg_len, (uint8_t *)key, (uint8_t *)value);
 }
 
 std::string BucketToString(BUCKET bucket)

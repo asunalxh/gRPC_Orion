@@ -29,7 +29,7 @@ static unsigned char gcm_iv[] = {
 #define ENC_KEY_SIZE 16 // for AES128
 #define ENTRY_VALUE_LEN 128 // 1024-bit
 
-#define ENTRY_HASH_KEY_LEN_128 32 // for HMAC-SHA128- bit key
+#define ENTRY_HASH_KEY_LEN_256 32 // for HMAC-SHA128- bit key
 #define BUFLEN 10240 //buffer for enc + dec
 #define RAND_LEN 64// 256 // 2048-bit
 
