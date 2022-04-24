@@ -22,7 +22,7 @@ public:
 	bool Put(const void *key, int key_len, const void *value, int value_len);
 
 private:
-	bool Get(Slice key, string *value);
-	bool Put(Slice key, Slice value);
+	bool GetValue(Slice key, string *value);
+	bool PutValue(Slice key, Slice value);
 	DB *db;
 };

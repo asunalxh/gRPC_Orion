@@ -38,28 +38,28 @@ void clear(uint8_t *dest, uint32_t len)
 	}
 }
 
-std::vector<std::string> wordTokenize(char *content, int content_length)
-{
-	char delim[] = ","; //" ,.-";
-	std::vector<std::string> result;
+//std::vector<std::string> wordTokenize(char *content, int content_length)
+//{
+//	char delim[] = ","; //" ,.-";
+//	std::vector<std::string> result;
 
-	char *content_cpy = (char *)malloc(content_length);
-	memcpy(content_cpy, content, content_length);
+//	char *content_cpy = (char *)malloc(content_length);
+//	memcpy(content_cpy, content, content_length);
 
-	char *token = strtok(content_cpy, delim);
-	while (token != NULL)
-	{
-		result.push_back(token);
-		token = strtok(NULL, delim);
-	}
+//	char *token = strtok(content_cpy, delim);
+//	while (token != NULL)
+//	{
+//		result.push_back(token);
+//		token = strtok(NULL, delim);
+//	}
 
-	free(token);
-	free(content_cpy);
-	// the last , will be counted
-	// result.erase(result.end()-1);
+//	free(token);
+//	free(content_cpy);
+//	// the last , will be counted
+//	// result.erase(result.end()-1);
 
-	return result;
-}
+//	return result;
+//}
 
 int enc_aes_gcm(const unsigned char *plaintext, int plaintext_len,
 				const unsigned char *key,
@@ -137,4 +137,32 @@ BUCKET StringToBucket(std::string str)
 void read_rand(unsigned char *result, size_t len)
 {
 	RAND_bytes(result, len);
+}
+
+char *enc_base64(const unsigned char *inputBuffer, int inputLen, int *outLen)
+{
+	EVP_ENCODE_CTX *ctx = EVP_ENCODE_CTX_new();
+	int base64Len = (((inputLen + 2) / 3) * 4) + 1; // Base64 text length
+	int pemLen = base64Len + base64Len / 64;		// PEM adds a newline every 64 bytes
+	char *base64 = new char[pemLen];
+	int result, tmpLen;
+	EVP_EncodeInit(ctx);
+	EVP_EncodeUpdate(ctx, (unsigned char *)base64, &result, (unsigned char *)inputBuffer, inputLen);
+	EVP_EncodeFinal(ctx, (unsigned char *)&base64[result], &tmpLen);
+	result += tmpLen;
+	*outLen = result;
+	return base64;
+}
+
+unsigned char *dec_base64(const char *input, int length, int *outLen)
+{
+	EVP_ENCODE_CTX *ctx = EVP_ENCODE_CTX_new();
+	unsigned char *orgBuf = new unsigned char[length];
+	int result, tmpLen;
+	EVP_DecodeInit(ctx);
+	EVP_DecodeUpdate(ctx, (unsigned char *)orgBuf, &result, (unsigned char *)input, length);
+	EVP_DecodeFinal(ctx, (unsigned char *)&orgBuf[result], &tmpLen);
+	result += tmpLen;
+	*outLen = result;
+	return orgBuf;
 }

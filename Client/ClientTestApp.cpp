@@ -17,9 +17,6 @@
 
 #define ENCLAVE_FILE "CryptoEnclave.signed.so"
 
-int total_file_no = (int)5; // 85000 // 150000
-int del_no = (int)2;		// delete 50%
-
 Client *myClient;
 Orion *orion;
 
@@ -51,10 +48,9 @@ void addDoc(int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
-
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
-		myClient->ReadNextDoc(fetch_data);
+		auto keywords = myClient->ReadNextDoc(fetch_data);
 
 		// encrypt and send to Server
 		entry *encrypted_entry;
@@ -66,15 +62,11 @@ void addDoc(int start, int end)
 		encrypted_entry->second.message = (char *)malloc(encrypted_entry->second.message_length);
 
 		myClient->EncryptDoc(fetch_data, encrypted_entry);
-
 		myClient->SendEncDoc(encrypted_entry);
 
-		// upload (op,in) to Enclave
-		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int,
-					  fetch_data->content, fetch_data->content_length);
+		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, keywords);
 
 		// free memory
-
 		free(fetch_data->content);
 		free(fetch_data->id.doc_id);
 		free(fetch_data);
@@ -91,29 +83,23 @@ void addDoc(int start, int end)
 	}
 }
 
-void delDoc()
+void delDoc(int del_no)
 {
 	// Update Protocol with op = del (id)
 	printf("\n======== Deleting doc ========\n");
 
 	for (int del_index = 1; del_index <= del_no; del_index++)
 	{
-
-		docContent *fetch_data;
-		fetch_data = (docContent *)malloc(sizeof(docContent));
-		myClient->Del_GivenDocIndex(del_index, fetch_data);
+		string id_str = to_string(del_index);
+		auto keywords = myClient->Del_GivenDocIndex(del_index);
 
 		if (del_index % 1000 == 0)
 		{
 			printf("Processing deleting docs %d\n", del_index);
 		}
-		orion->delDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int,
-					  fetch_data->content, fetch_data->content_length);
+		orion->delDoc(id_str.c_str(), id_str.length(), del_index, keywords);
 
 		// later need to free fetch_data
-		free(fetch_data->content);
-		free(fetch_data->id.doc_id);
-		free(fetch_data);
 	}
 
 	printf("Finish deleting all docs\n");
@@ -123,7 +109,7 @@ void search()
 {
 
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	std::string s_keyword[2] = {"word1", "word2"};
+	std::string s_keyword[2] = {"start", "plan"};
 
 	for (int s_i = 0; s_i < 2; s_i++)
 	{
@@ -146,20 +132,16 @@ int main()
 	printf("======== Create Orion ========\n");
 	orion = new Orion(myClient, KW, KC);
 
-	addDoc(1, 5);
+	addDoc(1, 10);
 
 	// Simulate setup start flushing
 	printf("======== flush ========\n");
 	orion->flush();
 
-	auto temp1 = orion->UpdtCnt;
-	auto temp2 = orion->LastIND;
-	delete orion;
+	search();
 
-	orion = new Orion(myClient, KW, KC, false);
-	orion->UpdtCnt = temp1;
-	orion->LastIND = temp2;
-
+	delDoc(3);
+	orion->flush();
 	search();
 
 	// free omap and client and server

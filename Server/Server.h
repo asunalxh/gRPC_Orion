@@ -12,6 +12,8 @@
 #include <grpcpp/server.h>
 #include <grpcpp/server_builder.h>
 #include <grpcpp/server_context.h>
+#include "RocksDBConnector.h"
+#include "MysqlConnector.h"
 
 using namespace crypto;
 using grpc::ServerContext;
@@ -26,10 +28,12 @@ public:
 	void Display_M_c();
 
 
-	grpc::Status ReadDB(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
-	grpc::Status WriteDB(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
+	grpc::Status ReadInfo(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
+	grpc::Status WriteInfo(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
+
 	grpc::Status GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp) override;
 	grpc::Status PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp) override;
+	
 	grpc::Status Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
 	grpc::Status Retrieve_Encrypted_Doc(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
 
@@ -44,6 +48,7 @@ private:
 	DBConnector *db_update;
 	DBConnector *db_search;
 	DBConnector *db_info;
+	DBConnector *db_raw_data = nullptr;
 };
 
 #endif

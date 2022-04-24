@@ -37,12 +37,12 @@ Orion::~Orion()
 }
 
 // this is to run in SETUP
-void Orion::addDoc(char *doc_id, size_t id_length, unsigned int docInt, char *content, int content_length)
+void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
 {
 
 	// parse content to keywords splited by comma
-	std::vector<std::string> wordList;
-	wordList = wordTokenize(content, content_length);
+	//std::vector<std::string> wordList;
+	//wordList = wordTokenize(content, content_length);
 
 	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
 	{
@@ -52,7 +52,7 @@ void Orion::addDoc(char *doc_id, size_t id_length, unsigned int docInt, char *co
 		entryKey k_w;
 
 		k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + word.length();
-		k_w.content = (char *)malloc(k_w.content_length);
+		k_w.content = (char *)malloc(k_w.content_length + 1);
 		enc_aes_gcm((unsigned char *)word.c_str(), word.length(), KW, (unsigned char *)k_w.content);
 
 		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_128);
@@ -106,12 +106,12 @@ void Orion::flush()
 }
 
 // this is in batch in SETUP
-void Orion::delDoc(char *doc_id, size_t id_length, unsigned int docInt, char *content, int content_length)
+void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt,std::vector<std::string> wordList)
 {
 
 	// parse content to keywords splited by comma
-	std::vector<std::string> wordList;
-	wordList = wordTokenize(content, content_length);
+	//std::vector<std::string> wordList;
+	//wordList = wordTokenize(content, content_length);
 
 	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
 	{
@@ -121,7 +121,7 @@ void Orion::delDoc(char *doc_id, size_t id_length, unsigned int docInt, char *co
 		entryKey k_w;
 
 		k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + word.length();
-		k_w.content = (char *)malloc(k_w.content_length);
+		k_w.content = (char *)malloc(k_w.content_length + 1);
 		enc_aes_gcm((unsigned char *)word.c_str(), word.length(), KW, (unsigned char *)k_w.content);
 
 		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_128);
@@ -145,10 +145,10 @@ void Orion::delDoc(char *doc_id, size_t id_length, unsigned int docInt, char *co
 					// retrieve the lasted ind
 					std::string fileName = std::to_string(LastIND[word]);
 					// convert fileId to char* and record length
-					int doc_id_size = fileName.length() + 1;
+					int doc_id_size = fileName.length();
 
-					char *latest_doc_id = (char *)malloc(doc_id_size);
-					memcpy(latest_doc_id, fileName.c_str(), doc_id_size);
+					char *latest_doc_id = (char *)malloc(doc_id_size + 1);
+					memcpy(latest_doc_id, fileName.c_str(), doc_id_size + 1);
 
 					Hash_SHA256(k_w.content, k_w.content_length, latest_doc_id, doc_id_size, cur_k_id);
 
@@ -204,7 +204,7 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 	entryKey k_w;
 
 	k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + keyword_len;
-	k_w.content = (char *)malloc(k_w.content_length);
+	k_w.content = (char *)malloc(k_w.content_length + 1);
 	enc_aes_gcm((unsigned char *)keyword, keyword_len, KW, (unsigned char *)k_w.content);
 
 	std::vector<Bid> search_key_series;

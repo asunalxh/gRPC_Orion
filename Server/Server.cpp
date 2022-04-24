@@ -2,7 +2,6 @@
 #include <algorithm> // for std::find
 #include <iterator>	 // for std::begin, std::end
 // #include "MysqlConnector.h"
-#include "RocksDBConnector.h"
 
 Server::Server(size_t blockNum)
 {
@@ -13,6 +12,13 @@ Server::Server(size_t blockNum)
 	db_search = new RocksDBConnector("./database/search");
 	db_update = new RocksDBConnector("./database/update");
 	db_info = new RocksDBConnector("./database/info");
+
+	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
+		"127.0.0.1",
+		"asunalxh",
+		"123456",
+		"test");
+	db_raw_data = new MysqlConnector(mysql, "test");
 
 	data_search = new RAMStore(blockNum, db_search);
 	data_update = new RAMStore(blockNum, db_update);
@@ -28,7 +34,7 @@ Server::~Server()
 	delete data_update;
 }
 
-grpc::Status Server::ReadDB(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
+grpc::Status Server::ReadInfo(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
 {
 	std::string key = req->byte();
 
@@ -38,7 +44,7 @@ grpc::Status Server::ReadDB(ServerContext *context, const BytesMessage *req, Byt
 	return grpc::Status::OK;
 }
 
-grpc::Status Server::WriteDB(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
+grpc::Status Server::WriteInfo(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
 {
 	std::string key = req->key();
 	std::string value = req->value();
@@ -129,10 +135,18 @@ grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPa
 
 	std::string id = req->key();
 	std::string enc_content = req->value();
-	R_Doc.insert(std::pair<std::string, std::string>(id, enc_content));
+	if (db_raw_data == nullptr)
+	{
+		R_Doc.insert(std::pair<std::string, std::string>(id, enc_content));
+	}
+	else
+	{
+		//int len;
+		//auto str = enc_base64((uint8_t *)enc_content.c_str(), enc_content.length(), &len);
+		//db_raw_data->Put(id, str);
 
-	// MysqlConnector mysql;
-	// mysql.insertValue(id.c_str(),enc_content.c_str());
+		db_raw_data->Put(id, enc_content);
+	}
 
 	return grpc::Status::OK;
 }
@@ -140,6 +154,17 @@ grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPa
 grpc::Status Server::Retrieve_Encrypted_Doc(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
 {
 	std::string key = req->byte();
-	resp->set_byte(R_Doc.at(key));
+	if (db_raw_data == nullptr)
+		resp->set_byte(R_Doc.at(key));
+	else
+	{
+		//int len;
+		//std::string base64_str = db_raw_data->Get(key);
+		//auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
+		//resp->set_byte(std::string((char *)value, len));
+
+		resp->set_byte(db_raw_data->Get(key));
+	}
+
 	return grpc::Status::OK;
 }

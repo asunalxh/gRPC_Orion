@@ -4,21 +4,10 @@
 using std::cout;
 using std::endl;
 
-MysqlConnector::MysqlConnector(const char *host, const char *user, const char *passwd, const char *database)
+MysqlConnector::MysqlConnector(MYSQL *mysql, string table)
 {
-	mysql = mysql_init(mysql);
-	if (!mysql)
-	{
-		printf("Mysql Init Error: %s\n", mysql_error(mysql));
-		return;
-	}
-
-	// 连接mysql
-	mysql = mysql_real_connect(mysql, host, user, passwd, database, 3306, NULL, 0);
-	if (!mysql)
-	{
-		printf("Mysql Connector Error %s\n", mysql_error(mysql));
-	}
+	this->mysql = mysql;
+	this->table = table;
 }
 
 void MysqlConnector::UseTable(string table)
@@ -55,7 +44,7 @@ bool MysqlConnector::Put(const void *key, int key_len, const void *value, int va
 bool MysqlConnector::InsertValue(string id, string value, string table)
 {
 	string sqlstr = "replace into " + table + " values(\"" + id + "\",\"" + value + "\")";
-	int ret = mysql_query(mysql, sqlstr.c_str());
+	int ret = mysql_real_query(mysql, sqlstr.c_str(), sqlstr.length());
 	if (ret)
 	{
 		printf("Mysql Insert Error: %s\n", mysql_error(mysql));
@@ -86,7 +75,26 @@ bool MysqlConnector::GetValue(string id, string &value, string table)
 	return true;
 }
 
-MysqlConnector::~MysqlConnector()
+MYSQL *MysqlConnector::Free_Mysql_Connect(MYSQL *mysql)
 {
 	mysql_close(mysql);
+}
+
+MYSQL *MysqlConnector::Create_Mysql_Connect(const char *host, const char *user, const char *passwd, const char *database)
+{
+	MYSQL *mysql = mysql_init(NULL);
+	if (!mysql)
+	{
+		printf("Mysql Init Error: %s\n", mysql_error(mysql));
+		return nullptr;
+	}
+
+	// 连接mysql
+	mysql = mysql_real_connect(mysql, host, user, passwd, database, 3306, NULL, 0);
+	if (!mysql)
+	{
+		printf("Mysql Connector Error %s\n", mysql_error(mysql));
+		return nullptr;
+	}
+	return mysql;
 }

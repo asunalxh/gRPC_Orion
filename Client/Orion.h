@@ -9,9 +9,9 @@ public:
 	Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial = true);
 	~Orion();
 
-	void addDoc(char *doc_id, size_t id_length, unsigned int docInt, char *content, int content_length);
+	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 	void flush();
-	void delDoc(char *doc_id, size_t id_length, unsigned int docInt, char *content, int content_length);
+	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt,std::vector<std::string> wordList);
 	vector<unsigned int> search(const char *keyword, size_t keyword_len);
 
 	std::unordered_map<std::string, int> UpdtCnt;		   // this is the ST[w]-> state
@@ -26,7 +26,7 @@ private:
 	unsigned char KC[ENC_KEY_SIZE] = {0};
 
 	// int numLeaf = 22;//actual number of (w,id) supported ~ numleaf in worst case - or change to smaller to only 20 // then bucketCount = 8.3 mil
-	int numLeaf = 6; // actual number of (w,id) supported ~ numleaf in worst case - or change to smaller to only 20 // then bucketCount = 8.3 mil
+	int numLeaf = 12; // actual number of (w,id) supported ~ numleaf in worst case - or change to smaller to only 20 // then bucketCount = 8.3 mil
 	OMAP *omap_search;
 	// OMAP *omap_update;
 

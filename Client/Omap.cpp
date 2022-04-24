@@ -15,8 +15,8 @@ OMAP::OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Cli
 
 	if (!initial)
 	{
-		rootKey = (const unsigned char *)myClient->ReadDB(rootkey_id).c_str();
-		rootPos = stoi(myClient->ReadDB(rootpos_id));
+		rootKey = (const unsigned char *)myClient->ReadInfo(rootkey_id).c_str();
+		rootPos = stoi(myClient->ReadInfo(rootpos_id));
 	}
 }
 
@@ -95,8 +95,8 @@ void OMAP::batchInsert(map<Bid, unsigned int> pairs)
 			treeHandler->finishOperation(false, rootKey, rootPos);
 			treeHandler->startOperation(true);
 
-			myClient->WriteDB(rootkey_id, string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_128));
-			myClient->WriteDB(rootpos_id, to_string(rootPos));
+			myClient->WriteInfo(rootkey_id, string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_128));
+			myClient->WriteInfo(rootpos_id, to_string(rootPos));
 		}
 	}
 	// treeHandler->finishOperation(false,rootKey, rootPos);

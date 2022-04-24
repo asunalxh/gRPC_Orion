@@ -435,7 +435,7 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 	leafList.clear();
 	modified.clear();
 
-	//printf("OcallWrite ( %d), ocallRead ( %d)\n", visitedOcallsWrite, visitedOcallsRead);
+	// printf("OcallWrite ( %d), ocallRead ( %d)\n", visitedOcallsWrite, visitedOcallsRead);
 }
 
 void Oram::start(bool batchWrite)

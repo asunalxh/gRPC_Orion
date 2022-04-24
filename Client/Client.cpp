@@ -25,7 +25,7 @@ void Client::getKFValue(unsigned char *outKey)
 	memcpy(outKey, KF, ENC_KEY_SIZE);
 }
 
-void Client::ReadNextDoc(docContent *content)
+std::vector<string> Client::ReadNextDoc(docContent *content)
 {
 	std::ifstream inFile;
 	std::stringstream strStream;
@@ -37,65 +37,69 @@ void Client::ReadNextDoc(docContent *content)
 	std::string fileName;
 	fileName = std::to_string(file_reading_counter);
 	/** convert fileId to char* and record length */
-	int doc_id_size = fileName.length() + 1;
+	int doc_id_size = fileName.length();
 
-	content->id.doc_id = (char *)malloc(doc_id_size);
-	memcpy(content->id.doc_id, fileName.c_str(), doc_id_size);
+	content->id.doc_id = (char *)malloc(doc_id_size + 1);
+	memcpy(content->id.doc_id, fileName.c_str(), doc_id_size + 1);
 	content->id.id_length = doc_id_size;
 
 	content->id.doc_int = file_reading_counter;
 
 	// read the file content
-	inFile.open(raw_doc_dir + fileName);
+	inFile.open(raw_doc_dir + fileName + ".txt");
 	strStream << inFile.rdbuf();
 	inFile.close();
 
 	/** convert document content to char* and record length */
 	std::string str = strStream.str();
 	int plaintext_len;
-	plaintext_len = str.length() + 1;
+	plaintext_len = str.length();
 
-	content->content = (char *)malloc(plaintext_len);
-	memcpy(content->content, str.c_str(), plaintext_len);
+	content->content = (char *)malloc(plaintext_len + 1);
+	memcpy(content->content, str.c_str(), plaintext_len + 1);
 
 	content->content_length = plaintext_len;
 
 	strStream.clear();
+
+	std::vector<string> keyword;
+	int word_num = 0;
+	inFile.open(keyword_dir + fileName + ".txt");
+	inFile >> word_num;
+
+	while (word_num--)
+	{
+		string word;
+		inFile >> word;
+		keyword.push_back(word);
+	}
+	inFile.close();
+
+	return keyword;
 }
 
-void Client::Del_GivenDocIndex(const int del_index, docContent *content)
+std::vector<string> Client::Del_GivenDocIndex(const int del_index)
 {
 
 	std::ifstream inFile;
-	std::stringstream strStream;
 
 	std::string fileName;
 	fileName = std::to_string(del_index);
-	/** convert fileId to char* and record length */
-	int doc_id_size = fileName.length() + 1;
 
-	content->id.doc_id = (char *)malloc(doc_id_size);
-	memcpy(content->id.doc_id, fileName.c_str(), doc_id_size);
-	content->id.id_length = doc_id_size;
+	std::vector<string> keyword;
+	int word_num = 0;
+	inFile.open(keyword_dir + fileName + ".txt");
+	inFile >> word_num;
 
-	content->id.doc_int = del_index;
-
-	// read the file content
-	inFile.open(raw_doc_dir + fileName);
-	strStream << inFile.rdbuf();
+	while (word_num--)
+	{
+		string word;
+		inFile >> word;
+		keyword.push_back(word);
+	}
 	inFile.close();
 
-	/** convert document content to char* and record length */
-	std::string str = strStream.str();
-	int plaintext_len;
-	plaintext_len = str.length() + 1;
-
-	content->content = (char *)malloc(plaintext_len);
-	memcpy(content->content, str.c_str(), plaintext_len);
-
-	content->content_length = plaintext_len;
-
-	strStream.clear();
+	return keyword;
 }
 
 void Client::EncryptDoc(const docContent *data, entry *encrypted_doc)
@@ -114,8 +118,8 @@ void Client::DecryptDocCollection(std::vector<std::string> Res)
 	{
 
 		int original_len;
-		unsigned char *plaintext = (unsigned char *)malloc((enc_doc.size() - AESGCM_MAC_SIZE - AESGCM_IV_SIZE) * sizeof(unsigned char));
-		original_len = dec_aes_gcm((unsigned char *)enc_doc.c_str(), enc_doc.size(), KF, plaintext);
+		unsigned char *plaintext = (unsigned char *)malloc((enc_doc.size() - AESGCM_MAC_SIZE - AESGCM_IV_SIZE) * sizeof(unsigned char) + 1);
+		original_len = dec_aes_gcm((unsigned char *)enc_doc.c_str(), enc_doc.size() + 1, KF, plaintext);
 
 		// std::string doc_i((char*)plaintext,original_len);
 		// printf("Plain doc ==> %s\n",doc_i.c_str());
@@ -153,26 +157,57 @@ void Client::PutData(int data_structure, size_t index,
 
 void Client::SendEncDoc(entry *entry)
 {
+
+	int len;
+	auto str = enc_base64((uint8_t *)entry->second.message, entry->second.message_length, &len);
+
 	ClientContext context;
 	BytesPairMessage req;
 	GeneralMessage resp;
 	req.set_key(std::string(entry->first.content, entry->first.content_length));
-	req.set_value(std::string(entry->second.message, entry->second.message_length));
+	// req.set_value(std::string(entry->second.message, entry->second.message_length));
+	req.set_value(std::string(str));
+	delete[] str;
 
 	stub_->Receive_Encrypted_Doc(&context, req, &resp);
 }
 
-string Client::ReadDB(string key)
+string Client::GetEncDoc(string id)
+{
+	ClientContext context;
+	BytesMessage req, resp;
+	req.set_byte(id);
+
+	stub_->Retrieve_Encrypted_Doc(&context, req, &resp);
+
+	int len;
+	string base64_str = resp.byte();
+
+	//std::cout << base64_str << '\n';
+
+	auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
+
+	char *message = new char[len];
+	int message_len = dec_aes_gcm((uint8_t *)value, len, KF, (uint8_t *)message);
+
+	string ans(message, message_len);
+
+	delete[] message;
+	delete[] value;
+	return ans;
+}
+
+string Client::ReadInfo(string key)
 {
 	ClientContext context;
 	BytesMessage req, resp;
 	req.set_byte(key);
 
-	stub_->ReadDB(&context, req, &resp);
+	stub_->ReadInfo(&context, req, &resp);
 
 	return resp.byte();
 }
-void Client::WriteDB(string key, string value)
+void Client::WriteInfo(string key, string value)
 {
 	ClientContext context;
 	BytesPairMessage req;
@@ -180,5 +215,5 @@ void Client::WriteDB(string key, string value)
 	req.set_key(key);
 	req.set_value(value);
 
-	stub_->WriteDB(&context, req, &resp);
+	stub_->WriteInfo(&context, req, &resp);
 }

@@ -29,8 +29,8 @@ class Client
 {
 public:
 	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
-	void ReadNextDoc(docContent *fetch_data);
-	void Del_GivenDocIndex(const int del_index, docContent *fetch_data);
+	std::vector<string> ReadNextDoc(docContent *fetch_data);
+	std::vector<string> Del_GivenDocIndex(const int del_index);
 
 	void getKFValue(unsigned char *outKey);
 	void EncryptDoc(const docContent *data, entry *encrypted_doc);
@@ -42,9 +42,10 @@ public:
 				 const unsigned char *data, size_t data_size);
 
 	void SendEncDoc(entry *entry);
+	string GetEncDoc(string id);
 
-	string ReadDB(string key);
-	void WriteDB(string key,string value);
+	string ReadInfo(string key);
+	void WriteInfo(string key,string value);
 
 private:
 	unsigned char KF[ENC_KEY_SIZE];
