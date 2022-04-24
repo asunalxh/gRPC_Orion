@@ -9,6 +9,7 @@
 #include <iterator>	 // for std::begin, std::end
 #include <vector>
 #include <list>
+#include <fstream>
 
 #include "../common/data_type.h"
 #include "../common/data_type2.h"
@@ -41,8 +42,8 @@ void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 {
 
 	// parse content to keywords splited by comma
-	//std::vector<std::string> wordList;
-	//wordList = wordTokenize(content, content_length);
+	// std::vector<std::string> wordList;
+	// wordList = wordTokenize(content, content_length);
 
 	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
 	{
@@ -106,12 +107,12 @@ void Orion::flush()
 }
 
 // this is in batch in SETUP
-void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt,std::vector<std::string> wordList)
+void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
 {
 
 	// parse content to keywords splited by comma
-	//std::vector<std::string> wordList;
-	//wordList = wordTokenize(content, content_length);
+	// std::vector<std::string> wordList;
+	// wordList = wordTokenize(content, content_length);
 
 	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
 	{
@@ -238,4 +239,20 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 	free(k_w.content);
 
 	return result;
+}
+
+void Orion::writeToFile(std::string dir)
+{
+	ofstream out(dir + "/UpdtCnt.txt");
+	for (auto i = UpdtCnt.begin(); i != UpdtCnt.end(); i++)
+	{
+		out << i->first << ' ' << i->second << '\n';
+	}
+	out.close();
+	out.open(dir + "/LastIND.txt");
+	for (auto i = LastIND.begin(); i != LastIND.end(); i++)
+	{
+		out << i->first << ' ' << i->second << '\n';
+	}
+	out.close();
 }
