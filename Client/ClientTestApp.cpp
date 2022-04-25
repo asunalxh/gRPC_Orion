@@ -61,15 +61,11 @@ void addDoc(int start, int end)
 		encrypted_entry->first.content = (char *)malloc(fetch_data->id.id_length);
 		encrypted_entry->second.message_length = fetch_data->content_length + AESGCM_MAC_SIZE + AESGCM_IV_SIZE;
 		encrypted_entry->second.message = (char *)malloc(encrypted_entry->second.message_length);
-
-		printf("Start To Read\n");
+		
 		myClient->EncryptDoc(fetch_data, encrypted_entry);
-
-		printf("Start To Store\n");
 
 		myClient->SendEncDoc(encrypted_entry);
 
-		printf("Start To Add\n");
 		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, keywords);
 
 		// free memory

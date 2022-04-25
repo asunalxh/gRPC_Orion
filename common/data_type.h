@@ -14,8 +14,8 @@
 
 /* for all sources except OCALL/ECALL */
 
-const std::string raw_doc_dir= "/home/asunalxh/Project/enron_analysis/enron_datasets/";
-const std::string keyword_dir = "/home/asunalxh/Project/enron_analysis/enron_keywords/";
+const std::string raw_doc_dir= "/home/asunalxh/Data/enron_datasets/";
+const std::string keyword_dir = "/home/asunalxh/Data/enron_keywords/";
 
 #define AESGCM_IV_SIZE 12
 static unsigned char gcm_iv[] = {
