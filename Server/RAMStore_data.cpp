@@ -5,8 +5,12 @@
 #include "../common/Utils.h"
 using namespace std;
 
-RAMStore::RAMStore(size_t count, DBConnector *conn)
+RAMStore::RAMStore(size_t count)
 	: data(count), emptyNodes(count)
+{
+}
+
+RAMStore::RAMStore(DBConnector *conn)
 {
 	this->conn = conn;
 }
@@ -31,12 +35,12 @@ void RAMStore::Write(size_t pos, BUCKET b)
 	conn->Put(to_string(pos), BucketToString(b));
 }
 
-//void RAMStore::ReduceEmptyNumbers()
+// void RAMStore::ReduceEmptyNumbers()
 //{
 //	emptyNodes--;
-//}
+// }
 
-//size_t RAMStore::GetEmptySize()
+// size_t RAMStore::GetEmptySize()
 //{
 //	return emptyNodes;
-//}
+// }

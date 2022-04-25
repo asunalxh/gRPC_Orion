@@ -21,8 +21,8 @@ Server::Server(size_t blockNum)
 	//db_raw_data = new MysqlConnector(mysql, "test");
 	db_raw_data = new RocksDBConnector("./database/raw");
 
-	data_search = new RAMStore(blockNum, db_search);
-	data_update = new RAMStore(blockNum, db_update);
+	data_search = new RAMStore(db_search);
+	data_update = new RAMStore(db_update);
 }
 
 Server::~Server()
