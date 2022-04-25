@@ -4,12 +4,12 @@
 #include <string>
 using std::string;
 
-template<class K,class V>
+template<typename _Id,typename _Value>
 class DBConnector
 {
 public:
-	virtual V Get(K key) = 0;
-	virtual void Put(K key, V value) = 0;
+	virtual _Value Get(_Id key) = 0;
+	virtual void Put(_Id key, _Value value) = 0;
 };
 
 #endif
