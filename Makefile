@@ -51,7 +51,7 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
-Include_Path := $(Mysql_Include_Flags) $(RocksDB_Include_Flags)
+Include_Flags := $(Mysql_Include_Flags) $(RocksDB_Include_Flags)
 
 Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags) $(Mysql_Link_Flags)
 
@@ -69,10 +69,10 @@ common/%.o: common/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Client/%.o: Client/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Flags) -c $< -o $@
 
 Server/%.o: Server/%.cpp
-	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Flags) -c $< -o $@
 
 $(Client_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Client_Object_Files)
 	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
