@@ -6,6 +6,7 @@ Mysql_Link_Flags := -L/opt/lampp/lib -lmysqlclient
 
 ######## RocksDB Settings ########
 RocksDB_Link_Flags := -L/opt/rocksdb -lrocksdb -lpthread
+RocksDB_Include_Path := -I/opt/rocksdb/include
 
 ######## gRPC Settings ########
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
@@ -49,7 +50,7 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
-Include_Path := $(Mysql_Include_Path)
+Include_Path := $(Mysql_Include_Path) $(RocksDB_Include_Path)
 
 Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags) $(Mysql_Link_Flags)
 
