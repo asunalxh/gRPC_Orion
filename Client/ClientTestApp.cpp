@@ -135,8 +135,8 @@ int main()
 	printf("======== Create Orion ========\n");
 	orion = new Orion(myClient, KW, KC);
 
-	// addDoc(1, 517401);
-	addDoc(1, 10);
+	addDoc(1, 517401);
+	// addDoc(1, 10);
 
 	// Simulate setup start flushing
 	printf("======== flush ========\n");
@@ -144,7 +144,7 @@ int main()
 
 	orion->writeToFile();
 
-	search();
+	// search();
 
 	// free omap and client and server
 	delete orion;
