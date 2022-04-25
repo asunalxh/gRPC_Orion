@@ -146,7 +146,8 @@ char *enc_base64(const unsigned char *inputBuffer, int inputLen, int *outLen)
 	EVP_ENCODE_CTX *ctx = EVP_ENCODE_CTX_new();
 	int base64Len = (((inputLen + 2) / 3) * 4) + 1; // Base64 text length
 	int pemLen = base64Len + base64Len / 64;		// PEM adds a newline every 64 bytes
-	char *base64 = new char[pemLen];
+	//char *base64 = new char[pemLen];
+	char *base64 = new char[inputLen * 2];
 	int result, tmpLen;
 	EVP_EncodeInit(ctx);
 	EVP_EncodeUpdate(ctx, (unsigned char *)base64, &result, (unsigned char *)inputBuffer, inputLen);

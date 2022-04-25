@@ -48,6 +48,7 @@ void addDoc(int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
+		printf("No.%d\n", i);
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
 		auto keywords = myClient->ReadNextDoc(fetch_data);
@@ -61,9 +62,14 @@ void addDoc(int start, int end)
 		encrypted_entry->second.message_length = fetch_data->content_length + AESGCM_MAC_SIZE + AESGCM_IV_SIZE;
 		encrypted_entry->second.message = (char *)malloc(encrypted_entry->second.message_length);
 
+		printf("Start To Read\n");
 		myClient->EncryptDoc(fetch_data, encrypted_entry);
+
+		printf("Start To Store\n");
+
 		myClient->SendEncDoc(encrypted_entry);
 
+		printf("Start To Add\n");
 		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, keywords);
 
 		// free memory
@@ -109,7 +115,7 @@ void search()
 {
 
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	std::string s_keyword[2] = {"start", "plan"};
+	std::string s_keyword[2] = {"work", "plan"};
 
 	for (int s_i = 0; s_i < 2; s_i++)
 	{
@@ -133,6 +139,7 @@ int main()
 	orion = new Orion(myClient, KW, KC);
 
 	addDoc(1, 517401);
+	//addDoc(1, 10000);
 
 	// Simulate setup start flushing
 	printf("======== flush ========\n");
@@ -140,7 +147,7 @@ int main()
 
 	orion->writeToFile();
 
-	search();
+	//search();
 
 	// free omap and client and server
 	delete orion;
