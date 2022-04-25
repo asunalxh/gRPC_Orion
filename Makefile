@@ -6,7 +6,7 @@ Mysql_Link_Flags := -L/opt/lampp/lib -lmysqlclient
 
 ######## RocksDB Settings ########
 RocksDB_Link_Flags := -L/opt/rocksdb -lrocksdb -lpthread
-RocksDB_Include_Flags := -I/opt/grpc/include
+RocksDB_Include_Flags := -I/opt/rocksdb/include
 
 
 ######## gRPC Settings ########
@@ -57,7 +57,7 @@ Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags) $(Mysql_Link_Fl
 
 .PHONY: all clean
 
-all: $(Client_Target) $(Server_Target)
+all: $(Client_Target) $(Server_Target)git@github.com:asunalxh/gRPC_Orion.git
 
 $(PROTOS_PATH)/%.grpc.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(PROTOS_PATH) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
