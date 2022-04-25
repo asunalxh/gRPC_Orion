@@ -24,7 +24,7 @@ private:
 	unsigned char KW[ENC_KEY_SIZE] = {0};
 	unsigned char KC[ENC_KEY_SIZE] = {0};
 
-	int numLeaf = 22; // actual number of (w,id) supported ~ numleaf in worst case - or change to smaller to only 20 // then bucketCount = 8.3 mil
+	int numLeaf = 10; // actual number of (w,id) supported ~ numleaf in worst case - or change to smaller to only 20 // then bucketCount = 8.3 mil
 
 	OMAP *omap_search;
 	// OMAP *omap_update;

@@ -2,7 +2,7 @@
 #include "../common/data_type2.h"
 #include <map>
 #include <array>
-#include "RocksDBConnector.h"
+#include "../common/RocksDBConnector.h"
 
 class RAMStore
 {
@@ -10,16 +10,16 @@ class RAMStore
 	size_t size;
 	size_t emptyNodes; // should we init the 'emptyNodes' as leaf
 
-	DBConnector *conn = nullptr;
+	DBConnector<int, string> *conn = nullptr;
 
 public:
 	RAMStore(size_t num);
-	RAMStore(DBConnector *conn);
+	RAMStore(DBConnector<int, string> *conn);
 	~RAMStore();
 
 	BUCKET Read(size_t pos);
 	void Write(size_t pos, BUCKET b);
 
-	//void ReduceEmptyNumbers();
-	//size_t GetEmptySize();
+	// void ReduceEmptyNumbers();
+	// size_t GetEmptySize();
 };

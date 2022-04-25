@@ -65,7 +65,7 @@ $(PROTOS_PATH)/%.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 common/%.o: common/%.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
 
 Client/%.o: Client/%.cpp
 	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@

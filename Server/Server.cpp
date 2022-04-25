@@ -9,17 +9,17 @@ Server::Server(size_t blockNum)
 	M_I.clear();
 	M_c.clear();
 
-	db_search = new RocksDBConnector("./database/search");
-	db_update = new RocksDBConnector("./database/update");
-	db_info = new RocksDBConnector("./database/info");
+	db_search = new RocksDBConnector::IntMapper("./database/search");
+	db_update = new RocksDBConnector::IntMapper("./database/update");
+	db_info = new RocksDBConnector::StringMapper("./database/info");
 
-	//MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
-	//	"127.0.0.1",
-	//	"asunalxh",
-	//	"123456",
-	//	"test");
-	//db_raw_data = new MysqlConnector(mysql, "test");
-	db_raw_data = new RocksDBConnector("./database/raw");
+	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
+		"127.0.0.1",
+		"user",
+		"123456",
+		"test");
+	db_raw_data = new MysqlConnector::StringMapper(mysql, "test");
+	//db_raw_data = new RocksDBConnector::StringMapper("./database/raw");
 
 	data_search = new RAMStore(db_search);
 	data_update = new RAMStore(db_update);
