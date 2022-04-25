@@ -81,6 +81,7 @@ void addDoc(int start, int end)
 		if (i % 10000 == 0)
 		{
 			printf("Processing insertion %d\n", i);
+			orion->flush();
 		}
 	}
 }
