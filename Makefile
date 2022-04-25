@@ -1,11 +1,12 @@
 CXXFLAGS := -std=c++17
 
 ######## Mysql Settings ########
-Mysql_Include_Path := -I/opt/lampp/include
-Mysql_Link_Flags = -L/opt/lampp/lib -lmysqlclient
+Mysql_Include_Flags := -I/opt/lampp/include
+Mysql_Link_Flags := -L/opt/lampp/lib -lmysqlclient
 
 ######## RocksDB Settings ########
-RocksDB_Link_Flags = -L/opt/rocksdb -lrocksdb -lpthread
+RocksDB_Link_Flags := -L/opt/rocksdb -lrocksdb -lpthread
+RocksDB_Include_Flags := -I/opt/grpc/include
 
 
 ######## gRPC Settings ########
@@ -50,7 +51,7 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
-Include_Path := $(Mysql_Include_Path)
+Include_Path := $(Mysql_Include_Flags) $(RocksDB_Include_Flags)
 
 Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags) $(Mysql_Link_Flags)
 
