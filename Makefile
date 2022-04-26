@@ -79,6 +79,7 @@ $(Client_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Client_Object_F
 $(Server_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Server_Object_Files)
 	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
 
+
 clean:
 	@rm -f common/*.o common/*.pb.cc common/*.pb.h
 	@rm -f Client/*.o Server/*.o
