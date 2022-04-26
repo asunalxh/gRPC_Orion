@@ -136,7 +136,7 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC, false);
+	orion = new Orion(myClient, KW, KC);
 
 	// addDoc(1, 10);
 	addDoc(1, 517401);
