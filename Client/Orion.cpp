@@ -18,7 +18,7 @@
 #include "Omap.h"
 
 /*** setup */
-Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial) : UpdtCnt("database/UpdtCnt"), LastIND("LastIND")
+Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial) : UpdtCnt("database/UpdtCnt"), LastIND("database/LastIND")
 {
 	memcpy(this->KW, KW, ENC_KEY_SIZE);
 	memcpy(this->KC, KC, ENC_KEY_SIZE);
