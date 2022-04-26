@@ -18,7 +18,7 @@
 #include "Omap.h"
 
 /*** setup */
-Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial)
+Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial) : UpdtCnt("database/UpdtCnt"), LastIND("LastIND")
 {
 	memcpy(this->KW, KW, ENC_KEY_SIZE);
 	memcpy(this->KC, KC, ENC_KEY_SIZE);
@@ -33,7 +33,7 @@ Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, b
 
 Orion::~Orion()
 {
-	free(omap_search);
+	delete omap_search;
 	// free(omap_update);
 }
 
@@ -102,6 +102,7 @@ void Orion::flush()
 	{
 		printf("FLushing Processing batch omap_search\n");
 		omap_search->batchInsert(setupPairs2);
+		omap_search->storeInfo();
 		setupPairs2.clear();
 	}
 }
@@ -228,6 +229,8 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 		}
 	}
 
+	cout << "-------- TAG 1st --------\n";
+
 	vector<unsigned int> result = omap_search->batchSearch(search_key_series);
 
 	for (int j = 0; j < result.size(); j++)
@@ -239,20 +242,4 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 	free(k_w.content);
 
 	return result;
-}
-
-void Orion::writeToFile(std::string dir)
-{
-	ofstream out(dir + "/UpdtCnt.txt");
-	for (auto i = UpdtCnt.begin(); i != UpdtCnt.end(); i++)
-	{
-		out << i->first << ' ' << i->second << '\n';
-	}
-	out.close();
-	out.open(dir + "/LastIND.txt");
-	for (auto i = LastIND.begin(); i != LastIND.end(); i++)
-	{
-		out << i->first << ' ' << i->second << '\n';
-	}
-	out.close();
 }

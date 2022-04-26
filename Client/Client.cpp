@@ -183,7 +183,7 @@ string Client::GetEncDoc(string id)
 	int len;
 	string base64_str = resp.byte();
 
-	//std::cout << base64_str << '\n';
+	// std::cout << base64_str << '\n';
 
 	auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
 

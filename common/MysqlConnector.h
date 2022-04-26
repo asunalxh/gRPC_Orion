@@ -29,16 +29,18 @@ namespace MysqlConnector
 	{
 	public:
 		StringMapper(MYSQL *mysql, string table);
-		string Get(string id);
-		void Put(string id, string value);
+		bool Get(string id, string &value);
+		bool Put(string id, string value);
+		bool Delete(string id);
 	};
 
-	class CacheReader : public BaseConnector, public DBConnector<string, string>
+	class CacheReader : public BaseConnector, public DBConnector<int, string>
 	{
 	public:
 		CacheReader(MYSQL *mysql, string table, int cache_size);
-		string Get(int id);
-		void Put(int id, string value);
+		bool Get(int id, string &value);
+		bool Put(int id, string value);
+		bool Delete(int id);
 
 	private:
 		int cache_size;

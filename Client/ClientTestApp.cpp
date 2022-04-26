@@ -15,8 +15,6 @@
 
 // end for measurement
 
-#define ENCLAVE_FILE "CryptoEnclave.signed.so"
-
 Client *myClient;
 Orion *orion;
 
@@ -41,6 +39,20 @@ void initKey(unsigned char *key, string filename)
 	in.close();
 }
 
+void search()
+{
+
+	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
+	std::string s_keyword[] = {"start", "work", "plan", "set", "bitch"};
+
+	for (int s_i = 0; s_i < 5; s_i++)
+	{
+		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
+
+		orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
+	}
+}
+
 void addDoc(int start, int end)
 {
 	printf("======== Adding doc ========\n");
@@ -48,7 +60,7 @@ void addDoc(int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
-		printf("No.%d\n", i);
+		cout << ".";
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
 		auto keywords = myClient->ReadNextDoc(fetch_data);
@@ -80,10 +92,15 @@ void addDoc(int start, int end)
 		// do this one to flush doc by doc enclave to flush all documents in OMAP to server
 		if (i % 10000 == 0)
 		{
-			printf("Processing insertion %d\n", i);
-			orion->flush();
+			printf("\nProcessing insertion %d\n", i);
+			if (i % 100000 == 0)
+			{
+				orion->flush();
+				search();
+			}
 		}
 	}
+	printf("\nFinished Adding Doc\n");
 }
 
 void delDoc(int del_no)
@@ -105,21 +122,7 @@ void delDoc(int del_no)
 		// later need to free fetch_data
 	}
 
-	printf("Finish deleting all docs\n");
-}
-
-void search()
-{
-
-	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	std::string s_keyword[] = {"start", "work", "plan"};
-
-	for (int s_i = 0; s_i < 3; s_i++)
-	{
-		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
-
-		orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
-	}
+	printf("\nFinish deleting all docs\n");
 }
 
 int main()
@@ -133,18 +136,15 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC);
+	orion = new Orion(myClient, KW, KC, false);
 
-	addDoc(1, 517401);
 	// addDoc(1, 10);
+	addDoc(1, 517401);
 
-	// Simulate setup start flushing
 	printf("======== flush ========\n");
 	orion->flush();
 
-	orion->writeToFile();
-
-	// search();
+	search();
 
 	// free omap and client and server
 	delete orion;

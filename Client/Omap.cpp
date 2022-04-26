@@ -5,9 +5,6 @@
 #include "../common/data_type.h"
 #include "../common/data_type2.h"
 
-const std::string rootkey_id = "rootkey";
-const std::string rootpos_id = "rootpos";
-
 OMAP::OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Client *client, bool initial)
 {
 	treeHandler = new AVLTree(key, _numBucketLeaf, data_structure, client, initial);
@@ -15,14 +12,21 @@ OMAP::OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Cli
 
 	if (!initial)
 	{
-		rootKey = (const unsigned char *)myClient->ReadInfo(rootkey_id).c_str();
-		rootPos = stoi(myClient->ReadInfo(rootpos_id));
+		rootKey = (const unsigned char *)myClient->ReadInfo("rootkey").c_str();
+		rootPos = stoi(myClient->ReadInfo("rootpos"));
 	}
+}
+
+void OMAP::storeInfo()
+{
+	myClient->WriteInfo("rootkey", string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_256));
+	myClient->WriteInfo("rootpos", to_string(rootPos));
 }
 
 OMAP::~OMAP()
 {
-	free(treeHandler);
+
+	delete treeHandler;
 }
 
 unsigned int OMAP::find(Bid key)
@@ -94,9 +98,6 @@ void OMAP::batchInsert(map<Bid, unsigned int> pairs)
 			printf("Processing search batch %d\n", count);
 			treeHandler->finishOperation(false, rootKey, rootPos);
 			treeHandler->startOperation(true);
-
-			myClient->WriteInfo(rootkey_id, string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_256));
-			myClient->WriteInfo(rootpos_id, to_string(rootPos));
 		}
 	}
 	// treeHandler->finishOperation(false,rootKey, rootPos);

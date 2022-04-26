@@ -13,13 +13,13 @@ Server::Server(size_t blockNum)
 	db_update = new RocksDBConnector::IntMapper("./database/update");
 	db_info = new RocksDBConnector::StringMapper("./database/info");
 
-	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
-		"127.0.0.1",
-		"user",
-		"123456",
-		"test");
-	db_raw_data = new MysqlConnector::StringMapper(mysql, "test");
-	//db_raw_data = new RocksDBConnector::StringMapper("./database/raw");
+	// MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
+	//	"127.0.0.1",
+	//	"user",
+	//	"123456",
+	//	"test");
+	// db_raw_data = new MysqlConnector::StringMapper(mysql, "test");
+	db_raw_data = new RocksDBConnector::StringMapper("./database/raw");
 
 	data_search = new RAMStore(db_search);
 	data_update = new RAMStore(db_update);
@@ -39,7 +39,8 @@ grpc::Status Server::ReadInfo(ServerContext *context, const BytesMessage *req, B
 {
 	std::string key = req->byte();
 
-	std::string value = db_info->Get(key);
+	std::string value;
+	db_info->Get(key, value);
 	resp->set_byte(value);
 
 	return grpc::Status::OK;
@@ -142,9 +143,9 @@ grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPa
 	}
 	else
 	{
-		//int len;
-		//auto str = enc_base64((uint8_t *)enc_content.c_str(), enc_content.length(), &len);
-		//db_raw_data->Put(id, str);
+		// int len;
+		// auto str = enc_base64((uint8_t *)enc_content.c_str(), enc_content.length(), &len);
+		// db_raw_data->Put(id, str);
 
 		db_raw_data->Put(id, enc_content);
 	}
@@ -159,12 +160,13 @@ grpc::Status Server::Retrieve_Encrypted_Doc(ServerContext *context, const BytesM
 		resp->set_byte(R_Doc.at(key));
 	else
 	{
-		//int len;
-		//std::string base64_str = db_raw_data->Get(key);
-		//auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
-		//resp->set_byte(std::string((char *)value, len));
-
-		resp->set_byte(db_raw_data->Get(key));
+		// int len;
+		// std::string base64_str = db_raw_data->Get(key);
+		// auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
+		// resp->set_byte(std::string((char *)value, len));
+		string value;
+		db_raw_data->Get(key, value);
+		resp->set_byte(value);
 	}
 
 	return grpc::Status::OK;

@@ -9,6 +9,10 @@ using std::cout;
 namespace RocksDBConnector
 {
 
+	BaseConnector::BaseConnector(DB *db)
+	{
+		this->db = db;
+	}
 	BaseConnector::BaseConnector(string path)
 	{
 		Options options;
@@ -21,23 +25,34 @@ namespace RocksDBConnector
 		}
 	}
 
-	bool BaseConnector::GetValue(Slice key, string *value)
+	bool BaseConnector::SearchValue(Slice key, string *value)
 	{
 		rocksdb::Status status = db->Get(ReadOptions(), key, value);
 		if (!status.ok())
 		{
-			cout << "Get Value Error: " << status.ToString() << '\n';
+			//cout << "Get Value Error: " << status.ToString() << '\n';
 			return false;
 		}
 		return true;
 	}
 
-	bool BaseConnector::PutValue(Slice key, Slice value)
+	bool BaseConnector::InsertValue(Slice key, Slice value)
 	{
 		rocksdb::Status status = db->Put(WriteOptions(), key, value);
 		if (!status.ok())
 		{
 			cout << "Put Value Error: " << status.ToString() << '\n';
+			false;
+		}
+		return true;
+	}
+
+	bool BaseConnector::DeleteValue(Slice key)
+	{
+		rocksdb::Status status = db->Delete(WriteOptions(), key);
+		if (!status.ok())
+		{
+			cout << "Delete Value Error: " << status.ToString() << '\n';
 			false;
 		}
 		return true;
@@ -54,16 +69,19 @@ namespace RocksDBConnector
 	{
 	}
 
-	string StringMapper::Get(string key)
+	bool StringMapper::Get(string key, string &value)
 	{
-		string value;
-		this->GetValue(key, &value);
-		return value;
+		return this->SearchValue(key, &value);
 	}
 
-	void StringMapper::Put(string key, string value)
+	bool StringMapper::Put(string key, string value)
 	{
-		this->PutValue(Slice(key), Slice(value));
+		return this->InsertValue(Slice(key), Slice(value));
+	}
+
+	bool StringMapper::Delete(string key)
+	{
+		return this->DeleteValue(key);
 	}
 
 	// IntMapper
@@ -71,14 +89,44 @@ namespace RocksDBConnector
 	IntMapper::IntMapper(string path) : BaseConnector(path), DBConnector()
 	{
 	}
-	string IntMapper::Get(int key)
+	bool IntMapper::Get(int key, string &value)
 	{
-		string value;
-		this->GetValue(std::to_string(key), &value);
-		return value;
+		return this->SearchValue(std::to_string(key), &value);
 	}
-	void IntMapper::Put(int key, string value)
+	bool IntMapper::Put(int key, string value)
 	{
-		this->PutValue(Slice(std::to_string(key)), Slice(value));
+		return this->InsertValue(Slice(std::to_string(key)), Slice(value));
+	}
+
+	bool IntMapper::Delete(int key)
+	{
+		return this->DeleteValue(std::to_string(key));
+	}
+
+	// IntStorage
+
+	IntStorage::IntStorage(string path) : BaseConnector(path), DBMap()
+	{
+	}
+
+	bool IntStorage::Get(string key, int &value)
+	{
+		string str;
+		bool flag = this->SearchValue(key, &str);
+		if (flag)
+		{
+			value = std::stoi(str);
+			return true;
+		}
+		return false;
+	}
+	bool IntStorage::Put(string key, int value)
+	{
+		return this->InsertValue(key, std::to_string(value));
+	}
+
+	bool IntStorage::Delete(string key)
+	{
+		return this->DeleteValue(key);
 	}
 }

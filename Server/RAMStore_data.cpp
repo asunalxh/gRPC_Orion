@@ -10,7 +10,7 @@ RAMStore::RAMStore(size_t count)
 {
 }
 
-RAMStore::RAMStore(DBConnector<int,string> *conn)
+RAMStore::RAMStore(DBConnector<int, string> *conn)
 {
 	this->conn = conn;
 }
@@ -21,18 +21,28 @@ RAMStore::~RAMStore()
 
 BUCKET RAMStore::Read(size_t pos)
 {
-	if (conn == NULL)
+	if (conn == NULL){
+		cout << "read with map\n";
 		return data.at(pos);
-
-	string value = conn->Get(pos);
-	return StringToBucket(value);
+	}
+		
+	string value;
+	if (conn->Get(pos, value))
+	{
+		return StringToBucket(value);
+	}
+	return BUCKET();
 }
 
 void RAMStore::Write(size_t pos, BUCKET b)
 {
-	if (conn == NULL)
+	if (conn == NULL){
+		cout << "write with map\n";
 		data[pos] = b;
-	conn->Put(pos, BucketToString(b));
+	}
+		
+	else
+		conn->Put(pos, BucketToString(b));
 }
 
 // void RAMStore::ReduceEmptyNumbers()

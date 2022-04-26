@@ -67,16 +67,19 @@ namespace MysqlConnector
 	{
 	}
 
-	string StringMapper::Get(string key)
+	bool StringMapper::Get(string key, string &value)
 	{
-		string value;
-		SearchValue(key, value);
-		return value;
+		return SearchValue(key, value);
 	}
 
-	void StringMapper::Put(string key, string value)
+	bool StringMapper::Put(string key, string value)
 	{
-		InsertValue(key, value);
+		return InsertValue(key, value);
+	}
+
+	bool StringMapper::Delete(string id)
+	{
+		return true;
 	}
 
 	// CacheReader
@@ -87,11 +90,12 @@ namespace MysqlConnector
 		cache.resize(cache_size);
 	}
 
-	string CacheReader::Get(int id)
+	bool CacheReader::Get(int id, string &value)
 	{
 		if (id <= Last_End_Id && id > Last_End_Id - cache_size)
 		{
-			return cache[(id - 1) % cache_size];
+			value = cache[(id - 1) % cache_size];
+			return true;
 		}
 
 		int start = id - (id - 1) % cache_size;
@@ -109,15 +113,27 @@ namespace MysqlConnector
 				cache[i] = string(row[0]);
 				i++;
 			}
+			mysql_free_result(res);
+			this->Last_End_Id = end;
+
+			if (i > (id - 1) % cache_size)
+			{
+				value = cache[(id - 1) % cache_size];
+				return true;
+			}
 		}
-		mysql_free_result(res);
-		this->Last_End_Id = end;
-		return cache[(id - 1) % cache_size];
+
+		return false;
 	}
 
-	void CacheReader::Put(int id, string value)
+	bool CacheReader::Put(int id, string value)
 	{
-		InsertValue(std::to_string(id), value);
+		return InsertValue(std::to_string(id), value);
+	}
+
+	bool CacheReader::Delete(int id)
+	{
+		return true;
 	}
 
 	// common
