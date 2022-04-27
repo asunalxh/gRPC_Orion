@@ -4,6 +4,7 @@
 #include "Oram.h"
 #include "../common/data_type.h"
 #include "../common/data_type2.h"
+#include <fstream>
 
 OMAP::OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Client *client, bool initial)
 {
@@ -15,6 +16,16 @@ OMAP::OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Cli
 	{
 		rootKey = (const unsigned char *)myClient->ReadInfo("rootkey", data_structure).c_str();
 		rootPos = stoi(myClient->ReadInfo("rootpos", data_structure));
+
+		// std::ifstream in("OmapInfo_" + to_string(data_structure));
+		// string base64_str;
+		// in >> this->rootPos >> base64_str;
+		// in.close();
+
+		// int len;
+		// auto temp = dec_base64(base64_str.c_str(), base64_str.length(), &len);
+		// this->rootKey = temp;
+		// delete[] temp;
 	}
 }
 
@@ -22,6 +33,11 @@ void OMAP::storeInfo()
 {
 	myClient->WriteInfo("rootkey", string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_256), data_structure);
 	myClient->WriteInfo("rootpos", to_string(rootPos), data_structure);
+	// std::ofstream out("OmapInfo_" + to_string(data_structure));
+	// int len;
+	// auto temp = dec_base64((const char*)rootKey.key,ENTRY_HASH_KEY_LEN_256,&len);
+	// out << rootPos << '\n' << temp;
+	// delete[] temp;
 }
 
 OMAP::~OMAP()
