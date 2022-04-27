@@ -7,14 +7,15 @@
 class Orion
 {
 public:
-	Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial = true);
+	Orion(Client *client, const unsigned char *KW, const unsigned char *KC, int numLeaf, bool initial = true);
 	~Orion();
 
-	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 	void flush();
+	void batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
+
+	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 	vector<unsigned int> search(const char *keyword, size_t keyword_len);
-
 
 private:
 	// change to malloc for tokens , run ulimit -s 65536 to set stack size to
@@ -27,16 +28,16 @@ private:
 	int numLeaf = 22; // actual number of (w,id) supported ~ numleaf in worst case - or change to smaller to only 20 // then bucketCount = 8.3 mil
 
 	OMAP *omap_search;
-	// OMAP *omap_update;
+	OMAP *omap_update;
 
 	std::map<Bid, unsigned int> setupPairs1; // for omap update
 	std::map<Bid, unsigned int> setupPairs2; // for omap search
 
-	//std::unordered_map<std::string, int> UpdtCnt;		   // this is the ST[w]-> state
-	//std::unordered_map<std::string, unsigned int> LastIND; // this is the ;astIND[w]-> most recently added id
+	// std::unordered_map<std::string, int> UpdtCnt;		   // this is the ST[w]-> state
+	// std::unordered_map<std::string, unsigned int> LastIND; // this is the ;astIND[w]-> most recently added id
 
-	RocksDBConnector::IntStorage UpdtCnt;	// this is the ST[w]-> state
-	RocksDBConnector::IntStorage LastIND;	// this is the ;astIND[w]-> most recently added id
+	RocksDBConnector::IntStorage UpdtCnt; // this is the ST[w]-> state
+	RocksDBConnector::IntStorage LastIND; // this is the ;astIND[w]-> most recently added id
 
 	Client *client;
 };

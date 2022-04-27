@@ -45,9 +45,8 @@ private:
 	RAMStore *data_search;
 	RAMStore *data_update;
 
-	DBConnector<int, string> *db_update;
-	DBConnector<int, string> *db_search;
-	DBConnector<string, string> *db_info;
+	DBConnector<string, string> *db_update;
+	DBConnector<string, string> *db_search;
 	DBConnector<string, string> *db_raw_data = nullptr;
 };
 

@@ -44,8 +44,8 @@ public:
 	void SendEncDoc(entry *entry);
 	string GetEncDoc(string id);
 
-	string ReadInfo(string key);
-	void WriteInfo(string key,string value);
+	string ReadInfo(string key, int data_structure);
+	void WriteInfo(string key, string value, int data_structure);
 
 private:
 	unsigned char KF[ENC_KEY_SIZE];

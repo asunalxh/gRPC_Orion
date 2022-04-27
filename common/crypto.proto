@@ -17,11 +17,13 @@ message OramBucketMessage{
 
 message BytesMessage{
     bytes byte = 1;
+    int64 data_structure = 2;
 }
 
 message BytesPairMessage{
 	bytes key =  1;
 	bytes value = 2;
+    int64 data_structure = 3;
 }
 
 

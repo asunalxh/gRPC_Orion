@@ -61,8 +61,8 @@ void clear(uint8_t *dest, uint32_t len)
 //	return result;
 //}
 
-int enc_aes_gcm(const unsigned char *plaintext, int plaintext_len,
-				const unsigned char *key,
+int enc_aes_gcm(const unsigned char *key,
+				const unsigned char *plaintext, int plaintext_len,
 				unsigned char *ciphertext)
 {
 
@@ -85,9 +85,10 @@ int enc_aes_gcm(const unsigned char *plaintext, int plaintext_len,
 	return ciphertext_len;
 }
 
-int dec_aes_gcm(unsigned char *ciphertext, int ciphertext_len,
-				const unsigned char *key,
-				unsigned char *plaintext)
+int dec_aes_gcm(
+	const unsigned char *key,
+	unsigned char *ciphertext, int ciphertext_len,
+	unsigned char *plaintext)
 {
 	EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
 	int plaintext_len = 0, final_len = 0;

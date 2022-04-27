@@ -45,7 +45,7 @@ void search()
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
 	std::string s_keyword[] = {"start", "work", "plan", "set", "bitch"};
 
-	for (int s_i = 0; s_i < 5; s_i++)
+	for (int s_i = 0; s_i < 4; s_i++)
 	{
 		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
 
@@ -90,14 +90,9 @@ void addDoc(int start, int end)
 		free(encrypted_entry);
 
 		// do this one to flush doc by doc enclave to flush all documents in OMAP to server
-		if (i % 10000 == 0)
+		if (i % 1000 == 0)
 		{
 			printf("\nProcessing insertion %d\n", i);
-			if (i % 100000 == 0)
-			{
-				orion->flush();
-				search();
-			}
 		}
 	}
 	printf("\nFinished Adding Doc\n");
@@ -136,13 +131,16 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC);
+	orion = new Orion(myClient, KW, KC, 22);
 
-	// addDoc(1, 10);
-	addDoc(1, 517401);
+	addDoc(1, 10);
+	// addDoc(1, 517401);
 
-	printf("======== flush ========\n");
 	orion->flush();
+
+	search();
+
+	delDoc(2);
 
 	search();
 

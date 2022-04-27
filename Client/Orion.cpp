@@ -18,47 +18,42 @@
 #include "Omap.h"
 
 /*** setup */
-Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, bool initial) : UpdtCnt("database/UpdtCnt"), LastIND("database/LastIND")
+Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, int numLeaf, bool initial) : UpdtCnt("database/UpdtCnt"), LastIND("database/LastIND")
 {
 	memcpy(this->KW, KW, ENC_KEY_SIZE);
 	memcpy(this->KC, KC, ENC_KEY_SIZE);
 
 	this->client = client;
+	this->numLeaf = numLeaf;
 
 	// 1: omap search
 	// 2: omap update
 	omap_search = new OMAP(KC, pow(2, numLeaf), 1, client, initial); // 1024
-																	 // omap_update = new OMAP(KW,pow(2,numLeaf),2);//1024
+	omap_update = new OMAP(KW, pow(2, numLeaf), 2, client, initial); // 1024
 }
 
 Orion::~Orion()
 {
 	delete omap_search;
-	// free(omap_update);
+	delete omap_update;
 }
 
-// this is to run in SETUP
 void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
 {
 
 	// parse content to keywords splited by comma
-	// std::vector<std::string> wordList;
-	// wordList = wordTokenize(content, content_length);
 
 	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
 	{
 
 		std::string word = (*it);
-
 		entryKey k_w;
-
 		k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + word.length();
-		k_w.content = (char *)malloc(k_w.content_length + 1);
-		enc_aes_gcm((unsigned char *)word.c_str(), word.length(), KW, (unsigned char *)k_w.content);
+		k_w.content = (char *)malloc(k_w.content_length);
+		enc_aes_gcm(KW, (const unsigned char *)word.c_str(), word.length(), (unsigned char *)k_w.content);
 
 		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
 		Hash_SHA256(k_w.content, k_w.content_length, doc_id, id_length, k_id);
-
 		Bid key_kid = k_id;
 
 		if (UpdtCnt.count(word) == 0)
@@ -69,20 +64,108 @@ void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 		// insert into the state map for the keyword with (F(w||id),state) where F(w||id) = k_id
 		UpdtCnt[word]++;
 		setupPairs1[key_kid] = UpdtCnt[word];
-
 		// insert into the index map for(F(w||state),id) where F(w||state) = k_c
 		unsigned char *k_c = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
 		std::string c_str = std::to_string(UpdtCnt[word]);
 		char const *c_char = c_str.c_str();
 		Hash_SHA256(k_w.content, k_w.content_length, c_char, c_str.length(), k_c);
-
 		Bid key_kc = k_c;
 		setupPairs2[key_kc] = docInt;
-
 		// update in LastIND
 		LastIND[word] = docInt;
 
 		free(k_c);
+		free(k_id);
+		free(k_w.content);
+		//// insert batch to Omap Update and Omap Search
+		//if (setupPairs1.size() % OMAP_INSERT_BATCH_SIZE == 0)
+		//{
+		//	// batch_no++;
+		//	// printf("Processing batch omap_update %d", batch_no);
+		//	omap_update->batchInsert(setupPairs1);
+		//	omap_update->storeInfo();
+		//	setupPairs1.clear();
+		//}
+		//if (setupPairs2.size() % OMAP_INSERT_BATCH_SIZE == 0)
+		//{
+		//	// printf("Processing batch omap_search %d", batch_no);
+		//	omap_search->batchInsert(setupPairs2);
+		//	omap_search->storeInfo();
+		//	setupPairs2.clear();
+		//}
+	}
+}
+
+void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
+{
+
+	// parse content to keywords splited by comma
+
+	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
+	{
+
+		std::string word = (*it);
+		entryKey k_w;
+		k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + word.length();
+		k_w.content = (char *)malloc(k_w.content_length);
+		enc_aes_gcm(KW, (const unsigned char *)word.c_str(), word.length(), (unsigned char *)k_w.content);
+		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
+		Hash_SHA256(k_w.content, k_w.content_length, doc_id, id_length, k_id);
+		Bid key_kid = k_id;
+
+		unsigned int updt_cnt = omap_update->find(key_kid);
+		if (updt_cnt > 0)
+		{
+
+			omap_update->insert(key_kid, -1);
+			UpdtCnt[word]--;
+			if (UpdtCnt[word] > 0)
+			{
+				if (UpdtCnt[word] + 1 != updt_cnt) // it 's not the same, then recycle this update_cnt for the latest Ind
+				{
+					// create new kid from the F(w||lastest ind)
+					unsigned char *cur_k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
+					// retrieve the lasted ind
+					std::string fileName = std::to_string(LastIND[word]);
+					// convert fileId to char* and record length
+					int doc_id_size = fileName.length() + 1;
+
+					char *latest_doc_id = (char *)malloc(doc_id_size);
+					memcpy(latest_doc_id, fileName.c_str(), doc_id_size);
+
+					Hash_SHA256(k_w.content, k_w.content_length, latest_doc_id, doc_id_size, cur_k_id);
+
+					// convert to bidKey
+					Bid cur_key_kid = cur_k_id;
+
+					// insert into omap update with this key
+					omap_update->insert(cur_key_kid, updt_cnt);
+					// insert into the index map for(F(w||deleted state),latest id) where F(w||deleted state) = k_c
+					unsigned char *k_c = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
+					std::string c_str = std::to_string(updt_cnt);
+					char const *c_char = c_str.c_str();
+					Hash_SHA256(k_w.content, k_w.content_length, c_char, c_str.length(), k_c);
+					Bid key_kc = k_c;
+					omap_search->insert(key_kc, LastIND[word]);
+					free(k_c);
+					free(latest_doc_id);
+					free(cur_k_id);
+				}
+				// then retrieve the id of the latested update (w, and the latest state) to assign to LastIND
+				unsigned char *k_c_new = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
+				std::string c_str_new = std::to_string(UpdtCnt[word]);
+				char const *c_char_new = c_str_new.c_str();
+				Hash_SHA256(k_w.content, k_w.content_length, c_char_new, c_str_new.length(), k_c_new);
+				Bid key_kc_new = k_c_new;
+				unsigned int latestDocId = omap_search->find(key_kc_new);
+				LastIND[word] = latestDocId;
+				free(k_c_new);
+			}
+			else
+			{
+				LastIND.erase(word);
+			}
+		}
 
 		free(k_id);
 		free(k_w.content);
@@ -91,12 +174,13 @@ void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 
 void Orion::flush()
 {
-	// if(setupPairs1.size() > 0){
-	//      printf("FLushing Processing batch omap_update");
-	//      omap_update->batchInsert(setupPairs1);
-	//      setupPairs1.clear();
-	//
-	//  }
+	if (setupPairs1.size() > 0)
+	{
+		printf("FLushing Processing batch omap_update");
+		omap_update->batchInsert(setupPairs1);
+		omap_search->storeInfo();
+		setupPairs1.clear();
+	}
 
 	if (setupPairs2.size() > 0)
 	{
@@ -107,8 +191,9 @@ void Orion::flush()
 	}
 }
 
+
 // this is in batch in SETUP
-void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
+void Orion::batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
 {
 
 	// parse content to keywords splited by comma
@@ -124,7 +209,7 @@ void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 
 		k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + word.length();
 		k_w.content = (char *)malloc(k_w.content_length + 1);
-		enc_aes_gcm((unsigned char *)word.c_str(), word.length(), KW, (unsigned char *)k_w.content);
+		enc_aes_gcm(KW, (unsigned char *)word.c_str(), word.length(), (unsigned char *)k_w.content);
 
 		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
 		Hash_SHA256(k_w.content, k_w.content_length, doc_id, id_length, k_id);
@@ -207,7 +292,7 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 
 	k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + keyword_len;
 	k_w.content = (char *)malloc(k_w.content_length + 1);
-	enc_aes_gcm((unsigned char *)keyword, keyword_len, KW, (unsigned char *)k_w.content);
+	enc_aes_gcm(KW, (unsigned char *)keyword, keyword_len, (unsigned char *)k_w.content);
 
 	std::vector<Bid> search_key_series;
 

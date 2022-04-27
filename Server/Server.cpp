@@ -9,9 +9,8 @@ Server::Server(size_t blockNum)
 	M_I.clear();
 	M_c.clear();
 
-	db_search = new RocksDBConnector::IntMapper("./database/search");
-	db_update = new RocksDBConnector::IntMapper("./database/update");
-	db_info = new RocksDBConnector::StringMapper("./database/info");
+	db_search = new RocksDBConnector::StringMapper("./database/search");
+	db_update = new RocksDBConnector::StringMapper("./database/update");
 
 	// MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
 	//	"127.0.0.1",
@@ -38,9 +37,13 @@ Server::~Server()
 grpc::Status Server::ReadInfo(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
 {
 	std::string key = req->byte();
-
+	int data_structure = req->data_structure();
 	std::string value;
-	db_info->Get(key, value);
+	if (data_structure == 1)
+		db_search->Get(key, value);
+	else
+		db_update->Get(key, value);
+
 	resp->set_byte(value);
 
 	return grpc::Status::OK;
@@ -50,7 +53,12 @@ grpc::Status Server::WriteInfo(ServerContext *context, const BytesPairMessage *r
 {
 	std::string key = req->key();
 	std::string value = req->value();
-	db_info->Put(key, value);
+	int data_structure = req->data_structure();
+
+	if (data_structure == 1)
+		db_search->Put(key, value);
+	else
+		db_update->Put(key, value);
 
 	return grpc::Status::OK;
 }

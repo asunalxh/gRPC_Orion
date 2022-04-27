@@ -12,6 +12,7 @@ private:
 	Bid rootKey;
 	unsigned int rootPos;
 	Client* myClient;
+	int data_structure;
 
 public:
 	OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Client *client, bool initial);

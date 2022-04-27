@@ -59,7 +59,7 @@ Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure
 
 			// encrypt the bucket here before calling the ocall, maybe with the new len?
 			unsigned char *enc_bucket_src = (unsigned char *)malloc(enc_bucketSize);
-			enc_aes_gcm(bucket_src, bucketSize, KC, enc_bucket_src);
+			enc_aes_gcm(KC, bucket_src, bucketSize, enc_bucket_src);
 
 			// should be bucket batch later for time saving
 			client->PutData(data_structure, i, enc_bucket_src, enc_bucketSize);
@@ -140,7 +140,7 @@ void Oram::FetchPath(unsigned int leaf)
 		visitedOcallsRead++;
 
 		// decrypt the bucket here
-		dec_aes_gcm(enc_bucket_str_tmp, enc_bucketSize, KC, bucket_str_tmp);
+		dec_aes_gcm(KC, enc_bucket_str_tmp, enc_bucketSize, bucket_str_tmp);
 
 		// free memory of the enc_bucket_tmp
 		free(enc_bucket_str_tmp);
@@ -246,7 +246,7 @@ void Oram::WritePath(unsigned int leaf, int d)
 
 		// encrypt the bucket here before writing it to ocall
 		unsigned char *enc_bucket_src = (unsigned char *)malloc(enc_bucketSize * sizeof(unsigned char));
-		enc_aes_gcm(bucket_src, bucketSize, KC, enc_bucket_src);
+		enc_aes_gcm(KC, bucket_src, bucketSize, enc_bucket_src);
 
 		client->PutData(data_structure, node, enc_bucket_src, enc_bucketSize);
 

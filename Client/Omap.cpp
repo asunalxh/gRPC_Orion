@@ -9,18 +9,19 @@ OMAP::OMAP(const unsigned char *key, int _numBucketLeaf, int data_structure, Cli
 {
 	treeHandler = new AVLTree(key, _numBucketLeaf, data_structure, client, initial);
 	this->myClient = client;
+	this->data_structure = data_structure;
 
 	if (!initial)
 	{
-		rootKey = (const unsigned char *)myClient->ReadInfo("rootkey").c_str();
-		rootPos = stoi(myClient->ReadInfo("rootpos"));
+		rootKey = (const unsigned char *)myClient->ReadInfo("rootkey", data_structure).c_str();
+		rootPos = stoi(myClient->ReadInfo("rootpos", data_structure));
 	}
 }
 
 void OMAP::storeInfo()
 {
-	myClient->WriteInfo("rootkey", string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_256));
-	myClient->WriteInfo("rootpos", to_string(rootPos));
+	myClient->WriteInfo("rootkey", string((char *)rootKey.key, ENTRY_HASH_KEY_LEN_256), data_structure);
+	myClient->WriteInfo("rootpos", to_string(rootPos), data_structure);
 }
 
 OMAP::~OMAP()
