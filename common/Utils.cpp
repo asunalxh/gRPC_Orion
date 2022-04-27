@@ -107,13 +107,14 @@ int dec_aes_gcm(unsigned char *ciphertext, int ciphertext_len,
 
 void Hash_SHA256(const void *key, int key_len, const void *msg, int msg_len, void *value)
 {
-	 unsigned int len;
-	 HMAC_CTX *ctx = HMAC_CTX_new();
-	 HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), NULL);
-	 HMAC_Update(ctx, (unsigned char *)msg, msg_len);
-	 HMAC_Final(ctx, (unsigned char *)value, &len);
+	unsigned int len;
+	HMAC_CTX *ctx = HMAC_CTX_new();
+	HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), NULL);
+	HMAC_Update(ctx, (unsigned char *)msg, msg_len);
+	HMAC_Final(ctx, (unsigned char *)value, &len);
+	HMAC_CTX_free(ctx);
 
-	//enc_aes_gcm((uint8_t *)msg, msg_len, (uint8_t *)key, (uint8_t *)value);
+	// enc_aes_gcm((uint8_t *)msg, msg_len, (uint8_t *)key, (uint8_t *)value);
 }
 
 std::string BucketToString(BUCKET bucket)
@@ -146,12 +147,14 @@ char *enc_base64(const unsigned char *inputBuffer, int inputLen, int *outLen)
 	EVP_ENCODE_CTX *ctx = EVP_ENCODE_CTX_new();
 	int base64Len = (((inputLen + 2) / 3) * 4) + 1; // Base64 text length
 	int pemLen = base64Len + base64Len / 64;		// PEM adds a newline every 64 bytes
-	//char *base64 = new char[pemLen];
+	// char *base64 = new char[pemLen];
 	char *base64 = new char[inputLen * 2];
 	int result, tmpLen;
 	EVP_EncodeInit(ctx);
 	EVP_EncodeUpdate(ctx, (unsigned char *)base64, &result, (unsigned char *)inputBuffer, inputLen);
 	EVP_EncodeFinal(ctx, (unsigned char *)&base64[result], &tmpLen);
+	EVP_ENCODE_CTX_free(ctx);
+
 	result += tmpLen;
 	*outLen = result;
 	return base64;
@@ -165,6 +168,7 @@ unsigned char *dec_base64(const char *input, int length, int *outLen)
 	EVP_DecodeInit(ctx);
 	EVP_DecodeUpdate(ctx, (unsigned char *)orgBuf, &result, (unsigned char *)input, length);
 	EVP_DecodeFinal(ctx, (unsigned char *)&orgBuf[result], &tmpLen);
+	EVP_ENCODE_CTX_free(ctx);
 	result += tmpLen;
 	*outLen = result;
 	return orgBuf;
