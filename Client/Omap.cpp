@@ -25,7 +25,7 @@ void OMAP::storeInfo()
 
 OMAP::~OMAP()
 {
-
+	this->storeInfo();
 	delete treeHandler;
 }
 
