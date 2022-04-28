@@ -63,7 +63,7 @@ void addDoc(int start, int end)
 		cout << ".";
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
-		auto keywords = myClient->ReadNextDoc(fetch_data);
+		auto keywords = myClient->ReadNextDoc(i, fetch_data);
 
 		// encrypt and send to Server
 		entry *encrypted_entry;
@@ -137,12 +137,6 @@ int main()
 	// addDoc(1, 517401);
 
 	orion->flush();
-
-	search();
-
-	delDoc(2);
-
-	search();
 
 	// free omap and client and server
 	delete orion;

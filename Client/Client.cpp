@@ -25,14 +25,11 @@ void Client::getKFValue(unsigned char *outKey)
 	memcpy(outKey, KF, ENC_KEY_SIZE);
 }
 
-std::vector<string> Client::ReadNextDoc(docContent *content)
+std::vector<string> Client::ReadNextDoc(int file_reading_counter, docContent *content)
 {
 	std::ifstream inFile;
 	std::stringstream strStream;
 	// docContent content;
-
-	// increase counter
-	file_reading_counter += 1;
 
 	std::string fileName;
 	fileName = std::to_string(file_reading_counter);

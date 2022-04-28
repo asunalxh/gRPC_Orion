@@ -29,7 +29,7 @@ class Client
 {
 public:
 	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
-	std::vector<string> ReadNextDoc(docContent *fetch_data);
+	std::vector<string> ReadNextDoc(int file_reading_counter, docContent *fetch_data);
 	std::vector<string> Del_GivenDocIndex(const int del_index);
 
 	void getKFValue(unsigned char *outKey);
