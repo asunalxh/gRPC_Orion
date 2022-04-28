@@ -40,30 +40,29 @@ Node *AVLTree::newNode(Bid key, unsigned int value)
 Node *AVLTree::rightRotate(Node *y)
 {
 	Node *x = oram->ReadNode(y->leftID);
-	Node *T2;
-	if (x->rightID == empty_key)
-	{
-		T2 = newNode(empty_key, 0);
-	}
-	else
-	{
-		T2 = oram->ReadNode(x->rightID);
-	}
-
-	// printf("rightRotate: T2, key (%s), pos (%d)", (char*)T2->key.key, T2->pos);
+	Node *T2 = x->rightID == empty_key ? nullptr : oram->ReadNode(x->rightID);
 
 	// Perform rotation
 	x->rightID = y->key;
 	x->rightPos = y->pos;
-	y->leftID = T2->key;
-	y->leftPos = T2->pos;
+
+	if (T2 != nullptr)
+	{
+		y->leftID = T2->key;
+		y->leftPos = T2->pos;
+	}
+	else
+	{
+		y->leftID = empty_key;
+		y->leftPos = 0;
+	}
 
 	// Update heights
 	y->height = max(height(y->leftID, y->leftPos), height(y->rightID, y->rightPos)) + 1;
 	oram->WriteNode(y->key, y);
 	x->height = max(height(x->leftID, x->leftPos), height(x->rightID, x->rightPos)) + 1;
 	oram->WriteNode(x->key, x);
-	// Return new root
+	//  Return new root
 
 	// printf("Node with key(%s) updates its height with: %d", x->key.key, x->height);
 	// printf("Node with key(%s) updates its height with: %d", y->key.key, y->height);
@@ -74,30 +73,28 @@ Node *AVLTree::rightRotate(Node *y)
 Node *AVLTree::leftRotate(Node *x)
 {
 	Node *y = oram->ReadNode(x->rightID);
-	Node *T2;
-	if (y->leftID == empty_key)
-	{
-		T2 = newNode(empty_key, 0);
-	}
-	else
-	{
-		T2 = oram->ReadNode(y->leftID);
-	}
-
-	// printf("leftRotate: T2, key (%s), pos (%d)", (char*)T2->key.key, T2->pos);
+	Node *T2 = y->leftID == empty_key ? nullptr : oram->ReadNode(y->leftID);
 
 	// Perform rotation
 	y->leftID = x->key;
 	y->leftPos = x->pos;
-	x->rightID = T2->key;
-	x->rightPos = T2->pos;
+	if (T2 != nullptr)
+	{
+		x->rightID = T2->key;
+		x->rightPos = T2->pos;
+	}
+	else
+	{
+		x->rightID = empty_key;
+		x->rightPos = 0;
+	}
 
 	// Update heights
 	x->height = max(height(x->leftID, x->leftPos), height(x->rightID, x->rightPos)) + 1;
 	oram->WriteNode(x->key, x);
 	y->height = max(height(y->leftID, y->leftPos), height(y->rightID, y->rightPos)) + 1;
 	oram->WriteNode(y->key, y);
-	// Return new root
+	//  Return new root
 
 	// printf("Node with key(%s) updates its height with: %d", x->key.key, x->height);
 	// printf("Node with key(%s) updates its height with: %d", y->key.key, y->height);
@@ -123,6 +120,7 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 		return nnode->key;
 	}
 	Node *node = oram->ReadNode(rootKey, pos, pos);
+
 	// printf("Node with key(%s) , (pos: %d), (value: %d) is readed.", node->key.key,node->pos, node->value);
 
 	if (key < node->key)
