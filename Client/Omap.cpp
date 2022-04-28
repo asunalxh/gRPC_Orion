@@ -127,13 +127,9 @@ vector<unsigned int> OMAP::batchSearch(vector<Bid> keys)
 
 	treeHandler->startOperation(false);
 
-	Node *node = new Node();
-	node->key = rootKey;
-	node->pos = rootPos;
-
 	vector<Node *> resNodes;
 
-	treeHandler->batchSearch(node, keys, &resNodes);
+	treeHandler->batchSearch(rootKey, rootPos, keys, &resNodes);
 	for (Node *n : resNodes)
 	{
 		unsigned int res;

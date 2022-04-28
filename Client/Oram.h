@@ -89,6 +89,8 @@ private:
 
 	Client *client;
 
+	int updatePath(Bid key);
+
 public:
 	Oram(const unsigned char *treeKey, int _numBucketLeaf, int data_structure,
 		 Client *client, bool initial); //

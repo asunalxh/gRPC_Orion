@@ -314,8 +314,6 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 		}
 	}
 
-	cout << "-------- TAG 1st --------\n";
-
 	vector<unsigned int> result = omap_search->batchSearch(search_key_series);
 
 	for (int j = 0; j < result.size(); j++)

@@ -114,6 +114,7 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 	/* 1. Perform the normal BST rotation */
 	if (rootKey == empty_key)
 	{
+
 		Node *nnode = newNode(key, value);
 		// printf("insert: create node (key:%s pos %d, value: %d)",nnode->key.key,nnode->pos, nnode->value);
 		pos = oram->WriteNode(key, nnode);
@@ -140,7 +141,6 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 		// printf("Node with key(%s) is existed and updated with new value: %d", node->key.key, value);
 		return node->key;
 	}
-
 	/* 2. Update height of this ancestor node */
 	// printf("Start updating the height of node with key (%s)", node->key.key);
 
@@ -226,13 +226,13 @@ Node *AVLTree::search(Node *head, Bid key)
 		return head;
 }
 
-void AVLTree::batchSearch(Node *head, vector<Bid> keys, vector<Node *> *results)
+void AVLTree::batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, vector<Node *> *results)
 {
-	if (head == NULL || head->key == empty_key)
+	if (rootKey == empty_key)
 	{
 		return;
 	}
-	head = oram->ReadNode(head->key, head->pos, head->pos);
+	auto head = oram->ReadNode(rootKey, rootPos, rootPos);
 	bool getLeft = false, getRight = false;
 	vector<Bid> leftkeys, rightkeys;
 	for (Bid bid : keys)
@@ -254,11 +254,11 @@ void AVLTree::batchSearch(Node *head, vector<Bid> keys, vector<Node *> *results)
 	}
 	if (getLeft)
 	{
-		batchSearch(oram->ReadNode(head->leftID, head->leftPos, head->leftPos), leftkeys, results);
+		batchSearch(head->leftID, head->leftPos, leftkeys, results);
 	}
 	if (getRight)
 	{
-		batchSearch(oram->ReadNode(head->rightID, head->rightPos, head->rightPos), rightkeys, results);
+		batchSearch(head->rightID, head->rightPos, rightkeys, results);
 	}
 }
 

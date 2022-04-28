@@ -28,7 +28,7 @@ public:
 
     Bid insert(Bid rootKey, unsigned int& pos, Bid key, unsigned int value);//
     Node* search(Node* head, Bid key);//
-    void batchSearch(Node* head, vector<Bid> keys, vector<Node*>* results);
+    void batchSearch(Bid rootKey,unsigned int rootPos, vector<Bid> keys, vector<Node *> *results);
     void startOperation(bool batchWrite = false);
     void finishOperation(bool find, Bid& rootKey, unsigned int& rootPos);
 

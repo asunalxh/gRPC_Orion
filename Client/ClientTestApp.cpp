@@ -43,9 +43,9 @@ void search()
 {
 
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	std::string s_keyword[] = {"start", "work", "plan", "set", "bitch"};
+	std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
 
-	for (int s_i = 0; s_i < 4; s_i++)
+	for (int s_i = 0; s_i < 2; s_i++)
 	{
 		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
 
@@ -131,12 +131,21 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC, 22);
+	orion = new Orion(myClient, KW, KC, 14);
 
-	addDoc(1, 10);
+	addDoc(1, 5);
 	// addDoc(1, 517401);
 
 	orion->flush();
+
+	search();
+
+	delete orion;
+	orion = new Orion(myClient, KW, KC, 14, false);
+
+	addDoc(6, 10);
+	orion->flush();
+	search();
 
 	// free omap and client and server
 	delete orion;

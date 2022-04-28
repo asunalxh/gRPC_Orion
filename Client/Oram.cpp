@@ -115,7 +115,6 @@ std::vector<Bid> Oram::GetIntersectingBlocks(int x, int curDepth)
 
 void Oram::FetchPath(unsigned int leaf)
 { //
-
 	readCnt++;
 	unsigned char bucket_str_tmp[bucketSize]; // temp buffer for fetching bucket from ocall
 
@@ -288,10 +287,7 @@ void Oram::Access(Bid bid, Node *&node)
 
 	// printf("Cache size before Access %d", cache.size());
 
-	if (!batchWrite)
-	{
-		FetchPath(node->pos);
-	}
+	FetchPath(node->pos);
 	WriteData(bid, node);
 	if (find(leafList.begin(), leafList.end(), node->pos) == leafList.end())
 	{
@@ -366,6 +362,29 @@ int Oram::WriteNode(Bid bid, Node *node)
 	}
 }
 
+int Oram::updatePath(Bid key)
+{
+	if (this->modified.count(key))
+	{
+		cache[key]->pos = this->RandomPath();
+		FetchPath(cache[key]->pos);
+	}
+	if (cache[key]->leftID != empty_key && cache.count(cache[key]->leftID))
+	{
+		cache[key]->leftPos = updatePath(cache[key]->leftID);
+	}
+	if (cache[key]->rightID != empty_key && cache.count(cache[key]->rightID))
+	{
+		cache[key]->rightPos = updatePath(cache[key]->rightID);
+	}
+
+	if (std::find(leafList.begin(), leafList.end(), cache[key]->pos) == leafList.end())
+	{
+		leafList.push_back(cache[key]->pos);
+	}
+	return cache[key]->pos;
+}
+
 void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 {
 
@@ -398,7 +417,7 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 		}
 	}
 
-	// updating the binary tree positions
+	//  updating the binary tree positions
 	for (unsigned int i = 0; i <= depth + 2; i++)
 	{
 		for (auto t : cache)
@@ -409,6 +428,7 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 				if (modified.count(tmp->key))
 				{
 					tmp->pos = RandomPath();
+					FetchPath(tmp->pos);
 				}
 				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0)
 				{
@@ -418,11 +438,20 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 				{
 					tmp->rightPos = cache[tmp->rightID]->pos;
 				}
+
+				if (std::find(leafList.begin(), leafList.end(), tmp->pos) == leafList.end())
+				{
+					leafList.push_back(tmp->pos);
+				}
 			}
 		}
 	}
+
+	// updatePath(rootKey);
 	if (cache[rootKey] != NULL)
 		rootPos = cache[rootKey]->pos;
+
+	// printf("start cache size : %d \n", cache.size());
 
 	for (int d = depth; d >= 0; d--)
 	{
@@ -435,6 +464,7 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 	leafList.clear();
 	modified.clear();
 
+	printf("last cache size : %d \n", cache.size());
 	// printf("OcallWrite ( %d), ocallRead ( %d)\n", visitedOcallsWrite, visitedOcallsRead);
 }
 
