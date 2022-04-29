@@ -206,21 +206,21 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 	return node->key;
 }
 
-Node *AVLTree::search(Node *head, Bid key)
+Node *AVLTree::search(Bid rootKey, unsigned int rootPos, Bid key)
 {
 	// printf("AVLTree::start searching");
 
-	if (head == NULL || head->key == empty_key)
-		return head;
+	if (rootKey == empty_key)
+		return nullptr;
 
-	head = oram->ReadNode(head->key, head->pos);
+	Node *head = oram->ReadNode(rootKey, rootPos);
 	if (head->key > key)
 	{
-		return search(oram->ReadNode(head->leftID, head->leftPos), key);
+		return search(head->leftID, head->leftPos, key);
 	}
 	else if (head->key < key)
 	{
-		return search(oram->ReadNode(head->rightID, head->rightPos), key);
+		return search(head->rightID, head->rightPos, key);
 	}
 	else
 		return head;

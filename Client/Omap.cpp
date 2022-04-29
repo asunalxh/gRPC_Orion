@@ -55,11 +55,8 @@ unsigned int OMAP::find(Bid key)
 		return 0;
 	}
 
-	treeHandler->startOperation(false);
-	Node *node = new Node();
-	node->key = rootKey;
-	node->pos = rootPos;
-	auto resNode = treeHandler->search(node, key);
+	treeHandler->startOperation(false, true);
+	auto resNode = treeHandler->search(rootKey, rootPos, key);
 	unsigned int res = 0;
 	if (resNode != NULL)
 	{
@@ -72,7 +69,7 @@ unsigned int OMAP::find(Bid key)
 void OMAP::insert(Bid key, unsigned int value)
 {
 
-	treeHandler->startOperation(false);
+	treeHandler->startOperation(false, true);
 	Bid empty_key;
 	if (rootKey == empty_key)
 	{

@@ -6,8 +6,6 @@
 Server::Server(size_t blockNum)
 {
 	R_Doc.clear();
-	M_I.clear();
-	M_c.clear();
 
 	db_search = new RocksDBConnector::StringMapper("./database/search");
 	db_update = new RocksDBConnector::StringMapper("./database/update");
@@ -18,7 +16,7 @@ Server::Server(size_t blockNum)
 	//	"123456",
 	//	"test");
 	// db_raw_data = new MysqlConnector::StringMapper(mysql, "test");
-	db_raw_data = new RocksDBConnector::StringMapper("./database/raw");
+	db_raw_data = new RocksDBConnector::IntMapper("./database/raw");
 
 	data_search = new RAMStore(db_search);
 	data_update = new RAMStore(db_update);
@@ -27,8 +25,6 @@ Server::Server(size_t blockNum)
 Server::~Server()
 {
 	R_Doc.clear();
-	M_I.clear();
-	M_c.clear();
 
 	delete data_search;
 	delete data_update;
@@ -100,81 +96,33 @@ grpc::Status Server::PutData(ServerContext *context, const OramBucketMessage *re
 	return grpc::Status::OK;
 }
 
-// display utilities
-void Server::Display_Repo()
+grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const DocMessage *req, GeneralMessage *resp)
 {
 
-	printf("Display data in Repo\n");
-	for (auto it = R_Doc.begin(); it != R_Doc.end(); ++it)
-	{
-		printf("Cipher\n");
-		printf("%s\n", (it->first).c_str());
-		print_bytes((uint8_t *)(it->second).c_str(), (uint32_t)it->second.length());
-	}
-}
-
-void Server::Display_M_I()
-{
-
-	std::unordered_map<std::string, std::string>::iterator it;
-	printf("Print data in M_I\n");
-	for (it = M_I.begin(); it != M_I.end(); ++it)
-	{
-		printf("u \n");
-		print_bytes((uint8_t *)(it->first).c_str(), (uint32_t)it->first.length());
-		printf("v \n");
-		print_bytes((uint8_t *)(it->second).c_str(), (uint32_t)it->second.length());
-	}
-}
-
-void Server::Display_M_c()
-{
-	std::unordered_map<std::string, std::string>::iterator it;
-	printf("Print data in M_c\n");
-	for (it = M_c.begin(); it != M_c.end(); ++it)
-	{
-		printf("u \n");
-		print_bytes((uint8_t *)(it->first).c_str(), (uint32_t)it->first.length());
-		printf("v \n");
-		print_bytes((uint8_t *)(it->second).c_str(), (uint32_t)it->second.length());
-	}
-}
-
-grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
-{
-
-	std::string id = req->key();
+	int id = req->id();
 	std::string enc_content = req->value();
 	if (db_raw_data == nullptr)
 	{
-		R_Doc.insert(std::pair<std::string, std::string>(id, enc_content));
+		R_Doc.insert({id, enc_content});
 	}
 	else
 	{
-		// int len;
-		// auto str = enc_base64((uint8_t *)enc_content.c_str(), enc_content.length(), &len);
-		// db_raw_data->Put(id, str);
-
 		db_raw_data->Put(id, enc_content);
 	}
 
 	return grpc::Status::OK;
 }
 
-grpc::Status Server::Retrieve_Encrypted_Doc(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
+grpc::Status Server::Retrieve_Encrypted_Doc(ServerContext *context, const DocIdMessage *req, DocMessage *resp)
 {
-	std::string key = req->byte();
+	int key = req->id();
 	if (db_raw_data == nullptr)
-		resp->set_byte(R_Doc.at(key));
+		resp->set_value(R_Doc.at(key));
 	else
 	{
-		// int len;
-		// std::string base64_str = db_raw_data->Get(key);
-		// auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
-		// resp->set_byte(std::string((char *)value, len));
 		string value;
 		db_raw_data->Get(key, value);
-		resp->set_byte(value);
+		resp->set_value(value);
 	}
 
 	return grpc::Status::OK;

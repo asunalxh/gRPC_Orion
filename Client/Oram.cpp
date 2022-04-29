@@ -448,7 +448,7 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 	leafList.clear();
 	modified.clear();
 
-	printf("last cache size : %d \n", cache.size());
+	//printf("last cache size : %d \n", cache.size());
 	// printf("OcallWrite ( %d), ocallRead ( %d)\n", visitedOcallsWrite, visitedOcallsRead);
 }
 

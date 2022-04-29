@@ -38,7 +38,7 @@ Orion::~Orion()
 	delete omap_update;
 }
 
-void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
+void Orion::batch_addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
 {
 
 	// parse content to keywords splited by comma
@@ -77,22 +77,47 @@ void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 		free(k_c);
 		free(k_id);
 		free(k_w.content);
-		//// insert batch to Omap Update and Omap Search
-		// if (setupPairs1.size() % OMAP_INSERT_BATCH_SIZE == 0)
-		//{
-		//	// batch_no++;
-		//	// printf("Processing batch omap_update %d", batch_no);
-		//	omap_update->batchInsert(setupPairs1);
-		//	omap_update->storeInfo();
-		//	setupPairs1.clear();
-		// }
-		// if (setupPairs2.size() % OMAP_INSERT_BATCH_SIZE == 0)
-		//{
-		//	// printf("Processing batch omap_search %d", batch_no);
-		//	omap_search->batchInsert(setupPairs2);
-		//	omap_search->storeInfo();
-		//	setupPairs2.clear();
-		// }
+	}
+}
+void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
+{
+
+	// parse content to keywords splited by comma
+
+	for (std::vector<std::string>::iterator it = wordList.begin(); it != wordList.end(); ++it)
+	{
+
+		std::string word = (*it);
+		entryKey k_w;
+		k_w.content_length = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + word.length();
+		k_w.content = (char *)malloc(k_w.content_length);
+		enc_aes_gcm(KW, (const unsigned char *)word.c_str(), word.length(), (unsigned char *)k_w.content);
+
+		unsigned char *k_id = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
+		Hash_SHA256(k_w.content, k_w.content_length, doc_id, id_length, k_id);
+		Bid key_kid = k_id;
+
+		if (UpdtCnt.count(word) == 0)
+		{
+			UpdtCnt[word] = 0;
+		}
+
+		// insert into the state map for the keyword with (F(w||id),state) where F(w||id) = k_id
+		UpdtCnt[word]++;
+		omap_update->insert(key_kid, UpdtCnt[word]);
+		// insert into the index map for(F(w||state),id) where F(w||state) = k_c
+		unsigned char *k_c = (unsigned char *)malloc(ENTRY_HASH_KEY_LEN_256);
+		std::string c_str = std::to_string(UpdtCnt[word]);
+		char const *c_char = c_str.c_str();
+		Hash_SHA256(k_w.content, k_w.content_length, c_char, c_str.length(), k_c);
+		Bid key_kc = k_c;
+		omap_search->insert(key_kc, docInt);
+		// update in LastIND
+		LastIND[word] = docInt;
+
+		free(k_c);
+		free(k_id);
+		free(k_w.content);
 	}
 }
 
@@ -191,7 +216,6 @@ void Orion::flush(bool isWarmStart)
 	}
 }
 
-// this is in batch in SETUP
 void Orion::batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
 {
 
@@ -315,10 +339,10 @@ vector<unsigned int> Orion::search(const char *keyword, size_t keyword_len)
 
 	vector<unsigned int> result = omap_search->batchSearch(search_key_series);
 
-	for (int j = 0; j < result.size(); j++)
-	{
-		printf("result %d\n", result.at(j));
-	}
+	//for (int j = 0; j < result.size(); j++)
+	//{
+	//	printf("result %d\n", result.at(j));
+	//}
 
 	// free memory
 	free(k_w.content);

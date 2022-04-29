@@ -12,6 +12,7 @@ public:
 
 	void flush(bool isWarmStart = true);
 	void batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
+	void batch_addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 
 	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);

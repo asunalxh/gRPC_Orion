@@ -41,21 +41,26 @@ void initKey(unsigned char *key, string filename)
 
 void search()
 {
-
-	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
+	printf("\n======== Start To Search ========\n");
+		// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
+		std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
 
 	for (int s_i = 0; s_i < 2; s_i++)
 	{
 		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
 
-		orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
+		auto res = orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
+
+		for (auto id : res)
+		{
+			printf("%d\t", id);
+		}
 	}
 }
 
 void addDoc(int start, int end)
 {
-	printf("======== Adding doc ========\n");
+	printf("\n======== Start Adding doc ========\n");
 
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
@@ -63,39 +68,25 @@ void addDoc(int start, int end)
 		cout << ".";
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
-		auto keywords = myClient->ReadNextDoc(i, fetch_data);
 
-		// encrypt and send to Server
-		entry *encrypted_entry;
-		encrypted_entry = (entry *)malloc(sizeof(entry));
+		auto keywords = myClient->ReadDoc(i, fetch_data);
 
-		encrypted_entry->first.content_length = fetch_data->id.id_length;
-		encrypted_entry->first.content = (char *)malloc(fetch_data->id.id_length);
-		encrypted_entry->second.message_length = fetch_data->content_length + AESGCM_MAC_SIZE + AESGCM_IV_SIZE;
-		encrypted_entry->second.message = (char *)malloc(encrypted_entry->second.message_length);
+		myClient->SendEncDoc(fetch_data);
 
-		myClient->EncryptDoc(fetch_data, encrypted_entry);
-
-		myClient->SendEncDoc(encrypted_entry);
-
-		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, keywords);
+		orion->batch_addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, keywords);
 
 		// free memory
 		free(fetch_data->content);
 		free(fetch_data->id.doc_id);
 		free(fetch_data);
 
-		free(encrypted_entry->first.content);
-		free(encrypted_entry->second.message);
-		free(encrypted_entry);
-
 		// do this one to flush doc by doc enclave to flush all documents in OMAP to server
 		if (i % 1000 == 0)
 		{
-			printf("\nProcessing insertion %d\n", i);
+			printf("\n-------- Processing insertion %d --------\n", i);
 		}
 	}
-	printf("\nFinished Adding Doc\n");
+	printf("\n======== Finished Adding Doc ========\n");
 }
 
 void delDoc(int del_no)
@@ -110,14 +101,13 @@ void delDoc(int del_no)
 
 		if (del_index % 1000 == 0)
 		{
-			printf("Processing deleting docs %d\n", del_index);
+			printf("\n-------- Processing deleting docs %d --------\n", del_index);
 		}
-		orion->delDoc(id_str.c_str(), id_str.length(), del_index, keywords);
+		orion->batch_delDoc(id_str.c_str(), id_str.length(), del_index, keywords);
 
 		// later need to free fetch_data
 	}
-
-	printf("\nFinish deleting all docs\n");
+	printf("\n======== Finish deleting all docs ========\n");
 }
 
 int main()
@@ -127,15 +117,16 @@ int main()
 	initKey(KC, "KC");
 	initKey(KF, "KF");
 
-	printf("======== Create Client ========\n");
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
-	printf("======== Create Orion ========\n");
+	printf("\n======== Create Orion ========\n");
 	orion = new Orion(myClient, KW, KC, 14);
 
-	addDoc(1, 10);
-	// addDoc(1, 517401);
+	addDoc(1, 20);
 
+	//delDoc(3);
+
+	printf("\n======== Flushing ========\n");
 	orion->flush(false);
 
 	search();

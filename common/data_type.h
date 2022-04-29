@@ -24,27 +24,9 @@ static unsigned char gcm_iv[] = {
 
 #define AESGCM_MAC_SIZE 16
 
-#define MAX_FILE_LENGTH 10 
-
 #define ENC_KEY_SIZE 16 // for AES128
-#define ENTRY_VALUE_LEN 128 // 1024-bit
 
 #define ENTRY_HASH_KEY_LEN_256 32 // for HMAC-SHA128- bit key
-#define BUFLEN 10240 //buffer for enc + dec
-#define RAND_LEN 64// 256 // 2048-bit
-
-typedef struct
-{
-    size_t content_length;
-    unsigned char content[RAND_LEN];
-} rand_t; //used to export between ecall and ocall
-
-
-typedef struct
-{
-    size_t content_length;
-    unsigned char content[ENTRY_VALUE_LEN];
-} v; //used to export between ecall and ocall
 
 
 /* packet related */

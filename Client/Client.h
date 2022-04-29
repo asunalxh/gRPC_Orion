@@ -29,11 +29,10 @@ class Client
 {
 public:
 	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
-	std::vector<string> ReadNextDoc(int file_reading_counter, docContent *fetch_data);
+	std::vector<string> ReadDoc(int id, docContent *fetch_data);
 	std::vector<string> Del_GivenDocIndex(const int del_index);
 
 	void getKFValue(unsigned char *outKey);
-	void EncryptDoc(const docContent *data, entry *encrypted_doc);
 	void DecryptDocCollection(std::vector<std::string> Res);
 
 	void GetData(int data_structure, size_t index,
@@ -41,8 +40,8 @@ public:
 	void PutData(int data_structure, size_t index,
 				 const unsigned char *data, size_t data_size);
 
-	void SendEncDoc(entry *entry);
-	string GetEncDoc(string id);
+	void SendEncDoc(const docContent *data);
+	string GetEncDoc(int id);
 
 	string ReadInfo(string key, int data_structure);
 	void WriteInfo(string key, string value, int data_structure);

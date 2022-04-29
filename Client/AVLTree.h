@@ -25,9 +25,9 @@ public:
 	~AVLTree(); //
 
 	Bid insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value); //
-	Node *search(Node *head, Bid key);										 //
+	Node *search(Bid rootKey, unsigned int rootPos, Bid key);				 //
 	void batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, vector<Node *> *results);
-	void startOperation(bool batchWrite = false, bool isWarmStart = false);
+	void startOperation(bool batchWrite = false, bool isWarmStart = true);
 	void finishOperation(bool find, Bid &rootKey, unsigned int &rootPos);
 };
 
