@@ -11,11 +11,11 @@ public:
 	~Orion();
 
 	void flush(bool isWarmStart = true);
-	void batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
-	void batch_addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
+	void batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
+	void batch_addDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
 
-	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
-	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
+	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
+	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
 	vector<unsigned int> search(const char *keyword, size_t keyword_len);
 
 private:

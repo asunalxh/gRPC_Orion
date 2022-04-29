@@ -22,7 +22,8 @@ using grpc::ServerContext;
 class Server final : public CryptoService::Service
 {
 public:
-	Server(size_t blockNum);
+	Server(DBConnector<string, string> *db_update,
+		   DBConnector<string, string> *db_search, DBConnector<int, string> *db_raw_data);
 	~Server();
 
 	grpc::Status ReadInfo(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
@@ -36,13 +37,14 @@ public:
 
 private:
 	std::unordered_map<int, std::string> R_Doc;
+
 	DBConnector<int, string> *db_raw_data = nullptr;
+
+	DBConnector<string, string> *db_search;
+	DBConnector<string, string> *db_update;
 
 	RAMStore *data_search;
 	RAMStore *data_update;
-
-	DBConnector<string, string> *db_update;
-	DBConnector<string, string> *db_search;
 };
 
 #endif

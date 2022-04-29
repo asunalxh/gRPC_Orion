@@ -20,11 +20,6 @@ Client::Client(std::shared_ptr<Channel> channel, const unsigned char *KF) : stub
 	memcpy(this->KF, KF, ENC_KEY_SIZE);
 }
 
-void Client::getKFValue(unsigned char *outKey)
-{
-	memcpy(outKey, KF, ENC_KEY_SIZE);
-}
-
 std::vector<string> Client::ReadDoc(int id, docContent *content)
 {
 	std::ifstream inFile;
@@ -74,6 +69,32 @@ std::vector<string> Client::ReadDoc(int id, docContent *content)
 	return keyword;
 }
 
+string Client::ReadDoc(DBConnector<int, string> *conn, int id, docContent *content)
+{
+	std::ifstream inFile;
+	// docContent content;
+
+	std::string id_str = std::to_string(id);
+	/** convert fileId to char* and record length */
+	int doc_id_size = id_str.length();
+
+	content->id.doc_id = (char *)malloc(doc_id_size + 1);
+	memcpy(content->id.doc_id, id_str.c_str(), doc_id_size + 1);
+	content->id.id_length = doc_id_size;
+
+	content->id.doc_int = id;
+
+	string value;
+	if (conn->Get(id, value))
+	{
+		content->content_length = value.length();
+		content->content = (char *)malloc(content->content_length + 1);
+		memcpy(content->content, value.c_str(), content->content_length + 1);
+	}
+
+	return value;
+}
+
 std::vector<string> Client::Del_GivenDocIndex(const int del_index)
 {
 
@@ -97,20 +118,12 @@ std::vector<string> Client::Del_GivenDocIndex(const int del_index)
 
 	return keyword;
 }
-
-void Client::DecryptDocCollection(std::vector<std::string> Res)
+string Client::Del_GivenDocIndex(DBConnector<int, string> *conn, const int del_index)
 {
 
-	for (auto &&enc_doc : Res)
-	{
-
-		int original_len;
-		unsigned char *plaintext = (unsigned char *)malloc((enc_doc.size() - AESGCM_MAC_SIZE - AESGCM_IV_SIZE) * sizeof(unsigned char) + 1);
-		original_len = dec_aes_gcm(KF, (unsigned char *)enc_doc.c_str(), enc_doc.size() + 1, plaintext);
-
-		// std::string doc_i((char*)plaintext,original_len);
-		// printf("Plain doc ==> %s\n",doc_i.c_str());
-	}
+	string value;
+	conn->Get(del_index, value);
+	return value;
 }
 
 void Client::GetData(int data_structure, size_t index,

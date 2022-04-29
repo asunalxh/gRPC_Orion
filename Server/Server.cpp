@@ -3,21 +3,12 @@
 #include <iterator>	 // for std::begin, std::end
 // #include "MysqlConnector.h"
 
-Server::Server(size_t blockNum)
+Server::Server(DBConnector<string, string> *db_update,
+			   DBConnector<string, string> *db_search, DBConnector<int, string> *db_raw_data)
 {
-	R_Doc.clear();
-
-	db_search = new RocksDBConnector::StringMapper("./database/search");
-	db_update = new RocksDBConnector::StringMapper("./database/update");
-
-	// MYSQL *mysql = MysqlConnector::Create_Mysql_Connect(
-	//	"127.0.0.1",
-	//	"user",
-	//	"123456",
-	//	"test");
-	// db_raw_data = new MysqlConnector::StringMapper(mysql, "test");
-	db_raw_data = new RocksDBConnector::IntMapper("./database/raw");
-
+	this->db_search = db_search;
+	this->db_update = db_update;
+	this->db_raw_data = db_raw_data;
 	data_search = new RAMStore(db_search);
 	data_update = new RAMStore(db_update);
 }

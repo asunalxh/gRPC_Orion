@@ -14,6 +14,7 @@
 #include <vector>
 #include <memory>
 #include "../common/crypto.grpc.pb.h"
+#include "../common/DBConnector.h"
 
 #include <grpc/grpc.h>
 #include <grpcpp/channel.h>
@@ -30,10 +31,11 @@ class Client
 public:
 	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
 	std::vector<string> ReadDoc(int id, docContent *fetch_data);
-	std::vector<string> Del_GivenDocIndex(const int del_index);
+	string ReadDoc(DBConnector<int,string> * conn,int id, docContent *fetch_data);
 
-	void getKFValue(unsigned char *outKey);
-	void DecryptDocCollection(std::vector<std::string> Res);
+	std::vector<string> Del_GivenDocIndex(const int del_index);
+	string Del_GivenDocIndex(DBConnector<int, string> *conn,const int del_index);
+
 
 	void GetData(int data_structure, size_t index,
 				 unsigned char *bucket, size_t bucket_size);

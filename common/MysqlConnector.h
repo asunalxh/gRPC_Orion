@@ -14,33 +14,41 @@ namespace MysqlConnector
 	class BaseConnector
 	{
 	public:
-		BaseConnector(MYSQL *mysql, string table);
-		void UseTable(const string &table);
+		BaseConnector(MYSQL *mysql, const char *table, const char *id_col_name, const char *val_col_name);
 
 	protected:
 		bool InsertValue(const string &id, const string &value);
 		bool SearchValue(const string &id, string &value);
-		bool Query_For_Result(const string &sqlstr, MYSQL_RES *&res);
+		bool Query_For_Result(const char *sqlstr, MYSQL_RES *&res);
 		MYSQL *mysql;
-		string table;
+		const char *table;
+		const char *id_col_name = "id";
+		const char *val_col_name = "value";
 	};
 
 	class StringMapper : public BaseConnector, public DBConnector<string, string>
 	{
 	public:
-		StringMapper(MYSQL *mysql, const string &table);
+		StringMapper(MYSQL *mysql, const char *table, const char *id_col_name, const char *val_col_name);
 		bool Get(const string &id, string &value);
 		bool Put(const string &id, const string &value);
 		bool Delete(const string &id);
 	};
 
-	class CacheReader : public BaseConnector, public DBConnector<int, string>
+	class IntMapper : public BaseConnector, public DBConnector<int, string>
 	{
 	public:
-		CacheReader(MYSQL *mysql, const string &table, int cache_size);
+		IntMapper(MYSQL *mysql, const char *table, const char *id_col_name, const char *val_col_name);
 		bool Get(const int &id, string &value);
 		bool Put(const int &id, const string &value);
 		bool Delete(const int &id);
+	};
+
+	class CacheReader : public IntMapper
+	{
+	public:
+		CacheReader(MYSQL *mysql, int cache_size, const char *table, const char *id_col_name, const char *val_col_name);
+		bool Get(const int &id, string &value);
 
 	private:
 		int cache_size;
