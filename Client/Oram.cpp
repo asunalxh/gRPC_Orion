@@ -258,7 +258,7 @@ void Oram::WritePath(unsigned int leaf, int d)
 	}
 }
 
-void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf, unsigned int newLeaf)
+void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf)
 {
 
 	// printf("Cache size before Access %d", cache.size());
@@ -267,12 +267,12 @@ void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf, unsigned int newL
 	node = ReadData(bid);
 	if (node != NULL)
 	{
-		node->pos = newLeaf;
-		if (cache.count(bid) != 0)
-		{
-			cache.erase(bid);
-		}
-		cache[bid] = node;
+		//node->pos = newLeaf;
+		//if (cache.count(bid) != 0)
+		//{
+		//	cache.erase(bid);
+		//}
+		//cache[bid] = node;
 		if (find(leafList.begin(), leafList.end(), lastLeaf) == leafList.end())
 		{
 			leafList.push_back(lastLeaf);
@@ -314,7 +314,7 @@ Node *Oram::ReadNode(Bid bid)
 	}
 }
 
-Node *Oram::ReadNode(Bid bid, int lastLeaf, int newLeaf)
+Node *Oram::ReadNode(Bid bid, int lastLeaf)
 {
 	if (bid == empty_key)
 	{
@@ -323,7 +323,7 @@ Node *Oram::ReadNode(Bid bid, int lastLeaf, int newLeaf)
 	if (cache.count(bid) == 0 || find(leafList.begin(), leafList.end(), lastLeaf) == leafList.end())
 	{
 		Node *node;
-		Access(bid, node, lastLeaf, newLeaf);
+		Access(bid, node, lastLeaf);
 		if (node != NULL)
 		{
 			modified.insert(bid);
@@ -338,7 +338,7 @@ Node *Oram::ReadNode(Bid bid, int lastLeaf, int newLeaf)
 	{
 		modified.insert(bid);
 		Node *node = cache[bid];
-		node->pos = newLeaf;
+		//node->pos = newLeaf;
 		return node;
 	}
 }
@@ -360,29 +360,6 @@ int Oram::WriteNode(Bid bid, Node *node)
 		modified.insert(bid);
 		return node->pos;
 	}
-}
-
-int Oram::updatePath(Bid key)
-{
-	if (this->modified.count(key))
-	{
-		cache[key]->pos = this->RandomPath();
-		FetchPath(cache[key]->pos);
-	}
-	if (cache[key]->leftID != empty_key && cache.count(cache[key]->leftID))
-	{
-		cache[key]->leftPos = updatePath(cache[key]->leftID);
-	}
-	if (cache[key]->rightID != empty_key && cache.count(cache[key]->rightID))
-	{
-		cache[key]->rightPos = updatePath(cache[key]->rightID);
-	}
-
-	if (std::find(leafList.begin(), leafList.end(), cache[key]->pos) == leafList.end())
-	{
-		leafList.push_back(cache[key]->pos);
-	}
-	return cache[key]->pos;
 }
 
 void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
@@ -424,22 +401,26 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 		{
 			if (t.second != NULL && t.second->height == i)
 			{
+				bool flag = false;
 				Node *tmp = t.second;
 				if (modified.count(tmp->key))
 				{
 					tmp->pos = RandomPath();
 					FetchPath(tmp->pos);
+					flag = true;
 				}
-				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0)
+				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0 && cache[tmp->leftID]->pos != tmp->leftPos)
 				{
 					tmp->leftPos = cache[tmp->leftID]->pos;
+					flag = true;
 				}
-				if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0)
+				if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0 && cache[tmp->rightID]->pos != tmp->rightPos)
 				{
 					tmp->rightPos = cache[tmp->rightID]->pos;
+					flag = true;
 				}
 
-				if (std::find(leafList.begin(), leafList.end(), tmp->pos) == leafList.end())
+				if (flag && std::find(leafList.begin(), leafList.end(), tmp->pos) == leafList.end())
 				{
 					leafList.push_back(tmp->pos);
 				}

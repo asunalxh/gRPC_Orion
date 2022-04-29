@@ -76,7 +76,7 @@ private:
 	Node *ReadData(Bid id);		  //
 	void WriteData(Bid, Node *b); //
 
-	void Access(Bid bid, Node *&node, unsigned int lastLeaf, unsigned int newLeaf); //
+	void Access(Bid bid, Node *&node, unsigned int lastLeaf); //
 	void Access(Bid, Node *&node);													//
 
 	void deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNodes[Z]); //
@@ -89,14 +89,12 @@ private:
 
 	Client *client;
 
-	int updatePath(Bid key);
-
 public:
 	Oram(const unsigned char *treeKey, int _numBucketLeaf, int data_structure,
 		 Client *client, bool initial); //
 
 	unsigned int RandomPath();									   //
-	Node *ReadNode(Bid bid, int lastLeaf, int newLeaf);			   //
+	Node *ReadNode(Bid bid, int lastLeaf);			   //
 	Node *ReadNode(Bid id);										   //
 	int WriteNode(Bid bid, Node *n);							   //
 	void start(bool batchWrite);								   //
