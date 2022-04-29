@@ -11,7 +11,7 @@ private:
 	AVLTree *treeHandler;
 	Bid rootKey;
 	unsigned int rootPos;
-	Client* myClient;
+	Client *myClient;
 	int data_structure;
 
 public:
@@ -20,7 +20,7 @@ public:
 	void insert(Bid key, unsigned int value);
 	unsigned int find(Bid key);
 
-	void batchInsert(map<Bid, unsigned int> pairs);
+	void batchInsert(map<Bid, unsigned int> pairs, bool isWarmStart);
 	vector<unsigned int> batchSearch(vector<Bid> keys);
 
 	void storeInfo();

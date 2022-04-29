@@ -52,6 +52,7 @@ private:
 
 	bool batchWrite = false;
 	bool isWriteOnly = false;
+	bool isWarmStart = false;
 
 	// set<Bid> detRead; //fetched nodes during deterministic read isWriteOnly=true
 	std::map<Bid, Node *> cache;
@@ -77,7 +78,7 @@ private:
 	void WriteData(Bid, Node *b); //
 
 	void Access(Bid bid, Node *&node, unsigned int lastLeaf); //
-	void Access(Bid, Node *&node);													//
+	void Access(Bid, Node *&node);							  //
 
 	void deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNodes[Z]); //
 
@@ -94,10 +95,10 @@ public:
 		 Client *client, bool initial); //
 
 	unsigned int RandomPath();									   //
-	Node *ReadNode(Bid bid, int lastLeaf);			   //
+	Node *ReadNode(Bid bid, int lastLeaf);						   //
 	Node *ReadNode(Bid id);										   //
 	int WriteNode(Bid bid, Node *n);							   //
-	void start(bool batchWrite);								   //
+	void start(bool batchWrite, bool isWarmStart);				   //
 	void finalise(bool find, Bid &rootKey, unsigned int &rootPos); //
 };
 #endif

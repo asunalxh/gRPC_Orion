@@ -267,12 +267,12 @@ void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf)
 	node = ReadData(bid);
 	if (node != NULL)
 	{
-		//node->pos = newLeaf;
-		//if (cache.count(bid) != 0)
+		// node->pos = newLeaf;
+		// if (cache.count(bid) != 0)
 		//{
 		//	cache.erase(bid);
-		//}
-		//cache[bid] = node;
+		// }
+		// cache[bid] = node;
 		if (find(leafList.begin(), leafList.end(), lastLeaf) == leafList.end())
 		{
 			leafList.push_back(lastLeaf);
@@ -286,8 +286,8 @@ void Oram::Access(Bid bid, Node *&node)
 {
 
 	// printf("Cache size before Access %d", cache.size());
-
-	FetchPath(node->pos);
+	if (isWarmStart)
+		FetchPath(node->pos);
 	WriteData(bid, node);
 	if (find(leafList.begin(), leafList.end(), node->pos) == leafList.end())
 	{
@@ -338,7 +338,7 @@ Node *Oram::ReadNode(Bid bid, int lastLeaf)
 	{
 		modified.insert(bid);
 		Node *node = cache[bid];
-		//node->pos = newLeaf;
+		// node->pos = newLeaf;
 		return node;
 	}
 }
@@ -403,12 +403,15 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 			{
 				bool flag = false;
 				Node *tmp = t.second;
+
 				if (modified.count(tmp->key))
 				{
 					tmp->pos = RandomPath();
-					FetchPath(tmp->pos);
+					if (isWarmStart)
+						FetchPath(tmp->pos);
 					flag = true;
 				}
+
 				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0 && cache[tmp->leftID]->pos != tmp->leftPos)
 				{
 					tmp->leftPos = cache[tmp->leftID]->pos;
@@ -449,9 +452,10 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 	// printf("OcallWrite ( %d), ocallRead ( %d)\n", visitedOcallsWrite, visitedOcallsRead);
 }
 
-void Oram::start(bool batchWrite)
+void Oram::start(bool batchWrite, bool isWarmStart)
 {
 	this->batchWrite = batchWrite;
+	this->isWarmStart = isWarmStart;
 	writeviewmap.clear();
 	readviewmap.clear();
 	readCnt = 0;

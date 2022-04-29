@@ -15,12 +15,12 @@ namespace MysqlConnector
 	{
 	public:
 		BaseConnector(MYSQL *mysql, string table);
-		void UseTable(string table);
+		void UseTable(const string &table);
 
 	protected:
-		bool InsertValue(string id, string value);
-		bool SearchValue(string id, string &value);
-		bool Query_For_Result(string sqlstr, MYSQL_RES *&res);
+		bool InsertValue(const string &id, const string &value);
+		bool SearchValue(const string &id, string &value);
+		bool Query_For_Result(const string &sqlstr, MYSQL_RES *&res);
 		MYSQL *mysql;
 		string table;
 	};
@@ -28,19 +28,19 @@ namespace MysqlConnector
 	class StringMapper : public BaseConnector, public DBConnector<string, string>
 	{
 	public:
-		StringMapper(MYSQL *mysql, string table);
-		bool Get(string id, string &value);
-		bool Put(string id, string value);
-		bool Delete(string id);
+		StringMapper(MYSQL *mysql, const string &table);
+		bool Get(const string &id, string &value);
+		bool Put(const string &id, const string &value);
+		bool Delete(const string &id);
 	};
 
 	class CacheReader : public BaseConnector, public DBConnector<int, string>
 	{
 	public:
-		CacheReader(MYSQL *mysql, string table, int cache_size);
-		bool Get(int id, string &value);
-		bool Put(int id, string value);
-		bool Delete(int id);
+		CacheReader(MYSQL *mysql, const string &table, int cache_size);
+		bool Get(const int &id, string &value);
+		bool Put(const int &id, const string &value);
+		bool Delete(const int &id);
 
 	private:
 		int cache_size;

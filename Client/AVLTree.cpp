@@ -262,9 +262,9 @@ void AVLTree::batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, v
 	}
 }
 
-void AVLTree::startOperation(bool batchWrite)
+void AVLTree::startOperation(bool batchWrite, bool isWarmStart)
 {
-	oram->start(batchWrite);
+	oram->start(batchWrite, isWarmStart);
 }
 
 void AVLTree::finishOperation(bool find, Bid &rootKey, unsigned int &rootPos)

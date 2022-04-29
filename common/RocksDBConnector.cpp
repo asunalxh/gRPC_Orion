@@ -13,7 +13,7 @@ namespace RocksDBConnector
 	{
 		this->db = db;
 	}
-	BaseConnector::BaseConnector(string path)
+	BaseConnector::BaseConnector(const char* path)
 	{
 		Options options;
 		options.create_if_missing = true;
@@ -25,7 +25,7 @@ namespace RocksDBConnector
 		}
 	}
 
-	bool BaseConnector::SearchValue(Slice key, string *value)
+	bool BaseConnector::SearchValue(const Slice& key, string *value)
 	{
 		rocksdb::Status status = db->Get(ReadOptions(), key, value);
 		if (!status.ok())
@@ -36,7 +36,7 @@ namespace RocksDBConnector
 		return true;
 	}
 
-	bool BaseConnector::InsertValue(Slice key, Slice value)
+	bool BaseConnector::InsertValue(const Slice& key, const Slice& value)
 	{
 		rocksdb::Status status = db->Put(WriteOptions(), key, value);
 		if (!status.ok())
@@ -47,7 +47,7 @@ namespace RocksDBConnector
 		return true;
 	}
 
-	bool BaseConnector::DeleteValue(Slice key)
+	bool BaseConnector::DeleteValue(const Slice& key)
 	{
 		rocksdb::Status status = db->Delete(WriteOptions(), key);
 		if (!status.ok())
@@ -65,51 +65,51 @@ namespace RocksDBConnector
 
 	// StringMapper
 
-	StringMapper::StringMapper(string path) : BaseConnector(path), DBConnector()
+	StringMapper::StringMapper(const char* path) : BaseConnector(path), DBConnector()
 	{
 	}
 
-	bool StringMapper::Get(string key, string &value)
+	bool StringMapper::Get(const string& key, string &value)
 	{
 		return this->SearchValue(key, &value);
 	}
 
-	bool StringMapper::Put(string key, string value)
+	bool StringMapper::Put(const string& key, const string& value)
 	{
 		return this->InsertValue(Slice(key), Slice(value));
 	}
 
-	bool StringMapper::Delete(string key)
+	bool StringMapper::Delete(const string& key)
 	{
 		return this->DeleteValue(key);
 	}
 
 	// IntMapper
 
-	IntMapper::IntMapper(string path) : BaseConnector(path), DBConnector()
+	IntMapper::IntMapper(const char* path) : BaseConnector(path), DBConnector()
 	{
 	}
-	bool IntMapper::Get(int key, string &value)
+	bool IntMapper::Get(const int& key, string &value)
 	{
 		return this->SearchValue(std::to_string(key), &value);
 	}
-	bool IntMapper::Put(int key, string value)
+	bool IntMapper::Put(const int& key, const string& value)
 	{
 		return this->InsertValue(Slice(std::to_string(key)), Slice(value));
 	}
 
-	bool IntMapper::Delete(int key)
+	bool IntMapper::Delete(const int& key)
 	{
 		return this->DeleteValue(std::to_string(key));
 	}
 
 	// IntStorage
 
-	IntStorage::IntStorage(string path) : BaseConnector(path), DBMap()
+	IntStorage::IntStorage(const char* path) : BaseConnector(path), DBMap()
 	{
 	}
 
-	bool IntStorage::Get(string key, int &value)
+	bool IntStorage::Get(const string& key, int &value)
 	{
 		string str;
 		bool flag = this->SearchValue(key, &str);
@@ -120,12 +120,12 @@ namespace RocksDBConnector
 		}
 		return false;
 	}
-	bool IntStorage::Put(string key, int value)
+	bool IntStorage::Put(const string& key, const int& value)
 	{
 		return this->InsertValue(key, std::to_string(value));
 	}
 
-	bool IntStorage::Delete(string key)
+	bool IntStorage::Delete(const string& key)
 	{
 		return this->DeleteValue(key);
 	}

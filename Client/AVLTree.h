@@ -6,32 +6,29 @@
 #include "string.h"
 #include "Client.h"
 
-
 class AVLTree
 {
 
 private:
-    Bid empty_key;
-    Oram *oram;
-    int height(Bid N, unsigned int& leaf);//
-    int max(int a, int b);//
-    Node* newNode(Bid key, unsigned int value);//
-    Node* rightRotate(Node* y);//
-    Node* leftRotate(Node* x);//
-    int getBalance(Node* N);//
-
+	Bid empty_key;
+	Oram *oram;
+	int height(Bid N, unsigned int &leaf);		//
+	int max(int a, int b);						//
+	Node *newNode(Bid key, unsigned int value); //
+	Node *rightRotate(Node *y);					//
+	Node *leftRotate(Node *x);					//
+	int getBalance(Node *N);					//
 
 public:
-    AVLTree(const unsigned char *key, int _numBucketLeaf, int data_structure, Client* client,bool initial);//
-    
-    ~AVLTree();//
+	AVLTree(const unsigned char *key, int _numBucketLeaf, int data_structure, Client *client, bool initial); //
 
-    Bid insert(Bid rootKey, unsigned int& pos, Bid key, unsigned int value);//
-    Node* search(Node* head, Bid key);//
-    void batchSearch(Bid rootKey,unsigned int rootPos, vector<Bid> keys, vector<Node *> *results);
-    void startOperation(bool batchWrite = false);
-    void finishOperation(bool find, Bid& rootKey, unsigned int& rootPos);
+	~AVLTree(); //
 
+	Bid insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value); //
+	Node *search(Node *head, Bid key);										 //
+	void batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, vector<Node *> *results);
+	void startOperation(bool batchWrite = false, bool isWarmStart = false);
+	void finishOperation(bool find, Bid &rootKey, unsigned int &rootPos);
 };
 
 #endif

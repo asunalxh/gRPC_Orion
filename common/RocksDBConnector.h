@@ -17,41 +17,41 @@ namespace RocksDBConnector
 	{
 	public:
 		BaseConnector(DB *db);
-		BaseConnector(string path);
+		BaseConnector(const char *path);
 		~BaseConnector();
 
 	protected:
-		bool SearchValue(Slice key, string *value);
-		bool InsertValue(Slice key, Slice value);
-		bool DeleteValue(Slice Key);
+		bool SearchValue(const Slice &key, string *value);
+		bool InsertValue(const Slice &key, const Slice &value);
+		bool DeleteValue(const Slice &Key);
 		DB *db;
 	};
 
 	class StringMapper : public BaseConnector, public DBConnector<string, string>
 	{
 	public:
-		StringMapper(string path);
-		bool Get(string key, string &value);
-		bool Put(string key, string value);
-		bool Delete(string key);
+		StringMapper(const char *path);
+		bool Get(const string &key, string &value);
+		bool Put(const string &key, const string &value);
+		bool Delete(const string &key);
 	};
 
 	class IntMapper : public BaseConnector, public DBConnector<int, string>
 	{
 	public:
-		IntMapper(string path);
-		bool Get(int key, string &value);
-		bool Put(int key, string value);
-		bool Delete(int key);
+		IntMapper(const char *path);
+		bool Get(const int &key, string &value);
+		bool Put(const int &key, const string &value);
+		bool Delete(const int &key);
 	};
 
 	class IntStorage : public BaseConnector, public DBMap<string, int>
 	{
 	public:
-		IntStorage(string path);
-		bool Get(string key, int &value);
-		bool Put(string key, int value);
-		bool Delete(string key);
+		IntStorage(const char *path);
+		bool Get(const string &key, int &value);
+		bool Put(const string &key, const int &value);
+		bool Delete(const string &key);
 	};
 }
 

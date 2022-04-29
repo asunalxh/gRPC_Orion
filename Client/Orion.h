@@ -10,7 +10,7 @@ public:
 	Orion(Client *client, const unsigned char *KW, const unsigned char *KC, int numLeaf, bool initial = true);
 	~Orion();
 
-	void flush();
+	void flush(bool isWarmStart = true);
 	void batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);
 
 	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList);

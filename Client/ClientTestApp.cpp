@@ -133,18 +133,11 @@ int main()
 	printf("======== Create Orion ========\n");
 	orion = new Orion(myClient, KW, KC, 14);
 
-	addDoc(1, 5);
+	addDoc(1, 10);
 	// addDoc(1, 517401);
 
-	orion->flush();
+	orion->flush(false);
 
-	search();
-
-	delete orion;
-	orion = new Orion(myClient, KW, KC, 14, false);
-
-	addDoc(6, 10);
-	orion->flush();
 	search();
 
 	// free omap and client and server

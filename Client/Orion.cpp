@@ -78,21 +78,21 @@ void Orion::addDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 		free(k_id);
 		free(k_w.content);
 		//// insert batch to Omap Update and Omap Search
-		//if (setupPairs1.size() % OMAP_INSERT_BATCH_SIZE == 0)
+		// if (setupPairs1.size() % OMAP_INSERT_BATCH_SIZE == 0)
 		//{
 		//	// batch_no++;
 		//	// printf("Processing batch omap_update %d", batch_no);
 		//	omap_update->batchInsert(setupPairs1);
 		//	omap_update->storeInfo();
 		//	setupPairs1.clear();
-		//}
-		//if (setupPairs2.size() % OMAP_INSERT_BATCH_SIZE == 0)
+		// }
+		// if (setupPairs2.size() % OMAP_INSERT_BATCH_SIZE == 0)
 		//{
 		//	// printf("Processing batch omap_search %d", batch_no);
 		//	omap_search->batchInsert(setupPairs2);
 		//	omap_search->storeInfo();
 		//	setupPairs2.clear();
-		//}
+		// }
 	}
 }
 
@@ -172,12 +172,12 @@ void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt, st
 	}
 }
 
-void Orion::flush()
+void Orion::flush(bool isWarmStart)
 {
 	if (setupPairs1.size() > 0)
 	{
 		printf("FLushing Processing batch omap_update");
-		omap_update->batchInsert(setupPairs1);
+		omap_update->batchInsert(setupPairs1, isWarmStart);
 		omap_search->storeInfo();
 		setupPairs1.clear();
 	}
@@ -185,12 +185,11 @@ void Orion::flush()
 	if (setupPairs2.size() > 0)
 	{
 		printf("FLushing Processing batch omap_search\n");
-		omap_search->batchInsert(setupPairs2);
+		omap_search->batchInsert(setupPairs2, isWarmStart);
 		omap_search->storeInfo();
 		setupPairs2.clear();
 	}
 }
-
 
 // this is in batch in SETUP
 void Orion::batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, std::vector<std::string> wordList)
