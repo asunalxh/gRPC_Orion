@@ -14,7 +14,7 @@ int AVLTree::height(Bid key, unsigned int &leaf)
 {
 	if (key == empty_key)
 		return 0;
-	Node *node = oram->ReadNode(key, leaf, leaf);
+	Node *node = oram->ReadNode(key, leaf);
 	return node->height;
 }
 
