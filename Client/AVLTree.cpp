@@ -120,7 +120,7 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 		pos = oram->WriteNode(key, nnode);
 		return nnode->key;
 	}
-	Node *node = oram->ReadNode(rootKey, pos, pos);
+	Node *node = oram->ReadNode(rootKey, pos);
 
 	// printf("Node with key(%s) , (pos: %d), (value: %d) is readed.", node->key.key,node->pos, node->value);
 
@@ -213,14 +213,14 @@ Node *AVLTree::search(Node *head, Bid key)
 	if (head == NULL || head->key == empty_key)
 		return head;
 
-	head = oram->ReadNode(head->key, head->pos, head->pos);
+	head = oram->ReadNode(head->key, head->pos);
 	if (head->key > key)
 	{
-		return search(oram->ReadNode(head->leftID, head->leftPos, head->leftPos), key);
+		return search(oram->ReadNode(head->leftID, head->leftPos), key);
 	}
 	else if (head->key < key)
 	{
-		return search(oram->ReadNode(head->rightID, head->rightPos, head->rightPos), key);
+		return search(oram->ReadNode(head->rightID, head->rightPos), key);
 	}
 	else
 		return head;
@@ -232,7 +232,7 @@ void AVLTree::batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, v
 	{
 		return;
 	}
-	auto head = oram->ReadNode(rootKey, rootPos, rootPos);
+	auto head = oram->ReadNode(rootKey, rootPos);
 	bool getLeft = false, getRight = false;
 	vector<Bid> leftkeys, rightkeys;
 	for (Bid bid : keys)
