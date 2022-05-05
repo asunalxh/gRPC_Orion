@@ -45,9 +45,6 @@ public:
 	void SendEncDoc(const docContent *data);
 	string GetEncDoc(int id);
 
-	string ReadInfo(string key, int data_structure);
-	void WriteInfo(string key, string value, int data_structure);
-
 private:
 	unsigned char KF[ENC_KEY_SIZE];
 	int file_reading_counter;

@@ -18,7 +18,7 @@
 #include "Omap.h"
 
 /*** setup */
-Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, int numLeaf, bool initial) : UpdtCnt("database/UpdtCnt"), LastIND("database/LastIND")
+Orion::Orion(Client *client, const unsigned char *KW, const unsigned char *KC, int numLeaf, bool initial)
 {
 	memcpy(this->KW, KW, ENC_KEY_SIZE);
 	memcpy(this->KC, KC, ENC_KEY_SIZE);
@@ -188,7 +188,6 @@ void Orion::flush()
 	{
 		printf("FLushing Processing batch omap_update");
 		omap_update->batchInsert(setupPairs1);
-		omap_update->storeInfo();
 		setupPairs1.clear();
 	}
 
@@ -196,7 +195,6 @@ void Orion::flush()
 	{
 		printf("FLushing Processing batch omap_search\n");
 		omap_search->batchInsert(setupPairs2);
-		omap_search->storeInfo();
 		setupPairs2.clear();
 	}
 }

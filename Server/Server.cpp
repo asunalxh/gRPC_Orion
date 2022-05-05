@@ -3,11 +3,10 @@
 #include <iterator>	 // for std::begin, std::end
 // #include "MysqlConnector.h"
 
-Server::Server(DBConnector<string, string> *db_update,
-			   DBConnector<string, string> *db_search, DBConnector<int, string> *db_raw_data)
+Server::Server(DBConnector<int, string> *db_update,
+			   DBConnector<int, string> *db_search, 
+			   DBConnector<int, string> *db_raw_data)
 {
-	this->db_search = db_search;
-	this->db_update = db_update;
 	this->db_raw_data = db_raw_data;
 	data_search = new RAMStore(db_search);
 	data_update = new RAMStore(db_update);
@@ -21,36 +20,7 @@ Server::~Server()
 	delete data_update;
 }
 
-grpc::Status Server::ReadInfo(ServerContext *context, const BytesMessage *req, BytesMessage *resp)
-{
-	std::string key = req->byte();
-	int data_structure = req->data_structure();
-	std::string value;
-	if (data_structure == 1)
-		db_search->Get(key, value);
-	else
-		db_update->Get(key, value);
-
-	resp->set_byte(value);
-
-	return grpc::Status::OK;
-}
-
-grpc::Status Server::WriteInfo(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp)
-{
-	std::string key = req->key();
-	std::string value = req->value();
-	int data_structure = req->data_structure();
-
-	if (data_structure == 1)
-		db_search->Put(key, value);
-	else
-		db_update->Put(key, value);
-
-	return grpc::Status::OK;
-}
-
-grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp)
+grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, OramBucketMessage *resp)
 {
 	int data_structure = req->data_structure();
 	size_t pos = req->pos();
@@ -64,7 +34,10 @@ grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, Byt
 		bucket = data_update->Read(pos);
 	}
 	std::string bucket_str = BucketToString(bucket);
-	resp->set_byte(bucket_str);
+
+	resp->set_data_structure(data_structure);
+	resp->set_pos(pos);
+	resp->set_bucket(bucket_str);
 
 	return grpc::Status::OK;
 }

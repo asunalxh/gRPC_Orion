@@ -131,14 +131,14 @@ void Client::GetData(int data_structure, size_t index,
 {
 	ClientContext context;
 	OramMessage req;
-	BytesMessage resp;
+	OramBucketMessage resp;
 
 	req.set_data_structure(data_structure);
 	req.set_pos(index);
 
 	stub_->GetData(&context, req, &resp);
 
-	std::string bucket_str = resp.byte();
+	std::string bucket_str = resp.bucket();
 	memcpy(bucket, bucket_str.c_str(), bucket_str.length());
 }
 
@@ -203,27 +203,4 @@ string Client::GetEncDoc(int id)
 	delete[] message;
 	delete[] value;
 	return ans;
-}
-
-string Client::ReadInfo(string key, int data_structure)
-{
-	ClientContext context;
-	BytesMessage req, resp;
-	req.set_byte(key);
-	req.set_data_structure(data_structure);
-
-	stub_->ReadInfo(&context, req, &resp);
-
-	return resp.byte();
-}
-void Client::WriteInfo(string key, string value, int data_structure)
-{
-	ClientContext context;
-	BytesPairMessage req;
-	GeneralMessage resp;
-	req.set_key(key);
-	req.set_value(value);
-	req.set_data_structure(data_structure);
-
-	stub_->WriteInfo(&context, req, &resp);
 }

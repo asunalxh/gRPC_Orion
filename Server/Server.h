@@ -22,14 +22,11 @@ using grpc::ServerContext;
 class Server final : public CryptoService::Service
 {
 public:
-	Server(DBConnector<string, string> *db_update,
-		   DBConnector<string, string> *db_search, DBConnector<int, string> *db_raw_data);
+	Server(DBConnector<int, string> *db_update,
+		   DBConnector<int, string> *db_search, DBConnector<int, string> *db_raw_data);
 	~Server();
 
-	grpc::Status ReadInfo(ServerContext *context, const BytesMessage *req, BytesMessage *resp) override;
-	grpc::Status WriteInfo(ServerContext *context, const BytesPairMessage *req, GeneralMessage *resp) override;
-
-	grpc::Status GetData(ServerContext *context, const OramMessage *req, BytesMessage *resp) override;
+	grpc::Status GetData(ServerContext *context, const OramMessage *req, OramBucketMessage *resp) override;
 	grpc::Status PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp) override;
 
 	grpc::Status Receive_Encrypted_Doc(ServerContext *context, const DocMessage *req, GeneralMessage *resp) override;
@@ -39,9 +36,6 @@ private:
 	std::unordered_map<int, std::string> R_Doc;
 
 	DBConnector<int, string> *db_raw_data = nullptr;
-
-	DBConnector<string, string> *db_search;
-	DBConnector<string, string> *db_update;
 
 	RAMStore *data_search;
 	RAMStore *data_update;

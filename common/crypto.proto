@@ -15,17 +15,6 @@ message OramBucketMessage{
     bytes bucket = 3;
 }
 
-message BytesMessage{
-    bytes byte = 1;
-    int64 data_structure = 2;
-}
-
-message BytesPairMessage{
-	bytes key =  1;
-	bytes value = 2;
-    int64 data_structure = 3;
-}
-
 message DocIdMessage{
 	int64 id = 1;
 }
@@ -37,9 +26,7 @@ message DocMessage{
 
 
 service CryptoService{
-	rpc ReadInfo(BytesMessage) returns(BytesMessage) {};
-    rpc WriteInfo(BytesPairMessage) returns(GeneralMessage) {}; 
-    rpc GetData(OramMessage) returns(BytesMessage) {};
+    rpc GetData(OramMessage) returns(OramBucketMessage) {};
     rpc PutData(OramBucketMessage) returns(GeneralMessage) {}; 
 	rpc Receive_Encrypted_Doc(DocMessage) returns(GeneralMessage) {};
 	rpc Retrieve_Encrypted_Doc(DocIdMessage) returns(DocMessage) {};

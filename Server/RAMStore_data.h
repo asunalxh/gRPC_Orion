@@ -10,11 +10,11 @@ class RAMStore
 	size_t size;
 	size_t emptyNodes; // should we init the 'emptyNodes' as leaf
 
-	DBConnector<string, string> *conn = nullptr;
+	DBConnector<int, string> *conn = nullptr;
 
 public:
 	RAMStore(size_t num);
-	RAMStore(DBConnector<string, string> *conn);
+	RAMStore(DBConnector<int, string> *conn);
 	~RAMStore();
 
 	BUCKET Read(size_t pos);

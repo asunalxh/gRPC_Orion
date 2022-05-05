@@ -22,9 +22,6 @@ public:
 
 	void batchInsert(map<Bid, unsigned int> pairs);
 	vector<unsigned int> batchSearch(vector<Bid> keys);
-
-	void storeInfo();
-	void debug(const unsigned char *key, int _numBucketLeaf, int data_structure, Client *client, bool initial);
 };
 
 #endif /* OMAP_H */
