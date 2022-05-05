@@ -40,9 +40,6 @@ class Oram
 {
 
 private:
-	int visitedOcallsWrite;
-	int visitedOcallsRead;
-
 	size_t depth;
 	size_t blockSize;	   // AVL Node size
 	size_t bucketSize;	   // a bucket size = blockSize * Z
@@ -52,7 +49,6 @@ private:
 
 	bool batchWrite = false;
 	bool isWriteOnly = false;
-	bool isWarmStart = false;
 
 	// set<Bid> detRead; //fetched nodes during deterministic read isWriteOnly=true
 	std::map<Bid, Node *> cache;
@@ -90,6 +86,10 @@ private:
 
 	Client *client;
 
+	std::random_device rd;
+	std::mt19937 mt;
+	std::uniform_int_distribution<int> dis;
+
 public:
 	Oram(const unsigned char *treeKey, int _numBucketLeaf, int data_structure,
 		 Client *client, bool initial); //
@@ -98,7 +98,7 @@ public:
 	Node *ReadNode(Bid bid, int lastLeaf);						   //
 	Node *ReadNode(Bid id);										   //
 	int WriteNode(Bid bid, Node *n);							   //
-	void start(bool batchWrite, bool isWarmStart);				   //
+	void start(bool batchWrite);								   //
 	void finalise(bool find, Bid &rootKey, unsigned int &rootPos); //
 };
 #endif

@@ -17,8 +17,9 @@ using grpc::ServerBuilder;
 
 int main()
 {
-	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "crime");
-	MysqlConnector::IntMapper db_raw(mysql, "ciphertext", nullptr, nullptr);
+	//MYSQL *mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "crime");
+	//MysqlConnector::IntMapper db_raw(mysql, "ciphertext", nullptr, nullptr);
+	RocksDBConnector::IntMapper db_raw("database/raw");
 	RocksDBConnector::StringMapper db_search("database/search"), db_update("database/update");
 
 	std::string server_address("0.0.0.0:50051");
@@ -31,5 +32,5 @@ int main()
 	std::cout << "Server listening on " << server_address << std::endl;
 	server->Wait();
 
-	MysqlConnector::Free_Mysql_Connect(mysql);
+	//MysqlConnector::Free_Mysql_Connect(mysql);
 }

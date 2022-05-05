@@ -55,7 +55,7 @@ unsigned int OMAP::find(Bid key)
 		return 0;
 	}
 
-	treeHandler->startOperation(false, true);
+	treeHandler->startOperation(false);
 	auto resNode = treeHandler->search(rootKey, rootPos, key);
 	unsigned int res = 0;
 	if (resNode != NULL)
@@ -69,7 +69,7 @@ unsigned int OMAP::find(Bid key)
 void OMAP::insert(Bid key, unsigned int value)
 {
 
-	treeHandler->startOperation(false, true);
+	treeHandler->startOperation(false);
 	Bid empty_key;
 	if (rootKey == empty_key)
 	{
@@ -85,10 +85,10 @@ void OMAP::insert(Bid key, unsigned int value)
 	// printf("OMAP::insert finish finalisation");
 }
 
-void OMAP::batchInsert(map<Bid, unsigned int> pairs, bool isWarmStart)
+void OMAP::batchInsert(map<Bid, unsigned int> pairs)
 {
 
-	treeHandler->startOperation(true, isWarmStart);
+	treeHandler->startOperation(true);
 	Bid empty_key;
 
 	int count = 0;
@@ -107,14 +107,8 @@ void OMAP::batchInsert(map<Bid, unsigned int> pairs, bool isWarmStart)
 
 		count++;
 
-		if (count % 100000 == 0 || count == pairs.size())
-		{
-			printf("Processing search batch %d\n", count);
-			treeHandler->finishOperation(false, rootKey, rootPos);
-			treeHandler->startOperation(true, isWarmStart);
-		}
 	}
-	// treeHandler->finishOperation(false,rootKey, rootPos);
+	 treeHandler->finishOperation(false,rootKey, rootPos);
 }
 
 vector<unsigned int> OMAP::batchSearch(vector<Bid> keys)
@@ -122,7 +116,7 @@ vector<unsigned int> OMAP::batchSearch(vector<Bid> keys)
 
 	vector<unsigned int> result;
 
-	treeHandler->startOperation(false, true);
+	treeHandler->startOperation(false);
 
 	vector<Node *> resNodes;
 

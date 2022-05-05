@@ -206,7 +206,7 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 	return node->key;
 }
 
-Node *AVLTree::search(Bid rootKey, unsigned int rootPos, Bid key)
+Node *AVLTree::search(Bid rootKey, unsigned int& rootPos, Bid key)
 {
 	// printf("AVLTree::start searching");
 
@@ -214,6 +214,8 @@ Node *AVLTree::search(Bid rootKey, unsigned int rootPos, Bid key)
 		return nullptr;
 
 	Node *head = oram->ReadNode(rootKey, rootPos);
+	rootPos = head->pos;
+
 	if (head->key > key)
 	{
 		return search(head->leftID, head->leftPos, key);
@@ -226,13 +228,15 @@ Node *AVLTree::search(Bid rootKey, unsigned int rootPos, Bid key)
 		return head;
 }
 
-void AVLTree::batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, vector<Node *> *results)
+void AVLTree::batchSearch(Bid rootKey, unsigned int& rootPos, vector<Bid> keys, vector<Node *> *results)
 {
 	if (rootKey == empty_key)
 	{
 		return;
 	}
 	auto head = oram->ReadNode(rootKey, rootPos);
+	rootPos = head->pos;
+
 	bool getLeft = false, getRight = false;
 	vector<Bid> leftkeys, rightkeys;
 	for (Bid bid : keys)
@@ -262,9 +266,9 @@ void AVLTree::batchSearch(Bid rootKey, unsigned int rootPos, vector<Bid> keys, v
 	}
 }
 
-void AVLTree::startOperation(bool batchWrite, bool isWarmStart)
+void AVLTree::startOperation(bool batchWrite)
 {
-	oram->start(batchWrite, isWarmStart);
+	oram->start(batchWrite);
 }
 
 void AVLTree::finishOperation(bool find, Bid &rootKey, unsigned int &rootPos)

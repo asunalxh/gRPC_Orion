@@ -40,27 +40,6 @@ void initKey(unsigned char *key, string filename)
 	in.close();
 }
 
-void search()
-{
-	printf("\n======== Start To Search ========\n");
-	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	// std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
-	// std::string s_keyword[] = {"BATTERY", "THEFT"};
-	std::string s_keyword[] = {"Brand#13", "Brand#11"};
-
-	for (int s_i = 0; s_i < 2; s_i++)
-	{
-		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
-
-		auto res = orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
-
-		for (auto id : res)
-		{
-			std::cout << id << ' ' << myClient->GetEncDoc(id) << '\n';
-		}
-	}
-}
-
 void db_add(DBConnector<int, string> *reader, int start, int end)
 {
 	printf("\n======== Start Adding ========\n");
@@ -166,6 +145,28 @@ void doc_delDoc(int del_no)
 	printf("\n======== Finish deleting all docs ========\n");
 }
 
+void search()
+{
+	printf("\n======== Start To Search ========\n");
+	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
+	 std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
+	// std::string s_keyword[] = {"BATTERY", "THEFT"};
+	//std::string s_keyword[] = {"Brand#13", "Brand#11"};
+
+	for (int s_i = 0; s_i < 2; s_i++)
+	{
+		printf("\nSearching ==> %s\n", s_keyword[s_i].c_str());
+
+		auto res = orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
+
+		printf("result size %ld \n",res.size());
+		//for (auto id : res)
+		//{
+		//	std::cout << id << ' ' << myClient->GetEncDoc(id) << '\n';
+		//}
+	}
+}
+
 int main()
 {
 
@@ -176,19 +177,19 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("\n======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC, 10);
+	orion = new Orion(myClient, KW, KC, 12);
 
-	// doc_addDoc(1, 20);
+	doc_addDoc(1, 10);
 	// doc_delDoc(3);
 
-	auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
-	MysqlConnector::CacheReader reader(mysql, 10, "PART", "P_PARTKEY", "P_BRAND");
-	db_add(&reader, 1, 20);
-	db_del(&reader, 3);
-	MysqlConnector::Free_Mysql_Connect(mysql);
+	// auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
+	// MysqlConnector::CacheReader reader(mysql, 10, "PART", "P_PARTKEY", "P_BRAND");
+	// db_add(&reader, 1, 20);
+	// db_del(&reader, 3);
+	// MysqlConnector::Free_Mysql_Connect(mysql);
 
 	printf("\n======== Flushing ========\n");
-	orion->flush(false);
+	orion->flush();
 
 	search();
 

@@ -182,20 +182,20 @@ void Orion::delDoc(const char *doc_id, size_t id_length, unsigned int docInt, co
 	free(k_w.content);
 }
 
-void Orion::flush(bool isWarmStart)
+void Orion::flush()
 {
 	if (setupPairs1.size() > 0)
 	{
 		printf("FLushing Processing batch omap_update");
-		omap_update->batchInsert(setupPairs1, isWarmStart);
-		omap_search->storeInfo();
+		omap_update->batchInsert(setupPairs1);
+		omap_update->storeInfo();
 		setupPairs1.clear();
 	}
 
 	if (setupPairs2.size() > 0)
 	{
 		printf("FLushing Processing batch omap_search\n");
-		omap_search->batchInsert(setupPairs2, isWarmStart);
+		omap_search->batchInsert(setupPairs2);
 		omap_search->storeInfo();
 		setupPairs2.clear();
 	}

@@ -6,7 +6,7 @@
 #include "../common/data_type2.h"
 #include "../common/Utils.h"
 
-Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure, Client *client, bool initial)
+Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure, Client *client, bool initial) : rd(), mt(rd()), dis(0, _numBucketLeaf - 1)
 {
 	this->client = client;
 
@@ -68,18 +68,12 @@ Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure
 			free(bucket_src);
 		}
 	}
-
-	visitedOcallsWrite = 0;
-	visitedOcallsRead = 0;
 }
 
 unsigned int Oram::RandomPath()
 {
-	unsigned char randomByte[1];
-	read_rand(randomByte, 1);
-	unsigned int randomInt[1];
-	memcpy(randomInt, randomByte, sizeof(randomByte));
-	return randomInt[0] % numBucketLeaf;
+	int val = dis(mt);
+	return val;
 }
 
 int Oram::GetNodeOnPath(unsigned int leaf, int curDepth)
@@ -135,8 +129,6 @@ void Oram::FetchPath(unsigned int leaf)
 		// declare temp cipher and retrieve it from outside
 		unsigned char *enc_bucket_str_tmp = (unsigned char *)malloc(enc_bucketSize);
 		client->GetData(data_structure, node, enc_bucket_str_tmp, enc_bucketSize);
-
-		visitedOcallsRead++;
 
 		// decrypt the bucket here
 		dec_aes_gcm(KC, enc_bucket_str_tmp, enc_bucketSize, bucket_str_tmp);
@@ -249,8 +241,6 @@ void Oram::WritePath(unsigned int leaf, int d)
 
 		client->PutData(data_structure, node, enc_bucket_src, enc_bucketSize);
 
-		visitedOcallsWrite++;
-
 		free(enc_bucket_src);
 		free(bucket_src);
 
@@ -267,7 +257,7 @@ void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf)
 	node = ReadData(bid);
 	if (node != NULL)
 	{
-		// node->pos = newLeaf;
+		node->pos = RandomPath();
 		// if (cache.count(bid) != 0)
 		//{
 		//	cache.erase(bid);
@@ -286,7 +276,7 @@ void Oram::Access(Bid bid, Node *&node)
 {
 
 	// printf("Cache size before Access %d", cache.size());
-	if (isWarmStart)
+	if (!batchWrite)
 		FetchPath(node->pos);
 	WriteData(bid, node);
 	if (find(leafList.begin(), leafList.end(), node->pos) == leafList.end())
@@ -394,46 +384,35 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 		}
 	}
 
-	//  updating the binary tree positions
-	for (unsigned int i = 0; i <= depth + 2; i++)
-	{
-		for (auto t : cache)
-		{
-			if (t.second != NULL && t.second->height == i)
-			{
-				bool flag = false;
-				Node *tmp = t.second;
+	////  updating the binary tree positions
+	// for (unsigned int i = 0; i <= depth + 2; i++)
+	//{
+	//	for (auto t : cache)
+	//	{
+	//		if (t.second != NULL && t.second->height == i)
+	//		{
+	//			Node *tmp = t.second;
 
-				if (modified.count(tmp->key))
-				{
-					tmp->pos = RandomPath();
-					if (isWarmStart)
-						FetchPath(tmp->pos);
-					flag = true;
-				}
+	//			if (modified.count(tmp->key))
+	//			{
+	//				tmp->pos = RandomPath();
+	//			}
 
-				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0 && cache[tmp->leftID]->pos != tmp->leftPos)
-				{
-					tmp->leftPos = cache[tmp->leftID]->pos;
-					flag = true;
-				}
-				if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0 && cache[tmp->rightID]->pos != tmp->rightPos)
-				{
-					tmp->rightPos = cache[tmp->rightID]->pos;
-					flag = true;
-				}
+	//			if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0 && cache[tmp->leftID]->pos != tmp->leftPos)
+	//			{
+	//				tmp->leftPos = cache[tmp->leftID]->pos;
+	//			}
+	//			if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0 && cache[tmp->rightID]->pos != tmp->rightPos)
+	//			{
+	//				tmp->rightPos = cache[tmp->rightID]->pos;
+	//			}
 
-				if (flag && std::find(leafList.begin(), leafList.end(), tmp->pos) == leafList.end())
-				{
-					leafList.push_back(tmp->pos);
-				}
-			}
-		}
-	}
+	//		}
+	//	}
+	//}
 
-	// updatePath(rootKey);
-	if (cache[rootKey] != NULL)
-		rootPos = cache[rootKey]->pos;
+	// if (cache[rootKey] != NULL)
+	//	rootPos = cache[rootKey]->pos;
 
 	// printf("start cache size : %d \n", cache.size());
 
@@ -448,20 +427,15 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 	leafList.clear();
 	modified.clear();
 
-	//printf("last cache size : %d \n", cache.size());
-	// printf("OcallWrite ( %d), ocallRead ( %d)\n", visitedOcallsWrite, visitedOcallsRead);
+	printf("last cache size : %d \n", cache.size());
 }
 
-void Oram::start(bool batchWrite, bool isWarmStart)
+void Oram::start(bool batchWrite)
 {
 	this->batchWrite = batchWrite;
-	this->isWarmStart = isWarmStart;
 	writeviewmap.clear();
 	readviewmap.clear();
 	readCnt = 0;
-
-	visitedOcallsWrite = 0;
-	visitedOcallsRead = 0;
 }
 
 void Oram::WriteData(Bid bid, Node *node)

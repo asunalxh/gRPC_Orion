@@ -20,7 +20,7 @@ public:
 	void insert(Bid key, unsigned int value);
 	unsigned int find(Bid key);
 
-	void batchInsert(map<Bid, unsigned int> pairs, bool isWarmStart);
+	void batchInsert(map<Bid, unsigned int> pairs);
 	vector<unsigned int> batchSearch(vector<Bid> keys);
 
 	void storeInfo();
