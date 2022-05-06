@@ -47,7 +47,7 @@ void db_add(DBConnector<int, string> *reader, int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
-		printf("No.%d\n", i);
+		printf("Add No.%d\n", i);
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
 
@@ -78,7 +78,7 @@ void db_del(DBConnector<int, string> *reader, int del_no)
 
 	for (int del_index = 1; del_index <= del_no; del_index++)
 	{
-		printf("No.%d\n", del_index);
+		printf("Del No.%d\n", del_index);
 		string id_str = to_string(del_index);
 		auto word = myClient->Del_GivenDocIndex(reader, del_index);
 
@@ -101,7 +101,7 @@ void doc_addDoc(int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
-		printf("No.%d\n", i);
+		printf("Add No.%d\n", i);
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
 
@@ -134,7 +134,7 @@ void doc_delDoc(int del_no)
 
 	for (int del_index = 1; del_index <= del_no; del_index++)
 	{
-		printf("No.%d\n", del_index);
+		printf("Del No.%d\n", del_index);
 		string id_str = to_string(del_index);
 		auto keywords = myClient->Del_GivenDocIndex(del_index);
 
@@ -182,7 +182,7 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("\n======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC, 22);
+	orion = new Orion(myClient, KW, KC, 15);
 
 	// doc_addDoc(1, 100000);
 	// doc_delDoc(10000);
