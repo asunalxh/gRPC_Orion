@@ -15,6 +15,7 @@ int AVLTree::height(Bid key, unsigned int &leaf)
 	if (key == empty_key)
 		return 0;
 	Node *node = oram->ReadNode(key, leaf);
+	leaf = node->pos;
 	return node->height;
 }
 
@@ -137,7 +138,7 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 	else
 	{
 		node->value = value;
-		oram->WriteNode(rootKey, node);
+		pos = oram->WriteNode(rootKey, node);
 		// printf("Node with key(%s) is existed and updated with new value: %d", node->key.key, value);
 		return node->key;
 	}
@@ -201,12 +202,12 @@ Bid AVLTree::insert(Bid rootKey, unsigned int &pos, Bid key, unsigned int value)
 	}
 
 	/* return the (unchanged) node pointer */
-	oram->WriteNode(node->key, node);
+	pos = oram->WriteNode(node->key, node);
 	// printf("Node with key(%s), (pos: %d), (value: %d) is inserted without Rotation", node->key.key,node->pos,node->value);
 	return node->key;
 }
 
-Node *AVLTree::search(Bid rootKey, unsigned int& rootPos, Bid key)
+Node *AVLTree::search(Bid rootKey, unsigned int &rootPos, Bid key)
 {
 	// printf("AVLTree::start searching");
 
@@ -228,7 +229,7 @@ Node *AVLTree::search(Bid rootKey, unsigned int& rootPos, Bid key)
 		return head;
 }
 
-void AVLTree::batchSearch(Bid rootKey, unsigned int& rootPos, vector<Bid> keys, vector<Node *> *results)
+void AVLTree::batchSearch(Bid rootKey, unsigned int &rootPos, vector<Bid> keys, vector<Node *> *results)
 {
 	if (rootKey == empty_key)
 	{

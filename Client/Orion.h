@@ -10,12 +10,8 @@ public:
 	Orion(Client *client, const unsigned char *KW, const unsigned char *KC, int numLeaf, bool initial = true);
 	~Orion();
 
-	void flush();
-	void batch_delDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
-	void batch_addDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
-
-	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
-	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string& word);
+	void addDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string &word);
+	void delDoc(const char *doc_id, size_t id_length, unsigned int docInt, const std::string &word);
 	vector<unsigned int> search(const char *keyword, size_t keyword_len);
 
 private:
@@ -31,11 +27,8 @@ private:
 	OMAP *omap_search;
 	OMAP *omap_update;
 
-	std::map<Bid, unsigned int> setupPairs1; // for omap update
-	std::map<Bid, unsigned int> setupPairs2; // for omap search
-
-	 std::unordered_map<std::string, int> UpdtCnt;		   // this is the ST[w]-> state
-	 std::unordered_map<std::string, unsigned int> LastIND; // this is the ;astIND[w]-> most recently added id
+	std::unordered_map<std::string, int> UpdtCnt;		   // this is the ST[w]-> state
+	std::unordered_map<std::string, unsigned int> LastIND; // this is the ;astIND[w]-> most recently added id
 
 	Client *client;
 };

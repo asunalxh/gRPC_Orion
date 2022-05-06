@@ -262,12 +262,13 @@ void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf)
 	node = ReadData(bid);
 	if (node != NULL)
 	{
-		node->pos = RandomPath();
-		// if (cache.count(bid) != 0)
+		//if (modified.count(bid) == 0)
+		//	node->pos = RandomPath();
+		//   if (cache.count(bid) != 0)
 		//{
 		//	cache.erase(bid);
-		// }
-		// cache[bid] = node;
+		//   }
+		//   cache[bid] = node;
 		if (find(leafList.begin(), leafList.end(), lastLeaf) == leafList.end())
 		{
 			leafList.push_back(lastLeaf);
@@ -389,35 +390,33 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 		}
 	}
 
-	////  updating the binary tree positions
-	// for (unsigned int i = 0; i <= depth + 2; i++)
-	//{
-	//	for (auto t : cache)
-	//	{
-	//		if (t.second != NULL && t.second->height == i)
-	//		{
-	//			Node *tmp = t.second;
+	//  updating the binary tree positions
+	for (unsigned int i = 0; i <= depth + 2; i++)
+	{
+		for (auto t : cache)
+		{
+			if (t.second != NULL && t.second->height == i)
+			{
+				Node *tmp = t.second;
 
-	//			if (modified.count(tmp->key))
-	//			{
-	//				tmp->pos = RandomPath();
-	//			}
+				if (modified.count(tmp->key))
+				{
+					tmp->pos = RandomPath();
+				}
+				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0)
+				{
+					tmp->leftPos = cache[tmp->leftID]->pos;
+				}
+				if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0)
+				{
+					tmp->rightPos = cache[tmp->rightID]->pos;
+				}
+			}
+		}
+	}
 
-	//			if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0 && cache[tmp->leftID]->pos != tmp->leftPos)
-	//			{
-	//				tmp->leftPos = cache[tmp->leftID]->pos;
-	//			}
-	//			if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0 && cache[tmp->rightID]->pos != tmp->rightPos)
-	//			{
-	//				tmp->rightPos = cache[tmp->rightID]->pos;
-	//			}
-
-	//		}
-	//	}
-	//}
-
-	// if (cache[rootKey] != NULL)
-	//	rootPos = cache[rootKey]->pos;
+	if (cache[rootKey] != NULL)
+		rootPos = cache[rootKey]->pos;
 
 	// printf("start cache size : %d \n", cache.size());
 
@@ -432,7 +431,7 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 	leafList.clear();
 	modified.clear();
 
-	printf("last cache size : %d \n", cache.size());
+	// printf("last cache size : %d \n", cache.size());
 }
 
 void Oram::start(bool batchWrite)

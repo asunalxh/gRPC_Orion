@@ -47,6 +47,7 @@ void db_add(DBConnector<int, string> *reader, int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
+		printf("No.%d\n", i);
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
 
@@ -54,7 +55,7 @@ void db_add(DBConnector<int, string> *reader, int start, int end)
 
 		myClient->SendEncDoc(fetch_data);
 
-		orion->batch_addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, word);
+		orion->delDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, word);
 
 		// free memory
 		free(fetch_data->content);
@@ -77,6 +78,7 @@ void db_del(DBConnector<int, string> *reader, int del_no)
 
 	for (int del_index = 1; del_index <= del_no; del_index++)
 	{
+		printf("No.%d\n", del_index);
 		string id_str = to_string(del_index);
 		auto word = myClient->Del_GivenDocIndex(reader, del_index);
 
@@ -85,7 +87,7 @@ void db_del(DBConnector<int, string> *reader, int del_no)
 			printf("\n-------- Processing deleting docs %d --------\n", del_index);
 		}
 
-		orion->batch_delDoc(id_str.c_str(), id_str.length(), del_index, word);
+		orion->addDoc(id_str.c_str(), id_str.length(), del_index, word);
 
 		// later need to free fetch_data
 	}
@@ -99,6 +101,7 @@ void doc_addDoc(int start, int end)
 	// Update Protocol with op = add
 	for (int i = start; i <= end; i++)
 	{
+		printf("No.%d\n", i);
 		docContent *fetch_data;
 		fetch_data = (docContent *)malloc(sizeof(docContent));
 
@@ -107,8 +110,9 @@ void doc_addDoc(int start, int end)
 		myClient->SendEncDoc(fetch_data);
 
 		for (auto word : keywords)
-			orion->batch_addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, word);
-
+		{
+			orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, word);
+		}
 		// free memory
 		free(fetch_data->content);
 		free(fetch_data->id.doc_id);
@@ -130,6 +134,7 @@ void doc_delDoc(int del_no)
 
 	for (int del_index = 1; del_index <= del_no; del_index++)
 	{
+		printf("No.%d\n", del_index);
 		string id_str = to_string(del_index);
 		auto keywords = myClient->Del_GivenDocIndex(del_index);
 
@@ -138,7 +143,7 @@ void doc_delDoc(int del_no)
 			printf("\n-------- Processing deleting docs %d --------\n", del_index);
 		}
 		for (auto word : keywords)
-			orion->batch_delDoc(id_str.c_str(), id_str.length(), del_index, word);
+			orion->delDoc(id_str.c_str(), id_str.length(), del_index, word);
 
 		// later need to free fetch_data
 	}
@@ -149,9 +154,9 @@ void search()
 {
 	printf("\n======== Start To Search ========\n");
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	 std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
+	std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
 	// std::string s_keyword[] = {"BATTERY", "THEFT"};
-	//std::string s_keyword[] = {"Brand#13", "Brand#11"};
+	// std::string s_keyword[] = {"Brand#13", "Brand#11"};
 
 	for (int s_i = 0; s_i < 2; s_i++)
 	{
@@ -159,11 +164,11 @@ void search()
 
 		auto res = orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
 
-		printf("result size %ld \n",res.size());
-		//for (auto id : res)
+		printf("result size %ld \n", res.size());
+		// for (auto id : res)
 		//{
 		//	std::cout << id << ' ' << myClient->GetEncDoc(id) << '\n';
-		//}
+		// }
 	}
 }
 
@@ -179,17 +184,14 @@ int main()
 	printf("\n======== Create Orion ========\n");
 	orion = new Orion(myClient, KW, KC, 10);
 
-	doc_addDoc(1, 20);
-	// doc_delDoc(3);
+	doc_addDoc(1, 100000);
+	doc_delDoc(10000);
 
 	// auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
 	// MysqlConnector::CacheReader reader(mysql, 10, "PART", "P_PARTKEY", "P_BRAND");
-	// db_add(&reader, 1, 20);
-	// db_del(&reader, 3);
+	// db_add(&reader, 1, 100000);
+	// db_del(&reader, 10000);
 	// MysqlConnector::Free_Mysql_Connect(mysql);
-
-	printf("\n======== Flushing ========\n");
-	orion->flush();
 
 	search();
 
