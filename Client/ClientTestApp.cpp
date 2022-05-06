@@ -55,7 +55,7 @@ void db_add(DBConnector<int, string> *reader, int start, int end)
 
 		myClient->SendEncDoc(fetch_data);
 
-		orion->delDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, word);
+		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, word);
 
 		// free memory
 		free(fetch_data->content);
@@ -87,7 +87,7 @@ void db_del(DBConnector<int, string> *reader, int del_no)
 			printf("\n-------- Processing deleting docs %d --------\n", del_index);
 		}
 
-		orion->addDoc(id_str.c_str(), id_str.length(), del_index, word);
+		orion->delDoc(id_str.c_str(), id_str.length(), del_index, word);
 
 		// later need to free fetch_data
 	}
@@ -154,9 +154,9 @@ void search()
 {
 	printf("\n======== Start To Search ========\n");
 	// std::string s_keyword[10]= {"the","of","and","to","a","in","for","is","on","that"};
-	std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
+	// std::string s_keyword[] = {"start", "plan", "work", "set", "bitch"};
 	// std::string s_keyword[] = {"BATTERY", "THEFT"};
-	// std::string s_keyword[] = {"Brand#13", "Brand#11"};
+	std::string s_keyword[] = {"Brand#13", "Brand#11"};
 
 	for (int s_i = 0; s_i < 2; s_i++)
 	{
@@ -182,16 +182,16 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("\n======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC, 10);
+	orion = new Orion(myClient, KW, KC, 22);
 
-	doc_addDoc(1, 100000);
-	doc_delDoc(10000);
+	// doc_addDoc(1, 100000);
+	// doc_delDoc(10000);
 
-	// auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
-	// MysqlConnector::CacheReader reader(mysql, 10, "PART", "P_PARTKEY", "P_BRAND");
-	// db_add(&reader, 1, 100000);
-	// db_del(&reader, 10000);
-	// MysqlConnector::Free_Mysql_Connect(mysql);
+	auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
+	MysqlConnector::CacheReader reader(mysql, 10000, "PART", "P_PARTKEY", "P_BRAND");
+	db_add(&reader, 1, 100000);
+	db_del(&reader, 10000);
+	MysqlConnector::Free_Mysql_Connect(mysql);
 
 	search();
 
