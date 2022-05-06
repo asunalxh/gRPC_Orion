@@ -139,6 +139,7 @@ void Client::GetData(int data_structure, size_t index,
 	stub_->GetData(&context, req, &resp);
 
 	std::string bucket_str = resp.bucket();
+
 	memcpy(bucket, bucket_str.c_str(), bucket_str.length());
 }
 

@@ -29,7 +29,8 @@ Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure
 	// capture the block AVL node size and a bucketSize, enc_bucket_size
 	blockSize = sizeof(Node);
 	bucketSize = blockSize * Z;
-	enc_bucketSize = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + bucketSize;
+	// enc_bucketSize = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + bucketSize;
+	enc_bucketSize = enc_length(bucketSize);
 
 	if (initial)
 	{
@@ -37,7 +38,7 @@ Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure
 		for (size_t i = 0; i < bucketCount; i++)
 		{ // Z* bucketCount
 
-			unsigned char *bucket_src = (unsigned char *)malloc(bucketSize * sizeof(unsigned char));
+			unsigned char *bucket_src = (unsigned char *)malloc(bucketSize);
 
 			// init AVL nodes in this bucket index i
 			for (int j = 0; j < Z; j++)
@@ -48,7 +49,7 @@ Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure
 				node.leftID = empty_key;
 				node.rightID = empty_key;
 
-				unsigned char *node_src = (unsigned char *)malloc(blockSize * sizeof(unsigned char));
+				unsigned char *node_src = (unsigned char *)malloc(blockSize);
 				to_bytes1(node, node_src);
 
 				// memcpy the node_src to the bucket_src
@@ -59,8 +60,8 @@ Oram::Oram(const unsigned char *treeKey, int _numBucketLeaf, int _data_structure
 
 			// encrypt the bucket here before calling the ocall, maybe with the new len?
 			unsigned char *enc_bucket_src = (unsigned char *)malloc(enc_bucketSize);
-			enc_aes_gcm(KC, bucket_src, bucketSize, enc_bucket_src);
-
+			memset(enc_bucket_src, 0, enc_bucketSize);
+			enc_aes_128(KC, bucket_src, bucketSize, enc_bucket_src);
 			// should be bucket batch later for time saving
 			client->PutData(data_structure, i, enc_bucket_src, enc_bucketSize);
 
@@ -131,13 +132,15 @@ void Oram::FetchPath(unsigned int leaf)
 		client->GetData(data_structure, node, enc_bucket_str_tmp, enc_bucketSize);
 
 		// decrypt the bucket here
-		dec_aes_gcm(KC, enc_bucket_str_tmp, enc_bucketSize, bucket_str_tmp);
+		memset(bucket_str_tmp, 0, bucketSize);
+		dec_aes_128(KC, enc_bucket_str_tmp, enc_bucketSize, bucket_str_tmp);
 
 		// free memory of the enc_bucket_tmp
 		free(enc_bucket_str_tmp);
 
 		// deserealise bucket_str_tmp to Z AVLNodes
 		Node *tempNodes[Z]; // the number of nodes in a bucket
+
 		deserialiseBucket(bucket_str_tmp, tempNodes);
 
 		for (int i = 0; i < Z; i++)
@@ -167,7 +170,8 @@ void Oram::FetchPath(unsigned int leaf)
 void Oram::deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNodes[Z])
 {
 
-	unsigned char *node_src1 = (unsigned char *)malloc(blockSize * sizeof(unsigned char));
+	// unsigned char *node_src1 = (unsigned char *)malloc(blockSize * sizeof(unsigned char));
+	unsigned char node_src1[blockSize * sizeof(unsigned char)];
 
 	for (int v = 0; v < Z; v++)
 	{
@@ -176,7 +180,7 @@ void Oram::deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNode
 		from_bytes1(node_src1, *(tempNodes[v]));
 	}
 
-	free(node_src1);
+	// free(node_src1);
 }
 
 void Oram::WritePath(unsigned int leaf, int d)
@@ -187,13 +191,13 @@ void Oram::WritePath(unsigned int leaf, int d)
 	if (find(writeviewmap.begin(), writeviewmap.end(), node) == writeviewmap.end())
 	{
 
-		unsigned char *bucket_src = (unsigned char *)malloc(bucketSize * sizeof(unsigned char));
+		unsigned char *bucket_src = (unsigned char *)malloc(bucketSize);
 
 		auto validBlocks = GetIntersectingBlocks(leaf, d);
 
 		// printf("WritePath (bucketIndex %d): Valid block size %d, leafPos %d, depth_level %d\n", node, validBlocks.size(), leaf, d);
 
-		unsigned char *temp_node_src = (unsigned char *)malloc(blockSize * sizeof(unsigned char));
+		unsigned char *temp_node_src = (unsigned char *)malloc(blockSize);
 
 		// fill up with real nodes
 		for (int z = 0; z < std::min((int)validBlocks.size(), Z); z++)
@@ -206,7 +210,7 @@ void Oram::WritePath(unsigned int leaf, int d)
 			// memcpy the node_src to the bucket_src
 			memcpy(bucket_src + (z * blockSize), temp_node_src, blockSize);
 
-			memset(temp_node_src, '0', ENTRY_HASH_KEY_LEN_256);
+			memset(temp_node_src, 0, ENTRY_HASH_KEY_LEN_128);
 
 			// important to delete the pointer and cache here
 			Node *curNode = cache[key_str];
@@ -219,7 +223,7 @@ void Oram::WritePath(unsigned int leaf, int d)
 
 		for (int z = validBlocks.size(); z < Z; z++)
 		{
-			memset(temp_node_src, '0', ENTRY_HASH_KEY_LEN_256);
+			memset(temp_node_src, 0, ENTRY_HASH_KEY_LEN_128);
 			Node dummy_node;
 			dummy_node.key = empty_key;
 
@@ -236,8 +240,9 @@ void Oram::WritePath(unsigned int leaf, int d)
 		writeviewmap.push_back(node);
 
 		// encrypt the bucket here before writing it to ocall
-		unsigned char *enc_bucket_src = (unsigned char *)malloc(enc_bucketSize * sizeof(unsigned char));
-		enc_aes_gcm(KC, bucket_src, bucketSize, enc_bucket_src);
+		unsigned char *enc_bucket_src = (unsigned char *)malloc(enc_bucketSize);
+		memset(enc_bucket_src, 0, enc_bucketSize);
+		enc_aes_128(KC, bucket_src, bucketSize, enc_bucket_src);
 
 		client->PutData(data_structure, node, enc_bucket_src, enc_bucketSize);
 

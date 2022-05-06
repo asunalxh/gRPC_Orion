@@ -177,9 +177,9 @@ int main()
 	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
 
 	printf("\n======== Create Orion ========\n");
-	orion = new Orion(myClient, KW, KC, 12);
+	orion = new Orion(myClient, KW, KC, 10);
 
-	doc_addDoc(1, 10);
+	doc_addDoc(1, 20);
 	// doc_delDoc(3);
 
 	// auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");

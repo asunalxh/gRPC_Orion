@@ -7,7 +7,7 @@ class Bid
 {
 
 public:
-    unsigned char key[ENTRY_HASH_KEY_LEN_256];
+    unsigned char key[ENTRY_HASH_KEY_LEN_128];
     Bid();
     Bid(const unsigned char *key_ptr);
     ~Bid();

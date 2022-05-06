@@ -6,7 +6,7 @@
 #include <openssl/err.h>
 #include <openssl/rand.h>
 #include <openssl/hmac.h>
-
+#include <cmath>
 void print_bytes(uint8_t *ptr, uint32_t len)
 {
 	for (uint32_t i = 0; i < len; i++)
@@ -38,35 +38,57 @@ void clear(uint8_t *dest, uint32_t len)
 	}
 }
 
-// std::vector<std::string> wordTokenize(char *content, int content_length)
-//{
-//	char delim[] = ","; //" ,.-";
-//	std::vector<std::string> result;
+int enc_length(int message_len)
+{
+	return ceil(message_len / 16.0) * 16;
+}
 
-//	char *content_cpy = (char *)malloc(content_length);
-//	memcpy(content_cpy, content, content_length);
-
-//	char *token = strtok(content_cpy, delim);
-//	while (token != NULL)
-//	{
-//		result.push_back(token);
-//		token = strtok(NULL, delim);
-//	}
-
-//	free(token);
-//	free(content_cpy);
-//	// the last , will be counted
-//	// result.erase(result.end()-1);
-
-//	return result;
-//}
-
-int enc_aes_gcm(const unsigned char *key,
+int enc_aes_128(const unsigned char *key,
 				const unsigned char *plaintext, int plaintext_len,
 				unsigned char *ciphertext)
 {
 
-	unsigned char output[AESGCM_MAC_SIZE + AESGCM_IV_SIZE + plaintext_len * 2] = {0};
+	unsigned char output[plaintext_len + 16];
+	int ciphertext_len = 0, final_len = 0;
+
+	EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+	EVP_EncryptInit(ctx, EVP_aes_128_cbc(), key, gcm_iv);
+
+	EVP_EncryptUpdate(ctx, output, &ciphertext_len, plaintext, plaintext_len);
+	EVP_EncryptFinal(ctx, output + ciphertext_len, &final_len);
+	EVP_CIPHER_CTX_free(ctx);
+
+	// ciphertext_len = ciphertext_len + final_len;
+	ciphertext_len = enc_length(plaintext_len);
+	memcpy(ciphertext, output, ciphertext_len);
+
+	return ciphertext_len;
+}
+
+int dec_aes_128(
+	const unsigned char *key,
+	unsigned char *ciphertext, int ciphertext_len,
+	unsigned char *plaintext)
+{
+	EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+	int plaintext_len = 0, final_len = 0;
+
+	EVP_DecryptInit(ctx, EVP_aes_128_cbc(), key, gcm_iv);
+	EVP_DecryptUpdate(ctx, plaintext, &plaintext_len, ciphertext, ciphertext_len);
+	EVP_DecryptFinal(ctx, plaintext + plaintext_len, &final_len);
+	EVP_CIPHER_CTX_free(ctx);
+
+	plaintext_len = plaintext_len + final_len;
+
+	return plaintext_len;
+}
+
+int enc_aes_gcm(const unsigned char *key,
+				const unsigned char *plaintext, int plaintext_len,
+				unsigned char *output)
+{
+
+	// unsigned char output[AESGCM_MAC_SIZE + AESGCM_IV_SIZE + plaintext_len * 2] = {0};
 	memcpy(output + AESGCM_MAC_SIZE, gcm_iv, AESGCM_IV_SIZE);
 
 	int ciphertext_len = 0, final_len = 0;
@@ -80,7 +102,7 @@ int enc_aes_gcm(const unsigned char *key,
 	EVP_CIPHER_CTX_free(ctx);
 
 	ciphertext_len = AESGCM_MAC_SIZE + AESGCM_IV_SIZE + ciphertext_len + final_len;
-	memcpy(ciphertext, output, ciphertext_len);
+	// memcpy(ciphertext, output, ciphertext_len);
 
 	return ciphertext_len;
 }
@@ -106,14 +128,16 @@ int dec_aes_gcm(
 	return plaintext_len;
 }
 
-void Hash_SHA256(const void *key, int key_len, const void *msg, int msg_len, void *value)
+void Hash_SHA256(const void *key, int key_len, const void *msg, int msg_len, void *value, int value_len)
 {
+	unsigned char output[32];
 	unsigned int len;
 	HMAC_CTX *ctx = HMAC_CTX_new();
 	HMAC_Init_ex(ctx, key, key_len, EVP_sha256(), NULL);
 	HMAC_Update(ctx, (unsigned char *)msg, msg_len);
-	HMAC_Final(ctx, (unsigned char *)value, &len);
+	HMAC_Final(ctx, (unsigned char *)output, &len);
 	HMAC_CTX_free(ctx);
+	memcpy(value, output, value_len);
 
 	// enc_aes_gcm((uint8_t *)msg, msg_len, (uint8_t *)key, (uint8_t *)value);
 }
