@@ -78,6 +78,8 @@ private:
 
 	void deserialiseBucket(const unsigned char *bucket_str_tmp, Node *tempNodes[Z]); //
 
+	void updatePositions(const Bid& key,unsigned int &pos);
+
 	Bid empty_key;
 
 	unsigned char KC[ENC_KEY_SIZE];

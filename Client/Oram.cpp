@@ -262,13 +262,13 @@ void Oram::Access(Bid bid, Node *&node, unsigned int lastLeaf)
 	node = ReadData(bid);
 	if (node != NULL)
 	{
-		//if (modified.count(bid) == 0)
+		// if (modified.count(bid) == 0)
 		//	node->pos = RandomPath();
-		//   if (cache.count(bid) != 0)
+		//    if (cache.count(bid) != 0)
 		//{
 		//	cache.erase(bid);
-		//   }
-		//   cache[bid] = node;
+		//    }
+		//    cache[bid] = node;
 		if (find(leafList.begin(), leafList.end(), lastLeaf) == leafList.end())
 		{
 			leafList.push_back(lastLeaf);
@@ -358,6 +358,22 @@ int Oram::WriteNode(Bid bid, Node *node)
 	}
 }
 
+void Oram::updatePositions(const Bid &key, unsigned int &pos)
+{
+	if (key == empty_key || cache.count(key) == 0)
+		return;
+
+	Node *node = cache[key];
+	if (modified.count(key))
+	{
+		node->pos = RandomPath();
+		pos = node->pos;
+	}
+
+	updatePositions(node->leftID, node->leftPos);
+	updatePositions(node->rightID, node->rightPos);
+}
+
 void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 {
 
@@ -390,33 +406,34 @@ void Oram::finalise(bool find, Bid &rootKey, unsigned int &rootPos)
 		}
 	}
 
-	//  updating the binary tree positions
-	for (unsigned int i = 0; i <= depth + 2; i++)
-	{
-		for (auto t : cache)
-		{
-			if (t.second != NULL && t.second->height == i)
-			{
-				Node *tmp = t.second;
+	////  updating the binary tree positions
+	// for (unsigned int i = 0; i <= depth + 2; i++)
+	//{
+	//	for (auto t : cache)
+	//	{
+	//		if (t.second != NULL && t.second->height == i)
+	//		{
+	//			Node *tmp = t.second;
 
-				if (modified.count(tmp->key))
-				{
-					tmp->pos = RandomPath();
-				}
-				if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0)
-				{
-					tmp->leftPos = cache[tmp->leftID]->pos;
-				}
-				if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0)
-				{
-					tmp->rightPos = cache[tmp->rightID]->pos;
-				}
-			}
-		}
-	}
+	//			if (modified.count(tmp->key))
+	//			{
+	//				tmp->pos = RandomPath();
+	//			}
+	//			if (tmp->leftID != empty_key && cache.count(tmp->leftID) > 0)
+	//			{
+	//				tmp->leftPos = cache[tmp->leftID]->pos;
+	//			}
+	//			if (tmp->rightID != empty_key && cache.count(tmp->rightID) > 0)
+	//			{
+	//				tmp->rightPos = cache[tmp->rightID]->pos;
+	//			}
+	//		}
+	//	}
+	//}
 
 	if (cache[rootKey] != NULL)
-		rootPos = cache[rootKey]->pos;
+		// rootPos = cache[rootKey]->pos;
+		updatePositions(rootKey, rootPos);
 
 	// printf("start cache size : %d \n", cache.size());
 
