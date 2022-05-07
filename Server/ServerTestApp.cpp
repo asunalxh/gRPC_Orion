@@ -17,8 +17,11 @@ using grpc::ServerBuilder;
 
 int main()
 {
+	//存储加密后原文的数据库 Host, User, Password, Database
 	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
+	//存储Oram的 Table，id所在列名（nullptr 默认为 id），value所在列名（nullptr 默认为 value）
 	MysqlConnector::IntMapper db_raw(mysql, "ciphertext", nullptr, nullptr);
+
 	RocksDBConnector::IntMapper db_search("database/search"), db_update("database/update");
 
 	std::string server_address("0.0.0.0:50051");
