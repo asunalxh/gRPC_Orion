@@ -13,7 +13,6 @@ class RAMStore
 	DBConnector<int, string> *conn = nullptr;
 
 public:
-	RAMStore(size_t num);
 	RAMStore(DBConnector<int, string> *conn);
 	~RAMStore();
 

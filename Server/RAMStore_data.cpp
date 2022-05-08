@@ -5,14 +5,13 @@
 #include "../common/Utils.h"
 using namespace std;
 
-RAMStore::RAMStore(size_t count)
-	: data(count), emptyNodes(count)
-{
-}
-
 RAMStore::RAMStore(DBConnector<int, string> *conn)
 {
 	this->conn = conn;
+	if(conn == nullptr){
+		this->data.resize(MAX_BUCKET_NUM);
+		this->emptyNodes = MAX_BUCKET_NUM;
+	}
 }
 
 RAMStore::~RAMStore()
@@ -22,7 +21,6 @@ RAMStore::~RAMStore()
 BUCKET RAMStore::Read(size_t pos)
 {
 	if (conn == NULL){
-		cout << "read with map\n";
 		return data.at(pos);
 	}
 		
@@ -37,7 +35,6 @@ BUCKET RAMStore::Read(size_t pos)
 void RAMStore::Write(size_t pos, BUCKET b)
 {
 	if (conn == NULL){
-		cout << "write with map\n";
 		data[pos] = b;
 	}
 		

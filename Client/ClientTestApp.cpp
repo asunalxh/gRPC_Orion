@@ -192,7 +192,7 @@ int main()
 	// doc_delDoc(10000);
 
 	//读取TPCH原始数据的 Host, User, Password, Database
-	auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "asunalxh", "013043", "tpch");
+	auto mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "user", "123456", "tpch");
 
 	//读取数据的 Table，id所在列名，value所在列名
 	// 数字表示一次性从数据库读多少数据到本地
