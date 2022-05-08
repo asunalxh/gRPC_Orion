@@ -71,7 +71,7 @@ void db_add(DBConnector<int, string> *reader, int start, int end)
 		// do this one to flush doc by doc enclave to flush all documents in OMAP to server
 	}
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("\n======== It takes %ld to End  ========\n", endTime - startTime);
+	printf("\n======== It takes %ldms to End  ========\n", endTime - startTime);
 }
 
 void db_del(DBConnector<int, string> *reader, int del_no)
@@ -95,7 +95,7 @@ void db_del(DBConnector<int, string> *reader, int del_no)
 		// later need to free fetch_data
 	}
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("\n======== It takes %ld to End  ========\n", endTime - startTime);
+	printf("\n======== It takes %ldms to End  ========\n", endTime - startTime);
 }
 
 void doc_addDoc(int start, int end)
@@ -125,7 +125,7 @@ void doc_addDoc(int start, int end)
 		// do this one to flush doc by doc enclave to flush all documents in OMAP to server
 	}
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("\n======== It takes %ld to End  ========\n", endTime - startTime);
+	printf("\n======== It takes %ldms to End  ========\n", endTime - startTime);
 }
 
 void doc_delDoc(int del_no)
@@ -145,7 +145,7 @@ void doc_delDoc(int del_no)
 		// later need to free fetch_data
 	}
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("\n======== It takes %ld to End  ========\n", endTime - startTime);
+	printf("\n======== It takes %ldms to End  ========\n", endTime - startTime);
 }
 
 void search()
@@ -169,7 +169,7 @@ void search()
 		// }
 	}
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("\n======== It takes %ld to End  ========\n", endTime - startTime);
+	printf("\n======== It takes %ldms to End  ========\n", endTime - startTime);
 }
 
 int main()
@@ -204,8 +204,8 @@ int main()
 	search();
 
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("包括初始化总用时：%ld\n", endTime - startTime_1);
-	printf("插入、删除、查询总用时：%ld\n", endTime - startTime_2);
+	printf("包括初始化总用时：%ldms\n", endTime - startTime_1);
+	printf("插入、删除、查询总用时：%ldms\n", endTime - startTime_2);
 
 	// free omap and client and server
 	delete orion;
