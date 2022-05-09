@@ -20,9 +20,11 @@ int main()
 	//存储加密后原文的数据库 Host, User, Password, Database
 	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "user", "123456", "tpch");
 	//存储Oram的 Table，id所在列名（nullptr 默认为 id），value所在列名（nullptr 默认为 value）
-	MysqlConnector::IntMapper db_raw(mysql, "ciphertext", nullptr, nullptr);
+	MysqlConnector::IntMapper db_raw(mysql, "ciphertext", nullptr, nullptr),
+		db_search(mysql, "oram_search", nullptr, nullptr),
+		db_update(mysql, "oram_update", nullptr, nullptr);
 
-	RocksDBConnector::IntMapper db_search("database/search"), db_update("database/update");
+	// RocksDBConnector::IntMapper db_search("database/search"), db_update("database/update");
 
 	std::string server_address("0.0.0.0:50051");
 	Server service(&db_update, &db_search, &db_raw);

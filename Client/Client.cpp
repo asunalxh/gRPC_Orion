@@ -140,7 +140,12 @@ void Client::GetData(int data_structure, size_t index,
 
 	std::string bucket_str = resp.bucket();
 
-	memcpy(bucket, bucket_str.c_str(), bucket_str.length());
+	int len;
+	auto bytes = dec_base64(bucket_str.c_str(), bucket_str.length(), &len);
+
+	memcpy(bucket, bytes, len);
+	delete[] bytes;
+	// memcpy(bucket, bucket_str.c_str(), bucket_str.length());
 }
 
 void Client::PutData(int data_structure, size_t index,
@@ -152,7 +157,11 @@ void Client::PutData(int data_structure, size_t index,
 
 	req.set_data_structure(data_structure);
 	req.set_pos(index);
-	req.set_bucket(std::string((const char *)data, data_size));
+
+	int len;
+	auto base64_str = enc_base64(data, data_size, &len);
+	req.set_bucket(base64_str);
+	delete[] base64_str;
 
 	stub_->PutData(&context, req, &resp);
 }
