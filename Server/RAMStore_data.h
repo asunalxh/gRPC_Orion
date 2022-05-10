@@ -2,7 +2,7 @@
 #include "../common/data_type2.h"
 #include <map>
 #include <array>
-#include "../common/RocksDBConnector.h"
+#include "../common/DBConnector.h"
 
 class RAMStore
 {

@@ -2,7 +2,6 @@
 #include "Omap.h"
 #include "Bid.h"
 #include "Client.h"
-#include "../common/RocksDBConnector.h"
 
 class Orion
 {

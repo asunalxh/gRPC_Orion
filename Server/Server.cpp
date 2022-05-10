@@ -2,6 +2,7 @@
 #include <algorithm> // for std::find
 #include <iterator>	 // for std::begin, std::end
 // #include "MysqlConnector.h"
+#include "../common/Utils.h"
 
 Server::Server(DBConnector<int, string> *db_update,
 			   DBConnector<int, string> *db_search, 

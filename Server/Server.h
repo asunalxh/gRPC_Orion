@@ -5,8 +5,7 @@
 #include "../common/data_type.h"
 #include "../common/crypto.grpc.pb.h"
 #include "../common/Utils.h"
-#include "../common/RocksDBConnector.h"
-#include "../common/MysqlConnector.h"
+#include "../common/DBConnector.h"
 
 #include "RAMStore_data.h"
 
