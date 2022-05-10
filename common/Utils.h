@@ -13,6 +13,8 @@
 #include "../common/data_type.h"
 #include "../common/data_type2.h"
 
+uint64_t timeSinceEpochMillisec();
+
 void print_bytes(uint8_t *ptr, uint32_t len);
 int cmp(const uint8_t *value1, const uint8_t *value2, uint32_t len);
 void clear(uint8_t *dest, uint32_t len);
@@ -37,7 +39,7 @@ int dec_aes_gcm(
 	unsigned char *ciphertext, int ciphertext_len,
 	unsigned char *plaintext);
 
-void Hash_SHA256(const void *key, int key_len, const void *msg, int msg_len, void *value,int value_len);
+void Hash_SHA256(const void *key, int key_len, const void *msg, int msg_len, void *value, int value_len);
 
 std::string BucketToString(BUCKET bucket);
 

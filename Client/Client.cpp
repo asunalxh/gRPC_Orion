@@ -20,13 +20,25 @@ Client::Client(std::shared_ptr<Channel> channel, const unsigned char *KF) : stub
 	memcpy(this->KF, KF, ENC_KEY_SIZE);
 }
 
-std::vector<string> Client::ReadDoc(int id, docContent *content)
+void Client::openFile(const char *addr)
 {
-	std::ifstream inFile;
-	std::stringstream strStream;
-	// docContent content;
+	file_counter = 0;
+	inFile.open(addr);
+}
+void Client::closeFile()
+{
+	inFile.close();
+}
 
-	std::string id_str = std::to_string(id);
+
+void Client::ReadNextPair(docContent *content)
+{
+
+	file_counter++;
+
+	content->id.doc_int = file_counter;
+
+	std::string id_str = std::to_string(file_counter);
 	/** convert fileId to char* and record length */
 	int doc_id_size = id_str.length();
 
@@ -34,39 +46,15 @@ std::vector<string> Client::ReadDoc(int id, docContent *content)
 	memcpy(content->id.doc_id, id_str.c_str(), doc_id_size + 1);
 	content->id.id_length = doc_id_size;
 
-	content->id.doc_int = id;
-
-	// read the file content
-	inFile.open(raw_doc_dir + id_str + ".txt");
-	strStream << inFile.rdbuf();
-	inFile.close();
-
-	/** convert document content to char* and record length */
-	std::string str = strStream.str();
-	int plaintext_len;
-	plaintext_len = str.length();
+	std::string str;
+	inFile >> str;
+	int plaintext_len = str.length() - 1;
 
 	content->content = (char *)malloc(plaintext_len + 1);
-	memcpy(content->content, str.c_str(), plaintext_len + 1);
+	memcpy(content->content, str.c_str(), plaintext_len);
+	content->content[plaintext_len] = '\0';
 
 	content->content_length = plaintext_len;
-
-	strStream.clear();
-
-	std::vector<string> keyword;
-	int word_num = 0;
-	inFile.open(keyword_dir + id_str + ".txt");
-	inFile >> word_num;
-
-	while (word_num--)
-	{
-		string word;
-		inFile >> word;
-		keyword.push_back(word);
-	}
-	inFile.close();
-
-	return keyword;
 }
 
 string Client::ReadDoc(DBConnector<int, string> *conn, int id, docContent *content)

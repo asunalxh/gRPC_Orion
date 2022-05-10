@@ -22,6 +22,8 @@
 #include <grpcpp/create_channel.h>
 #include <grpcpp/security/credentials.h>
 
+#include <fstream>
+
 using namespace crypto;
 using grpc::Channel;
 using std::string;
@@ -30,7 +32,9 @@ class Client
 {
 public:
 	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
-	std::vector<string> ReadDoc(int id, docContent *fetch_data);
+
+	void ReadNextPair(docContent *fetch_data);
+
 	string ReadDoc(DBConnector<int,string> * conn,int id, docContent *fetch_data);
 
 	std::vector<string> Del_GivenDocIndex(const int del_index);
@@ -45,7 +49,13 @@ public:
 	void SendEncDoc(const docContent *data);
 	string GetEncDoc(int id);
 
+	void openFile(const char* addr);
+	void closeFile();
+
 private:
+	std::ifstream inFile;
+	uint64_t file_counter;
+
 	unsigned char KF[ENC_KEY_SIZE];
 	int file_reading_counter;
 	std::unique_ptr<CryptoService::Stub> stub_;

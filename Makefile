@@ -1,12 +1,12 @@
 CXXFLAGS := -std=c++17
 
 ######## Mysql Settings ########
-Mysql_Include_Path := -I/opt/lampp/include
-Mysql_Link_Flags := -L/opt/lampp/lib -lmysqlclient
+Mysql_Include_Path := -I/usr/include/mysql
+Mysql_Link_Flags := -lmysqlclient
 
 ######## RocksDB Settings ########
-RocksDB_Link_Flags := -L/opt/rocksdb -lrocksdb -lpthread
-RocksDB_Include_Path := -I/opt/rocksdb/include
+RocksDB_Link_Flags := 
+RocksDB_Include_Path := 
 
 ######## gRPC Settings ########
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)

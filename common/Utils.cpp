@@ -7,6 +7,15 @@
 #include <openssl/rand.h>
 #include <openssl/hmac.h>
 #include <cmath>
+#include <cstdint>
+#include <chrono>
+
+uint64_t timeSinceEpochMillisec()
+{
+	using namespace std::chrono;
+	return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+}
+
 void print_bytes(uint8_t *ptr, uint32_t len)
 {
 	for (uint32_t i = 0; i < len; i++)

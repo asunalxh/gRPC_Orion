@@ -10,7 +10,6 @@
 #include <grpcpp/server_context.h>
 
 #include "../common/crypto.grpc.pb.h"
-#include "../common/RocksDBConnector.h"
 #include "../common/MysqlConnector.h"
 
 using grpc::ServerBuilder;
@@ -18,7 +17,7 @@ using grpc::ServerBuilder;
 int main()
 {
 	//存储加密后原文的数据库 Host, User, Password, Database
-	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect("127.0.0.1", "user", "123456", "tpch");
+	MYSQL *mysql = MysqlConnector::Create_Mysql_Connect("localhost", "asunalxh", "123456", "orion");
 	//存储Oram的 Table，id所在列名（nullptr 默认为 id），value所在列名（nullptr 默认为 value）
 	MysqlConnector::IntMapper db_raw(mysql, "ciphertext", nullptr, nullptr),
 		db_search(mysql, "oram_search", nullptr, nullptr),
