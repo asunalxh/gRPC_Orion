@@ -5,12 +5,19 @@
 #include "../common/Utils.h"
 
 Server::Server(DBConnector<int, string> *db_update,
-			   DBConnector<int, string> *db_search, 
+			   DBConnector<int, string> *db_search,
 			   DBConnector<int, string> *db_raw_data)
 {
 	this->db_raw_data = db_raw_data;
 	data_search = new RAMStore(db_search);
 	data_update = new RAMStore(db_update);
+}
+
+
+grpc::Status Server::ServerLog(ServerContext *context, const GeneralMessage *req, GeneralMessage *resp){
+	printf("调用GetData共耗时 %ld ms\n",  GetDataTime);
+	printf("调用PutData共耗时 %ld ms\n",  PutDataTime);
+	printf("接受加密数据文件共耗时 %ld ms\n", ReceiveEncDocTime);
 }
 
 Server::~Server()
@@ -23,6 +30,7 @@ Server::~Server()
 
 grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, OramBucketMessage *resp)
 {
+	uint64_t startTime = timeSinceEpochMillisec();
 	int data_structure = req->data_structure();
 	size_t pos = req->pos();
 	BUCKET bucket;
@@ -40,11 +48,15 @@ grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, Ora
 	resp->set_pos(pos);
 	resp->set_bucket(bucket_str);
 
+	uint64_t endTime = timeSinceEpochMillisec();
+	this->GetDataTime += endTime - startTime;
+
 	return grpc::Status::OK;
 }
 
 grpc::Status Server::PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp)
 {
+	uint64_t startTime = timeSinceEpochMillisec();
 	int data_structure = req->data_structure();
 	size_t pos = req->pos();
 	std::string bucket_str = req->bucket();
@@ -58,12 +70,14 @@ grpc::Status Server::PutData(ServerContext *context, const OramBucketMessage *re
 	{
 		data_update->Write(pos, b);
 	}
+	uint64_t endTime = timeSinceEpochMillisec();
+	this->PutDataTime += endTime - startTime;
 	return grpc::Status::OK;
 }
 
 grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const DocMessage *req, GeneralMessage *resp)
 {
-
+	uint64_t startTime = timeSinceEpochMillisec();
 	int id = req->id();
 	std::string enc_content = req->value();
 	if (db_raw_data == nullptr)
@@ -75,6 +89,8 @@ grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const DocMess
 		db_raw_data->Put(id, enc_content);
 	}
 
+	uint64_t endTime = timeSinceEpochMillisec();
+	this->ReceiveEncDocTime += endTime - startTime;
 	return grpc::Status::OK;
 }
 

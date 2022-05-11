@@ -30,8 +30,13 @@ public:
 
 	grpc::Status Receive_Encrypted_Doc(ServerContext *context, const DocMessage *req, GeneralMessage *resp) override;
 	grpc::Status Retrieve_Encrypted_Doc(ServerContext *context, const DocIdMessage *req, DocMessage *resp) override;
+	grpc::Status ServerLog(ServerContext *context, const GeneralMessage *req, GeneralMessage *resp) override;
 
 private:
+	uint64_t GetDataTime = 0;
+	uint64_t PutDataTime = 0;
+	uint64_t ReceiveEncDocTime = 0;
+
 	std::unordered_map<int, std::string> R_Doc;
 
 	DBConnector<int, string> *db_raw_data = nullptr;

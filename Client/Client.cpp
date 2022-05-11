@@ -30,9 +30,23 @@ void Client::closeFile()
 	inFile.close();
 }
 
+void Client::ClientLog()
+{
+	printf("调用GetData %ld 次 共耗时 %ld ms 发送%ld 返回%ld\n", GetDataCount, GetDataTime, GetDataReqBytes, GetDataRespBytes);
+	printf("调用PutData %ld 次，共耗时 %ld ms 发送%ld 返回%ld\n", PutDataCount, PutDataTime, PutDataReqBytes, PutDataRespBytes);
+	printf("传送加密后文件共耗时 %ld ms 发送%ld 返回%ld\n", SendEncDocTime, SendEncDocReqBytes, SendEncDocRespBytes);
+	printf("读取数据文件共耗时 %ld ms\n", ReadDocTime);
+}
 
+void Client::ServerLog()
+{
+	ClientContext context;
+	GeneralMessage req, resp;
+	stub_->ServerLog(&context, req, &resp);
+}
 void Client::ReadNextPair(docContent *content)
 {
+	uint64_t startTime = timeSinceEpochMillisec();
 
 	file_counter++;
 
@@ -55,6 +69,9 @@ void Client::ReadNextPair(docContent *content)
 	content->content[plaintext_len] = '\0';
 
 	content->content_length = plaintext_len;
+
+	uint64_t endTime = timeSinceEpochMillisec();
+	ReadDocTime += endTime - startTime;
 }
 
 string Client::ReadDoc(DBConnector<int, string> *conn, int id, docContent *content)
@@ -83,29 +100,6 @@ string Client::ReadDoc(DBConnector<int, string> *conn, int id, docContent *conte
 	return value;
 }
 
-std::vector<string> Client::Del_GivenDocIndex(const int del_index)
-{
-
-	std::ifstream inFile;
-
-	std::string fileName;
-	fileName = std::to_string(del_index);
-
-	std::vector<string> keyword;
-	int word_num = 0;
-	inFile.open(keyword_dir + fileName + ".txt");
-	inFile >> word_num;
-
-	while (word_num--)
-	{
-		string word;
-		inFile >> word;
-		keyword.push_back(word);
-	}
-	inFile.close();
-
-	return keyword;
-}
 string Client::Del_GivenDocIndex(DBConnector<int, string> *conn, const int del_index)
 {
 
@@ -117,14 +111,22 @@ string Client::Del_GivenDocIndex(DBConnector<int, string> *conn, const int del_i
 void Client::GetData(int data_structure, size_t index,
 					 unsigned char *bucket, size_t bucket_size)
 {
+
 	ClientContext context;
 	OramMessage req;
 	OramBucketMessage resp;
 
 	req.set_data_structure(data_structure);
 	req.set_pos(index);
+	GetDataReqBytes += req.ByteSizeLong();
+
+	uint64_t startTime = timeSinceEpochMillisec();
 
 	stub_->GetData(&context, req, &resp);
+
+	uint64_t endTime = timeSinceEpochMillisec();
+
+	GetDataRespBytes += resp.ByteSizeLong();
 
 	std::string bucket_str = resp.bucket();
 
@@ -133,12 +135,17 @@ void Client::GetData(int data_structure, size_t index,
 
 	memcpy(bucket, bytes, len);
 	delete[] bytes;
+
+	GetDataCount++;
+	GetDataTime += endTime - startTime;
+
 	// memcpy(bucket, bucket_str.c_str(), bucket_str.length());
 }
 
 void Client::PutData(int data_structure, size_t index,
 					 const unsigned char *data, size_t data_size)
 {
+
 	ClientContext context;
 	OramBucketMessage req;
 	GeneralMessage resp;
@@ -151,7 +158,16 @@ void Client::PutData(int data_structure, size_t index,
 	req.set_bucket(base64_str);
 	delete[] base64_str;
 
+	PutDataReqBytes += req.ByteSizeLong();
+
+	uint64_t startTime = timeSinceEpochMillisec();
 	stub_->PutData(&context, req, &resp);
+	uint64_t endTime = timeSinceEpochMillisec();
+
+	PutDataRespBytes += resp.ByteSizeLong();
+
+	PutDataCount++;
+	PutDataTime += endTime - startTime;
 }
 
 void Client::SendEncDoc(const docContent *data)
@@ -174,7 +190,14 @@ void Client::SendEncDoc(const docContent *data)
 	req.set_value(str);
 	delete[] str;
 
+	SendEncDocReqBytes += req.ByteSizeLong();
+
+	uint64_t startTime = timeSinceEpochMillisec();
 	stub_->Receive_Encrypted_Doc(&context, req, &resp);
+	uint64_t endTime = timeSinceEpochMillisec();
+
+	SendEncDocRespBytes += resp.ByteSizeLong();
+	SendEncDocTime += endTime - startTime;
 }
 
 string Client::GetEncDoc(int id)

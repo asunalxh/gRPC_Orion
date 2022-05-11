@@ -25,7 +25,7 @@ int main()
 
 	// RocksDBConnector::IntMapper db_search("database/search"), db_update("database/update");
 
-	std::string server_address("0.0.0.0:50051");
+	std::string server_address("0.0.0.0:50052");
 	Server service(&db_update, &db_search, &db_raw);
 
 	ServerBuilder builder;

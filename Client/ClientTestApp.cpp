@@ -108,10 +108,6 @@ void search()
 		auto res = orion->search(s_keyword[s_i].c_str(), s_keyword[s_i].size());
 
 		printf("result size %ld \n", res.size());
-		// for (auto id : res)
-		//{
-		//	std::cout << id << ' ' << myClient->GetEncDoc(id) << '\n';
-		// }
 	}
 	uint64_t endTime = timeSinceEpochMillisec();
 	printf("\n======== It takes %ldms to End  ========\n", endTime - startTime);
@@ -124,29 +120,24 @@ int main()
 	initKey(KC, "KC");
 	initKey(KF, "KF");
 
-	myClient = new Client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()), KF);
+	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+	myClient->openFile("/backup/luna-dataset/crimePtype.txt");
 
-	uint64_t startTime_1 = timeSinceEpochMillisec();
+	uint64_t startTime = timeSinceEpochMillisec();
 
 	printf("\n======== Create Orion ========\n");
 	orion = new Orion(myClient, KW, KC, 5);
 
-	uint64_t startTime_2 = timeSinceEpochMillisec();
-
-	myClient->openFile("/backup/luna-dataset/crimePtype.txt");
-	addDoc(100);
-	myClient->closeFile();
-
-	search();
-
-	myClient->openFile("/backup/luna-dataset/crimePtype.txt");
-	delDoc(10);
-
-	search();
+	uint64_t calculate_time = addDoc(100);
 
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("包括初始化总用时：%ldms\n", endTime - startTime_1);
-	printf("插入、删除、查询总用时：%ldms\n", endTime - startTime_2);
+	printf("包括初始化总用时：%ldms\n", endTime - startTime);
+	printf("插入、删除总用时：%ldms\n", calculate_time);
+
+	myClient->closeFile();
+
+	myClient->ClientLog();
+	myClient->ServerLog();
 
 	// free omap and client and server
 	delete orion;

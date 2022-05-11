@@ -30,4 +30,5 @@ service CryptoService{
     rpc PutData(OramBucketMessage) returns(GeneralMessage) {}; 
 	rpc Receive_Encrypted_Doc(DocMessage) returns(GeneralMessage) {};
 	rpc Retrieve_Encrypted_Doc(DocIdMessage) returns(DocMessage) {};
+	rpc ServerLog(GeneralMessage) returns(GeneralMessage) {};
 }

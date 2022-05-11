@@ -36,8 +36,6 @@ public:
 	void ReadNextPair(docContent *fetch_data);
 
 	string ReadDoc(DBConnector<int,string> * conn,int id, docContent *fetch_data);
-
-	std::vector<string> Del_GivenDocIndex(const int del_index);
 	string Del_GivenDocIndex(DBConnector<int, string> *conn,const int del_index);
 
 
@@ -52,7 +50,24 @@ public:
 	void openFile(const char* addr);
 	void closeFile();
 
+	void ClientLog();
+	void ServerLog();
+
 private:
+	uint64_t GetDataTime = 0;
+	uint64_t PutDataTime = 0;
+	uint64_t SendEncDocTime = 0;
+	uint64_t ReadDocTime = 0;
+	uint64_t GetDataCount = 0;
+	uint64_t PutDataCount = 0;
+
+	uint64_t GetDataReqBytes = 0;
+	uint64_t GetDataRespBytes = 0;
+	uint64_t PutDataReqBytes = 0;
+	uint64_t PutDataRespBytes = 0;
+	uint64_t SendEncDocReqBytes = 0;
+	uint64_t SendEncDocRespBytes = 0;
+
 	std::ifstream inFile;
 	uint64_t file_counter;
 
