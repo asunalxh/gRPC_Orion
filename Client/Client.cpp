@@ -14,7 +14,7 @@
 
 using grpc::ClientContext;
 
-Client::Client(std::shared_ptr<Channel> channel, const unsigned char *KF) : stub_(CryptoService::NewStub(channel))
+Client::Client(Server *server, const unsigned char *KF) : stub_(server)
 {
 	file_reading_counter = 0;
 	memcpy(this->KF, KF, ENC_KEY_SIZE);
@@ -40,9 +40,8 @@ void Client::ClientLog()
 
 void Client::ServerLog()
 {
-	ClientContext context;
 	GeneralMessage req, resp;
-	stub_->ServerLog(&context, req, &resp);
+	stub_->ServerLog(&req, &resp);
 }
 void Client::ReadNextPair(docContent *content)
 {
@@ -70,45 +69,10 @@ void Client::ReadNextPair(docContent *content)
 	content->content_length = plaintext_len;
 }
 
-string Client::ReadDoc(DBConnector<int, string> *conn, int id, docContent *content)
-{
-	std::ifstream inFile;
-	// docContent content;
-
-	std::string id_str = std::to_string(id);
-	/** convert fileId to char* and record length */
-	int doc_id_size = id_str.length();
-
-	content->id.doc_id = (char *)malloc(doc_id_size + 1);
-	memcpy(content->id.doc_id, id_str.c_str(), doc_id_size + 1);
-	content->id.id_length = doc_id_size;
-
-	content->id.doc_int = id;
-
-	string value;
-	if (conn->Get(id, value))
-	{
-		content->content_length = value.length();
-		content->content = (char *)malloc(content->content_length + 1);
-		memcpy(content->content, value.c_str(), content->content_length + 1);
-	}
-
-	return value;
-}
-
-string Client::Del_GivenDocIndex(DBConnector<int, string> *conn, const int del_index)
-{
-
-	string value;
-	conn->Get(del_index, value);
-	return value;
-}
-
 void Client::GetData(int data_structure, size_t index,
 					 unsigned char *bucket, size_t bucket_size)
 {
 
-	ClientContext context;
 	OramMessage req;
 	OramBucketMessage resp;
 
@@ -117,9 +81,8 @@ void Client::GetData(int data_structure, size_t index,
 	GetDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-	stub_->GetData(&context, req, &resp);
+	stub_->GetData(&req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
-
 
 	GetDataRespBytes += resp.ByteSizeLong();
 
@@ -141,7 +104,6 @@ void Client::PutData(int data_structure, size_t index,
 					 const unsigned char *data, size_t data_size)
 {
 
-	ClientContext context;
 	OramBucketMessage req;
 	GeneralMessage resp;
 
@@ -156,7 +118,7 @@ void Client::PutData(int data_structure, size_t index,
 	PutDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-	stub_->PutData(&context, req, &resp);
+	stub_->PutData(&req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
 
 	PutDataRespBytes += resp.ByteSizeLong();
@@ -176,7 +138,6 @@ void Client::SendEncDoc(const docContent *data)
 	int len;
 	auto str = enc_base64(message, message_len, &len);
 
-	ClientContext context;
 	DocMessage req;
 	GeneralMessage resp;
 
@@ -188,35 +149,9 @@ void Client::SendEncDoc(const docContent *data)
 	SendEncDocReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-	stub_->Receive_Encrypted_Doc(&context, req, &resp);
+	stub_->Receive_Encrypted_Doc(&req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
 
 	SendEncDocRespBytes += resp.ByteSizeLong();
 	SendEncDocTime += endTime - startTime;
-}
-
-string Client::GetEncDoc(int id)
-{
-	ClientContext context;
-	DocIdMessage req;
-	DocMessage resp;
-	req.set_id(id);
-
-	stub_->Retrieve_Encrypted_Doc(&context, req, &resp);
-
-	int len;
-	string base64_str = resp.value();
-
-	// std::cout << base64_str << '\n';
-
-	auto value = dec_base64(base64_str.c_str(), base64_str.length(), &len);
-
-	char *message = new char[len];
-	int message_len = dec_aes_gcm(KF, (uint8_t *)value, len, (uint8_t *)message);
-
-	string ans(message, message_len);
-
-	delete[] message;
-	delete[] value;
-	return ans;
 }

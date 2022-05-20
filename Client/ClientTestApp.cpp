@@ -2,7 +2,6 @@
 #include "stdio.h"
 #include "stdlib.h"
 
-#include "../common/MysqlConnector.h"
 #include "../common/data_type.h"
 #include "../common/Utils.h"
 #include "Client.h"
@@ -120,8 +119,10 @@ int main()
 	initKey(KC, "KC");
 	initKey(KF, "KF");
 
-	myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
-	// myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+	// myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
+	//  myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+	Server *myServer = new Server();
+	myClient = new Client(myServer, KF);
 	myClient->openFile("/home/asunalxh/Data/crimePtype.txt");
 
 	uint64_t startTime = timeSinceEpochMillisec();

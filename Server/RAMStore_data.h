@@ -2,7 +2,6 @@
 #include "../common/data_type2.h"
 #include <map>
 #include <array>
-#include "../common/DBConnector.h"
 
 class RAMStore
 {
@@ -10,10 +9,8 @@ class RAMStore
 	size_t size;
 	size_t emptyNodes; // should we init the 'emptyNodes' as leaf
 
-	DBConnector<int, string> *conn = nullptr;
-
 public:
-	RAMStore(DBConnector<int, string> *conn);
+	RAMStore();
 	~RAMStore();
 
 	BUCKET Read(size_t pos);

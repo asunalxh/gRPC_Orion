@@ -14,7 +14,7 @@
 #include <vector>
 #include <memory>
 #include "../common/crypto.grpc.pb.h"
-#include "../common/DBConnector.h"
+#include "../Server/Server.h"
 
 #include <grpc/grpc.h>
 #include <grpcpp/channel.h>
@@ -31,13 +31,9 @@ using std::string;
 class Client
 {
 public:
-	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
+	Client(Server *server, const unsigned char *KF);
 
 	void ReadNextPair(docContent *fetch_data);
-
-	string ReadDoc(DBConnector<int,string> * conn,int id, docContent *fetch_data);
-	string Del_GivenDocIndex(DBConnector<int, string> *conn,const int del_index);
-
 
 	void GetData(int data_structure, size_t index,
 				 unsigned char *bucket, size_t bucket_size);
@@ -45,9 +41,8 @@ public:
 				 const unsigned char *data, size_t data_size);
 
 	void SendEncDoc(const docContent *data);
-	string GetEncDoc(int id);
 
-	void openFile(const char* addr);
+	void openFile(const char *addr);
 	void closeFile();
 
 	void ClientLog();
@@ -72,7 +67,7 @@ private:
 
 	unsigned char KF[ENC_KEY_SIZE];
 	int file_reading_counter;
-	std::unique_ptr<CryptoService::Stub> stub_;
+	Server *stub_;
 };
 
 #endif
