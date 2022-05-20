@@ -1,8 +1,8 @@
 CXXFLAGS := -std=c++17
 
 ######## Mysql Settings ########
-Mysql_Include_Path := -I/usr/include/mysql
-Mysql_Link_Flags := -lmysqlclient
+Mysql_Include_Path := -I/opt/lampp/include
+Mysql_Link_Flags := -L/opt/lampp/lib -lmysqlclient
 
 ######## RocksDB Settings ########
 RocksDB_Link_Flags := 

@@ -107,7 +107,7 @@ string Client::Del_GivenDocIndex(DBConnector<int, string> *conn, const int del_i
 void Client::GetData(int data_structure, size_t index,
 					 unsigned char *bucket, size_t bucket_size)
 {
-
+	uint64_t startTime = timeSinceEpochMillisec();
 	OramMessage req;
 	OramBucketMessage resp;
 
@@ -115,10 +115,8 @@ void Client::GetData(int data_structure, size_t index,
 	req.set_pos(index);
 	GetDataReqBytes += req.ByteSizeLong();
 
-	uint64_t startTime = timeSinceEpochMillisec();
 	ClientContext context;
 	stub_->GetData(&context, req, &resp);
-	uint64_t endTime = timeSinceEpochMillisec();
 
 	GetDataRespBytes += resp.ByteSizeLong();
 
@@ -131,6 +129,8 @@ void Client::GetData(int data_structure, size_t index,
 	delete[] bytes;
 
 	GetDataCount++;
+	uint64_t endTime = timeSinceEpochMillisec();
+
 	GetDataTime += endTime - startTime;
 
 	// memcpy(bucket, bucket_str.c_str(), bucket_str.length());
@@ -139,7 +139,7 @@ void Client::GetData(int data_structure, size_t index,
 void Client::PutData(int data_structure, size_t index,
 					 const unsigned char *data, size_t data_size)
 {
-
+	uint64_t startTime = timeSinceEpochMillisec();
 	OramBucketMessage req;
 	GeneralMessage resp;
 
@@ -153,20 +153,19 @@ void Client::PutData(int data_structure, size_t index,
 
 	PutDataReqBytes += req.ByteSizeLong();
 
-	uint64_t startTime = timeSinceEpochMillisec();
 	ClientContext context;
 	stub_->PutData(&context, req, &resp);
-	uint64_t endTime = timeSinceEpochMillisec();
 
 	PutDataRespBytes += resp.ByteSizeLong();
 
 	PutDataCount++;
+	uint64_t endTime = timeSinceEpochMillisec();
 	PutDataTime += endTime - startTime;
 }
 
 void Client::SendEncDoc(const docContent *data)
 {
-
+	uint64_t startTime = timeSinceEpochMillisec();
 	unsigned char message[data->content_length + AESGCM_MAC_SIZE + AESGCM_IV_SIZE];
 	int message_len = enc_aes_gcm(
 		KF, (unsigned char *)data->content, data->content_length,
@@ -185,12 +184,11 @@ void Client::SendEncDoc(const docContent *data)
 
 	SendEncDocReqBytes += req.ByteSizeLong();
 
-	uint64_t startTime = timeSinceEpochMillisec();
 	ClientContext context;
 	stub_->Receive_Encrypted_Doc(&context, req, &resp);
-	uint64_t endTime = timeSinceEpochMillisec();
 
 	SendEncDocRespBytes += resp.ByteSizeLong();
+	uint64_t endTime = timeSinceEpochMillisec();
 	SendEncDocTime += endTime - startTime;
 }
 
