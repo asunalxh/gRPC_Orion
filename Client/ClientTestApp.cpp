@@ -120,9 +120,9 @@ int main()
 	initKey(KC, "KC");
 	initKey(KF, "KF");
 
-	myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
-	// myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
-	myClient->openFile("/home/asunalxh/Data/crimePtype.txt");
+	// myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
+	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+	myClient->openFile("/home/asunalxh/Data/enron.txt");
 
 	uint64_t startTime = timeSinceEpochMillisec();
 

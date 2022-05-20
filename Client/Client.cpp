@@ -108,7 +108,6 @@ void Client::GetData(int data_structure, size_t index,
 					 unsigned char *bucket, size_t bucket_size)
 {
 
-	ClientContext context;
 	OramMessage req;
 	OramBucketMessage resp;
 
@@ -117,9 +116,9 @@ void Client::GetData(int data_structure, size_t index,
 	GetDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
+	ClientContext context;
 	stub_->GetData(&context, req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
-
 
 	GetDataRespBytes += resp.ByteSizeLong();
 
@@ -141,7 +140,6 @@ void Client::PutData(int data_structure, size_t index,
 					 const unsigned char *data, size_t data_size)
 {
 
-	ClientContext context;
 	OramBucketMessage req;
 	GeneralMessage resp;
 
@@ -156,6 +154,7 @@ void Client::PutData(int data_structure, size_t index,
 	PutDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
+	ClientContext context;
 	stub_->PutData(&context, req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
 
@@ -176,7 +175,6 @@ void Client::SendEncDoc(const docContent *data)
 	int len;
 	auto str = enc_base64(message, message_len, &len);
 
-	ClientContext context;
 	DocMessage req;
 	GeneralMessage resp;
 
@@ -188,6 +186,7 @@ void Client::SendEncDoc(const docContent *data)
 	SendEncDocReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
+	ClientContext context;
 	stub_->Receive_Encrypted_Doc(&context, req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
 
