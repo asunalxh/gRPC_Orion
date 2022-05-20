@@ -1,13 +1,5 @@
 CXXFLAGS := -std=c++17
 
-######## Mysql Settings ########
-Mysql_Include_Path := -I/usr/include/mysql
-Mysql_Link_Flags := -lmysqlclient
-
-######## RocksDB Settings ########
-RocksDB_Link_Flags := 
-RocksDB_Include_Path := 
-
 ######## gRPC Settings ########
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
@@ -39,8 +31,7 @@ GRPC_PB_CC_FILES = $(PROTO_FILES:.proto=.grpc.pb.cc)
 PROTO_OBJECT_FILES = $(PB_CC_FILES:.cc=.o) $(GRPC_PB_CC_FILES:.cc=.o) 
 
 ######## App Settings ########
-Server_Target := serverTestApp
-Client_Target := clientTestApp
+Target := testApp
 
 Client_App_Files := $(wildcard Client/*.cpp)
 Server_App_Files := $(wildcard Server/*.cpp)
@@ -50,13 +41,11 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
-Include_Path := $(Mysql_Include_Path) $(RocksDB_Include_Path)
-
-Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS) $(RocksDB_Link_Flags) $(Mysql_Link_Flags)
+Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS)
 
 .PHONY: all clean
 
-all: $(Client_Target) $(Server_Target)
+all: $(Target)
 
 $(PROTOS_PATH)/%.grpc.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(PROTOS_PATH) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
@@ -65,22 +54,19 @@ $(PROTOS_PATH)/%.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 common/%.o: common/%.cpp
-	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
+	$(CXX) $(CXXFLAGS)  -c $< -o $@
 
 Client/%.o: Client/%.cpp
-	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
+	$(CXX) $(CXXFLAGS)  -c $< -o $@
 
 Server/%.o: Server/%.cpp
-	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
+	$(CXX) $(CXXFLAGS)  -c $< -o $@
 
-$(Client_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Client_Object_Files)
-	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
-
-$(Server_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Server_Object_Files)
+$(Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Server_Object_Files) $(Client_Object_Files)
 	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
 
 
 clean:
 	@rm -f common/*.o common/*.pb.cc common/*.pb.h
 	@rm -f Client/*.o Server/*.o
-	@rm -f $(Client_Target) $(Server_Target)
+	@rm -f $(Target)
