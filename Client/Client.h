@@ -57,7 +57,6 @@ private:
 	uint64_t GetDataTime = 0;
 	uint64_t PutDataTime = 0;
 	uint64_t SendEncDocTime = 0;
-	uint64_t ReadDocTime = 0;
 	uint64_t GetDataCount = 0;
 	uint64_t PutDataCount = 0;
 

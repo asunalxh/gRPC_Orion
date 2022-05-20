@@ -32,10 +32,10 @@ void Client::closeFile()
 
 void Client::ClientLog()
 {
-	printf("调用GetData %ld 次 共耗时 %ld ms 发送%ld 返回%ld\n", GetDataCount, GetDataTime, GetDataReqBytes, GetDataRespBytes);
-	printf("调用PutData %ld 次，共耗时 %ld ms 发送%ld 返回%ld\n", PutDataCount, PutDataTime, PutDataReqBytes, PutDataRespBytes);
-	printf("传送加密后文件共耗时 %ld ms 发送%ld 返回%ld\n", SendEncDocTime, SendEncDocReqBytes, SendEncDocRespBytes);
-	printf("读取数据文件共耗时 %ld ms\n", ReadDocTime);
+
+	printf("调用GetData %ld 次 共耗时 %ld ms 发送 %ld 返回 %ld\n", GetDataCount, GetDataTime, GetDataReqBytes, GetDataRespBytes);
+	printf("调用PutData %ld 次，共耗时 %ld ms 发送 %ld 返回 %ld\n", PutDataCount, PutDataTime, PutDataReqBytes, PutDataRespBytes);
+	printf("传送加密后文件共耗时 %ld ms 发送 %ld 返回 %ld\n", SendEncDocTime, SendEncDocReqBytes, SendEncDocRespBytes);
 }
 
 void Client::ServerLog()
@@ -46,9 +46,8 @@ void Client::ServerLog()
 }
 void Client::ReadNextPair(docContent *content)
 {
-	uint64_t startTime = timeSinceEpochMillisec();
-
-	file_counter++;
+	// file_counter++;
+	inFile >> file_counter;
 
 	content->id.doc_int = file_counter;
 
@@ -62,16 +61,13 @@ void Client::ReadNextPair(docContent *content)
 
 	std::string str;
 	inFile >> str;
-	int plaintext_len = str.length() - 1;
+	int plaintext_len = str.length();
 
 	content->content = (char *)malloc(plaintext_len + 1);
 	memcpy(content->content, str.c_str(), plaintext_len);
 	content->content[plaintext_len] = '\0';
 
 	content->content_length = plaintext_len;
-
-	uint64_t endTime = timeSinceEpochMillisec();
-	ReadDocTime += endTime - startTime;
 }
 
 string Client::ReadDoc(DBConnector<int, string> *conn, int id, docContent *content)
@@ -121,10 +117,9 @@ void Client::GetData(int data_structure, size_t index,
 	GetDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-
 	stub_->GetData(&context, req, &resp);
-
 	uint64_t endTime = timeSinceEpochMillisec();
+
 
 	GetDataRespBytes += resp.ByteSizeLong();
 

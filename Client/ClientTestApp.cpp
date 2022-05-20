@@ -120,8 +120,9 @@ int main()
 	initKey(KC, "KC");
 	initKey(KF, "KF");
 
-	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
-	myClient->openFile("/backup/luna-dataset/crimePtype.txt");
+	myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
+	// myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+	myClient->openFile("/home/asunalxh/Data/crimePtype.txt");
 
 	uint64_t startTime = timeSinceEpochMillisec();
 
@@ -131,8 +132,8 @@ int main()
 	uint64_t calculate_time = addDoc(100);
 
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("包括初始化总用时：%ldms\n", endTime - startTime);
-	printf("插入、删除总用时：%ldms\n", calculate_time);
+	printf("包括初始化总用时： %ld ms\n", endTime - startTime);
+	printf("插入、删除总用时： %ld ms\n", calculate_time);
 
 	myClient->closeFile();
 

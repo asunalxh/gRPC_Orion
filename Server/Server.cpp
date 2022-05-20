@@ -3,6 +3,7 @@
 #include <iterator>	 // for std::begin, std::end
 // #include "MysqlConnector.h"
 #include "../common/Utils.h"
+#include <fstream>
 
 Server::Server(DBConnector<int, string> *db_update,
 			   DBConnector<int, string> *db_search,
@@ -13,11 +14,14 @@ Server::Server(DBConnector<int, string> *db_update,
 	data_update = new RAMStore(db_update);
 }
 
+grpc::Status Server::ServerLog(ServerContext *context, const GeneralMessage *req, GeneralMessage *resp)
+{
 
-grpc::Status Server::ServerLog(ServerContext *context, const GeneralMessage *req, GeneralMessage *resp){
-	printf("调用GetData共耗时 %ld ms\n",  GetDataTime);
-	printf("调用PutData共耗时 %ld ms\n",  PutDataTime);
+	printf("调用GetData共耗时 %ld ms\n", GetDataTime);
+	printf("调用PutData共耗时 %ld ms\n", PutDataTime);
 	printf("接受加密数据文件共耗时 %ld ms\n", ReceiveEncDocTime);
+
+	return grpc::Status::OK;
 }
 
 Server::~Server()
