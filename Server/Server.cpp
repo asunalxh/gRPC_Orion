@@ -11,14 +11,19 @@ Server::Server()
 	data_update = new RAMStore();
 }
 
-grpc::Status Server::ServerLog(const GeneralMessage *req, GeneralMessage *resp)
+void Server::ServerLog()
 {
 
-	printf("调用GetData共耗时 %ld ms\n", GetDataTime);
-	printf("调用PutData共耗时 %ld ms\n", PutDataTime);
-	printf("接受加密数据文件共耗时 %ld ms\n", ReceiveEncDocTime);
+	printf("调用GetData共耗时 %lld ns\n", GetDataTime);
+	printf("调用PutData共耗时 %lld ns\n", PutDataTime);
+	printf("接受加密数据文件共耗时 %lld ns\n", ReceiveEncDocTime);
+}
 
-	return grpc::Status::OK;
+void Server::ClearLog()
+{
+	GetDataTime = 0;
+	PutDataTime = 0;
+	ReceiveEncDocTime = 0;
 }
 
 Server::~Server()
@@ -45,6 +50,8 @@ grpc::Status Server::GetData(const OramMessage *req, OramBucketMessage *resp)
 	}
 	std::string bucket_str = BucketToString(bucket);
 
+	// usleep(100);
+
 	resp->set_data_structure(data_structure);
 	resp->set_pos(pos);
 	resp->set_bucket(bucket_str);
@@ -62,6 +69,8 @@ grpc::Status Server::PutData(const OramBucketMessage *req, GeneralMessage *resp)
 	size_t pos = req->pos();
 	std::string bucket_str = req->bucket();
 	BUCKET b = StringToBucket(bucket_str);
+
+	// usleep(100);
 
 	if (data_structure == 1)
 	{

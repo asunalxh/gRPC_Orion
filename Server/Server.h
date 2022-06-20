@@ -27,7 +27,9 @@ public:
 	grpc::Status PutData(const OramBucketMessage *req, GeneralMessage *resp);
 
 	grpc::Status Receive_Encrypted_Doc(const DocMessage *req, GeneralMessage *resp);
-	grpc::Status ServerLog(const GeneralMessage *req, GeneralMessage *resp);
+
+	void ServerLog();
+	void ClearLog();
 
 private:
 	uint64_t GetDataTime = 0;

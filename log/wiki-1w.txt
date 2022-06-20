@@ -1,0 +1,29 @@
+Script started on 2022-05-26 18:27:21+08:00 [TERM="screen.xterm-256color" TTY="/dev/pts/2" COLUMNS="120" LINES="30"]
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ ./testApp 
+
+======== Start Addition ========
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+
+-------- add 10000 files--------
+包括初始化总用时： 323737 ms
+插入总用时： 323335 ms
+调用GetData 7833563 次 共耗时 44852 ms 发送 37264916 返回 2959183915
+调用PutData 7849945 次，共耗时 177435 ms 发送 2965376051 返回 0
+传送加密后文件共耗时 6 ms 发送 516792 返回 0
+调用GetData共耗时 43282 ms
+调用PutData共耗时 175729 ms
+接受加密数据文件共耗时 1 ms
+
+======== Start To Search ========
+
+Searching ==> refer
+result size 22 
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ exit
+exit
+
+Script done on 2022-05-26 18:58:46+08:00 [COMMAND_EXIT_CODE="0"]

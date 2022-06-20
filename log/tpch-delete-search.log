@@ -1,0 +1,474 @@
+Script started on 2022-05-28 06:19:30+08:00 [TERM="screen.xterm-256color" TTY="/dev/pts/0" COLUMNS="120" LINES="30"]
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ bash g[Krun.sh 
+start delete-search-10%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 18069202899 ns
+调用GetData 19530 次 共耗时 126875611 ns 发送 106503 返回 7391193
+调用PutData 19530 次，共耗时 465206697 ns 发送 7391193 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 121412851 ns
+调用PutData共耗时 457099954 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-20%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 21379702920 ns
+调用GetData 20463 次 共耗时 134465446 ns 发送 111758 返回 7744457
+调用PutData 20463 次，共耗时 504168145 ns 发送 7744457 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 128528970 ns
+调用PutData共耗时 495359532 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-30%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 22470442949 ns
+调用GetData 21255 次 共耗时 145878877 ns 发送 116206 返回 8044321
+调用PutData 21255 次，共耗时 521559831 ns 发送 8044321 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 139422150 ns
+调用PutData共耗时 512371517 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-40%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+-------- del 40000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 23478966834 ns
+调用GetData 21640 次 共耗时 144564509 ns 发送 118430 返回 8190150
+调用PutData 21640 次，共耗时 507503647 ns 发送 8190150 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 138408832 ns
+调用PutData共耗时 498710830 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-50%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+-------- del 40000 files --------
+
+-------- del 50000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 25119914691 ns
+调用GetData 22217 次 共耗时 147481819 ns 发送 121697 返回 8408638
+调用PutData 22217 次，共耗时 521348216 ns 发送 8408638 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 140967389 ns
+调用PutData共耗时 512321555 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-60%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+-------- del 40000 files --------
+
+-------- del 50000 files --------
+
+-------- del 60000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 24758965623 ns
+调用GetData 22652 次 共耗时 138269166 ns 发送 124102 返回 8573298
+调用PutData 22652 次，共耗时 505757373 ns 发送 8573298 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 132695674 ns
+调用PutData共耗时 497641706 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-70%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+-------- del 40000 files --------
+
+-------- del 50000 files --------
+
+-------- del 60000 files --------
+
+-------- del 70000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 26723179840 ns
+调用GetData 23032 次 共耗时 146384283 ns 发送 126318 返回 8717254
+调用PutData 23032 次，共耗时 528138968 ns 发送 8717254 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 139937296 ns
+调用PutData共耗时 518789861 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-80%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+-------- del 40000 files --------
+
+-------- del 50000 files --------
+
+-------- del 60000 files --------
+
+-------- del 70000 files --------
+
+-------- del 80000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 30151386217 ns
+调用GetData 23607 次 共耗时 167807589 ns 发送 129568 返回 8934979
+调用PutData 23607 次，共耗时 565694784 ns 发送 8934979 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 160883011 ns
+调用PutData共耗时 556453043 ns
+接受加密数据文件共耗时 0 ns
+start delete-search-90%
+
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+
+======== Deleting doc ========
+
+-------- del 10000 files --------
+
+-------- del 20000 files --------
+
+-------- del 30000 files --------
+
+-------- del 40000 files --------
+
+-------- del 50000 files --------
+
+-------- del 60000 files --------
+
+-------- del 70000 files --------
+
+-------- del 80000 files --------
+
+-------- del 90000 files --------
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 29537369976 ns
+调用GetData 24011 次 共耗时 152500352 ns 发送 131870 返回 9087973
+调用PutData 24011 次，共耗时 552220432 ns 发送 9087973 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 146036364 ns
+调用PutData共耗时 542949492 ns
+接受加密数据文件共耗时 0 ns
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ exit
+exit
+
+Script done on 2022-05-29 14:33:50+08:00 [COMMAND_EXIT_CODE="0"]

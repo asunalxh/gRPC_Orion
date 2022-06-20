@@ -33,16 +33,26 @@ void Client::closeFile()
 void Client::ClientLog()
 {
 
-	printf("调用GetData %ld 次 共耗时 %ld ms 发送 %ld 返回 %ld\n", GetDataCount, GetDataTime, GetDataReqBytes, GetDataRespBytes);
-	printf("调用PutData %ld 次，共耗时 %ld ms 发送 %ld 返回 %ld\n", PutDataCount, PutDataTime, PutDataReqBytes, PutDataRespBytes);
-	printf("传送加密后文件共耗时 %ld ms 发送 %ld 返回 %ld\n", SendEncDocTime, SendEncDocReqBytes, SendEncDocRespBytes);
+	printf("调用GetData %lld 次 共耗时 %lld ns 发送 %lld 返回 %lld\n", GetDataCount, GetDataTime, GetDataReqBytes, GetDataRespBytes);
+	printf("调用PutData %lld 次，共耗时 %lld ns 发送 %lld 返回 %lld\n", PutDataCount, PutDataTime, PutDataReqBytes, PutDataRespBytes);
+	printf("传送加密后文件共耗时 %lld ns 发送 %lld 返回 %lld\n", SendEncDocTime, SendEncDocReqBytes, SendEncDocRespBytes);
 }
 
-void Client::ServerLog()
+void Client::ClearLog()
 {
-	GeneralMessage req, resp;
-	stub_->ServerLog(&req, &resp);
+	GetDataCount = 0;
+	GetDataTime = 0;
+	GetDataReqBytes = 0;
+	GetDataRespBytes = 0;
+	PutDataCount = 0;
+	PutDataTime = 0;
+	PutDataReqBytes = 0;
+	PutDataRespBytes = 0;
+	SendEncDocTime = 0;
+	SendEncDocReqBytes = 0;
+	SendEncDocRespBytes = 0;
 }
+
 void Client::ReadNextPair(docContent *content)
 {
 	// file_counter++;
@@ -60,6 +70,7 @@ void Client::ReadNextPair(docContent *content)
 
 	std::string str;
 	inFile >> str;
+	// int plaintext_len = str.length() - 1;
 	int plaintext_len = str.length();
 
 	content->content = (char *)malloc(plaintext_len + 1);
@@ -82,6 +93,7 @@ void Client::GetData(int data_structure, size_t index,
 
 	uint64_t startTime = timeSinceEpochMillisec();
 	stub_->GetData(&req, &resp);
+	// usleep(1000);
 	uint64_t endTime = timeSinceEpochMillisec();
 
 	GetDataRespBytes += resp.ByteSizeLong();

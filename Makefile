@@ -31,7 +31,7 @@ GRPC_PB_CC_FILES = $(PROTO_FILES:.proto=.grpc.pb.cc)
 PROTO_OBJECT_FILES = $(PB_CC_FILES:.cc=.o) $(GRPC_PB_CC_FILES:.cc=.o) 
 
 ######## App Settings ########
-Target := testApp
+Target ?= testApp
 
 Client_App_Files := $(wildcard Client/*.cpp)
 Server_App_Files := $(wildcard Server/*.cpp)

@@ -1,0 +1,112 @@
+Script started on 2022-06-06 18:32:06+08:00 [TERM="screen.xterm-256color" TTY="/dev/pts/0" COLUMNS="120" LINES="30"]
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ bash run.sh 
+/home/asunalxh/data/crimePtype.txt
+
+======== Start Addition ========
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+
+-------- add 10000 files--------
+包括初始化总用时： 350357130104 ns
+插入总用时： 349918445755 ns
+调用GetData 7835536 次 共耗时 51666896436 ns 发送 37274765 返回 2959929693
+调用PutData 7851918 次，共耗时 181004946730 ns 发送 2966121829 返回 0
+传送加密后文件共耗时 5514607 ns 发送 530729 返回 0
+调用GetData共耗时 49748521098 ns
+调用PutData共耗时 178987561709 ns
+接受加密数据文件共耗时 1975093 ns
+/home/asunalxh/data/crimePtype.txt
+
+======== Start Addition ========
+Total bucket count 511
+Tree height 8
+Total numBucketLeaf 256
+Total bucket count 511
+Tree height 8
+Total numBucketLeaf 256
+包括初始化总用时： 11580965762 ns
+插入总用时： 11554150515 ns
+调用GetData 285886 次 共耗时 1806589612 ns 发送 1267975 返回 107903453
+调用PutData 286908 次，共耗时 6416724472 ns 发送 108289509 返回 0
+传送加密后文件共耗时 503092 ns 发送 53201 返回 0
+调用GetData共耗时 1737705265 ns
+调用PutData共耗时 6347400705 ns
+接受加密数据文件共耗时 190033 ns
+/home/asunalxh/data/crimePtype.txt
+
+======== Start Addition ========
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+包括初始化总用时： 346252167 ns
+插入总用时： 342667879 ns
+调用GetData 8835 次 共耗时 55118434 ns 发送 34940 返回 3330395
+调用PutData 8961 次，共耗时 199069506 ns 发送 3377893 返回 0
+传送加密后文件共耗时 46934 ns 发送 5152 返回 0
+调用GetData共耗时 52977320 ns
+调用PutData共耗时 196855456 ns
+接受加密数据文件共耗时 17784 ns
+/home/asunalxh/data/lineshipdate.txt
+
+======== Start Addition ========
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+
+-------- add 10000 files--------
+包括初始化总用时： 346249063469 ns
+插入总用时： 345838590778 ns
+调用GetData 7835095 次 共耗时 50657444900 ns 发送 37272318 返回 2959762753
+调用PutData 7851477 次，共耗时 179360227609 ns 发送 2965954889 返回 0
+传送加密后文件共耗时 5555531 ns 发送 579873 返回 0
+调用GetData共耗时 48785867765 ns
+调用PutData共耗时 177352374197 ns
+接受加密数据文件共耗时 1982150 ns
+/home/asunalxh/data/lineshipdate.txt
+
+======== Start Addition ========
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+包括初始化总用时： 5277775158 ns
+插入总用时： 5274162220 ns
+调用GetData 91311 次 共耗时 572664751 ns 发送 361244 返回 34420247
+调用PutData 91437 次，共耗时 2050942002 ns 发送 34467745 返回 0
+传送加密后文件共耗时 472398 ns 发送 57873 返回 0
+调用GetData共耗时 550348456 ns
+调用PutData共耗时 2027997867 ns
+接受加密数据文件共耗时 174850 ns
+/home/asunalxh/data/lineshipdate.txt
+
+======== Start Addition ========
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+包括初始化总用时： 346124992 ns
+插入总用时： 342452996 ns
+调用GetData 8826 次 共耗时 54830182 ns 发送 34904 返回 3327002
+调用PutData 8952 次，共耗时 198486019 ns 发送 3374500 返回 0
+传送加密后文件共耗时 46769 ns 发送 5700 返回 0
+调用GetData共耗时 52653682 ns
+调用PutData共耗时 196315664 ns
+接受加密数据文件共耗时 17744 ns
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ exit
+exit
+
+Script done on 2022-06-06 18:48:32+08:00 [COMMAND_EXIT_CODE="0"]

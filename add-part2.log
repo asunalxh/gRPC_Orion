@@ -1,0 +1,112 @@
+Script started on 2022-06-08 03:09:04+08:00 [TERM="screen.xterm-256color" TTY="/dev/pts/6" COLUMNS="153" LINES="45"]
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ bash run.sh 
+/home/asunalxh/data/enron.txt
+
+======== Start Addition ========
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+
+-------- add 10000 files--------
+包括初始化总用时： 305590176766 ns
+插入总用时： 305210983859 ns
+调用GetData 7835078 次 共耗时 44475813243 ns 发送 37272350 返回 2959756444
+调用PutData 7851460 次，共耗时 161710672592 ns 发送 2965948580 返回 0
+传送加密后文件共耗时 4878964 ns 发送 510088 返回 0
+调用GetData共耗时 42710972657 ns
+调用PutData共耗时 159969295482 ns
+接受加密数据文件共耗时 1845951 ns
+/home/asunalxh/data/enron.txt
+
+======== Start Addition ========
+Total bucket count 511
+Tree height 8
+Total numBucketLeaf 256
+Total bucket count 511
+Tree height 8
+Total numBucketLeaf 256
+包括初始化总用时： 10202490883 ns
+插入总用时： 10178603034 ns
+调用GetData 284965 次 共耗时 1563826799 ns 发送 1263992 返回 107555937
+调用PutData 285987 次，共耗时 5829766879 ns 发送 107941993 返回 0
+传送加密后文件共耗时 443425 ns 发送 50716 返回 0
+调用GetData共耗时 1502024516 ns
+调用PutData共耗时 5768106784 ns
+接受加密数据文件共耗时 169661 ns
+/home/asunalxh/data/enron.txt
+
+======== Start Addition ========
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+包括初始化总用时： 307823829 ns
+插入总用时： 304389859 ns
+调用GetData 8753 次 共耗时 47960484 ns 发送 34612 返回 3299481
+调用PutData 8879 次，共耗时 181250742 ns 发送 3346979 返回 0
+传送加密后文件共耗时 41928 ns 发送 5076 返回 0
+调用GetData共耗时 46086676 ns
+调用PutData共耗时 179302267 ns
+接受加密数据文件共耗时 16255 ns
+/home/asunalxh/data/wiki.txt
+
+======== Start Addition ========
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+
+-------- add 10000 files--------
+包括初始化总用时： 327263700904 ns
+插入总用时： 326885970873 ns
+调用GetData 7834909 次 共耗时 47818338305 ns 发送 37271733 返回 2959692790
+调用PutData 7851291 次，共耗时 168353869900 ns 发送 2965884926 返回 0
+传送加密后文件共耗时 5377793 ns 发送 516792 返回 0
+调用GetData共耗时 45743355792 ns
+调用PutData共耗时 166075805286 ns
+接受加密数据文件共耗时 1828786 ns
+/home/asunalxh/data/wiki.txt
+
+======== Start Addition ========
+Total bucket count 511
+Tree height 8
+Total numBucketLeaf 256
+Total bucket count 511
+Tree height 8
+Total numBucketLeaf 256
+包括初始化总用时： 11434127372 ns
+插入总用时： 11408160729 ns
+调用GetData 285511 次 共耗时 1784571679 ns 发送 1266368 返回 107761971
+调用PutData 286533 次，共耗时 6345371079 ns 发送 108148027 返回 0
+传送加密后文件共耗时 511268 ns 发送 51964 返回 0
+调用GetData共耗时 1716635506 ns
+调用PutData共耗时 6272665026 ns
+接受加密数据文件共耗时 178950 ns
+/home/asunalxh/data/wiki.txt
+
+======== Start Addition ========
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+Total bucket count 63
+Tree height 5
+Total numBucketLeaf 32
+包括初始化总用时： 347864004 ns
+插入总用时： 344131580 ns
+调用GetData 8775 次 共耗时 55115291 ns 发送 34700 返回 3307775
+调用PutData 8901 次，共耗时 197523149 ns 发送 3355273 返回 0
+传送加密后文件共耗时 47498 ns 发送 5204 返回 0
+调用GetData共耗时 52928025 ns
+调用PutData共耗时 195293110 ns
+接受加密数据文件共耗时 17331 ns
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ exit
+exit
+
+Script done on 2022-06-08 03:29:44+08:00 [COMMAND_EXIT_CODE="0"]

@@ -46,7 +46,7 @@ public:
 	void closeFile();
 
 	void ClientLog();
-	void ServerLog();
+	void ClearLog();
 
 private:
 	uint64_t GetDataTime = 0;

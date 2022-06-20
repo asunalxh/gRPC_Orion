@@ -1,0 +1,316 @@
+Script started on 2022-06-07 20:49:44+08:00 [TERM="screen.xterm-256color" TTY="/dev/pts/6" COLUMNS="153" LINES="45"]
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ bash run.sh 
+/home/asunalxh/data/variable-result-size/enron.txt
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+包括初始化总用时： 6526032545058 ns
+插入总用时： 6522746671033 ns
+调用GetData 132854169 次 共耗时 894018468220 ns 发送 670110229 返回 50224715266
+调用PutData 132985239 次，共耗时 3053020486356 ns 发送 50274357768 返回 0
+传送加密后文件共耗时 59478814 ns 发送 5172006 返回 0
+调用GetData共耗时 860633931044 ns
+调用PutData共耗时 3019511057670 ns
+接受加密数据文件共耗时 20668823 ns
+
+======== Start To Search ========
+result size 10000 
+搜索共耗时 232807759682 ns
+调用GetData 48074 次 共耗时 363037323 ns 发送 272225 返回 18203827
+调用PutData 48074 次，共耗时 1204192178 ns 发送 18203827 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 343170664 ns
+调用PutData共耗时 1176174950 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 5000 
+搜索共耗时 191525685791 ns
+调用GetData 44699 次 共耗时 328566193 ns 发送 252205 返回 16924932
+调用PutData 44699 次，共耗时 1129562452 ns 发送 16924932 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 311154388 ns
+调用PutData共耗时 1104628725 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 24439484905 ns
+调用GetData 21723 次 共耗时 148594497 ns 发送 118906 返回 8221585
+调用PutData 21723 次，共耗时 514774689 ns 发送 8221585 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 142142053 ns
+调用PutData共耗时 505874536 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 500 
+搜索共耗时 10418383720 ns
+调用GetData 14771 次 共耗时 98745026 ns 发送 79836 返回 5589419
+调用PutData 14771 次，共耗时 350732404 ns 发送 5589419 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 94590524 ns
+调用PutData共耗时 344646383 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 100 
+搜索共耗时 1445881365 ns
+调用GetData 6129 次 共耗时 40675465 ns 发送 32455 返回 2318572
+调用PutData 6129 次，共耗时 139673689 ns 发送 2318572 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 39068769 ns
+调用PutData共耗时 137974151 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 10 
+搜索共耗时 80615118 ns
+调用GetData 1200 次 共耗时 7617075 ns 发送 6149 返回 453749
+调用PutData 1200 次，共耗时 27227848 ns 发送 453749 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 7330282 ns
+调用PutData共耗时 26931955 ns
+接受加密数据文件共耗时 0 ns
+/home/asunalxh/data/variable-result-size/wiki.txt
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 fi� 80615118 ns
+调用GetData 1200 次 共耗时 7617075 ns 发送 6149 返回 453749
+调用PutData 1200 次，共耗时 27227848 ns 发送 453749 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 7330282 ns
+调用PutData共耗时 26931955 ns
+接受加密数据文件共耗时 0 ns
+/home/asunalxh/data/variable-result-size/wiki.txt
+
+======== Start Addition ========
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+Total bucket count 65535
+Tree height 15
+Total numBucketLeaf 32768
+
+-------- add 10000 files--------
+
+-------- add 20000 files--------
+
+-------- add 30000 files--------
+
+-------- add 40000 files--------
+
+-------- add 50000 files--------
+
+-------- add 60000 files--------
+
+-------- add 70000 files--------
+
+-------- add 80000 files--------
+
+-------- add 90000 files--------
+
+-------- add 100000 files--------
+包括初始化总用时： 6695622054724 ns
+插入总用时： 6692311890013 ns
+调用GetData 132849937 次 共耗时 914066035325 ns 发送 670093467 返回 50223119968
+调用PutData 132981007 次，共耗时 3087084623624 ns 发送 50272762470 返回 0
+传送加密后文件共耗时 57427878 ns 发送 5219423 返回 0
+调用GetData共耗时 880514862860 ns
+调用PutData共耗时 3052905469771 ns
+接受加密数据文件共耗时 20637338 ns
+
+======== Start To Search ========
+result size 10000 
+搜索共耗时 264132790256 ns
+调用GetData 49813 次 共耗时 472409927 ns 发送 282559 返回 18862808
+调用PutData 49813 次，共耗时 1242985890 ns 发送 18862808 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 449852564 ns
+调用PutData共耗时 1215028200 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 5000 
+搜索共耗时 147698557870 ns
+调用GetData 41554 次 共耗时 304199164 ns 发送 233616 返回 15733258
+调用PutData 41554 次，共耗时 1013019717 ns 发送 15733258 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 289099319 ns
+调用PutData共耗时 991459157 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 1000 
+搜索共耗时 25244374703 ns
+调用GetData 21740 次 共耗时 146525396 ns 发送 119015 返回 8228035
+调用PutData 21740 次，共耗时 526349753 ns 发送 8228035 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 140056663 ns
+调用PutData共耗时 517088715 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 500 
+搜索共耗时 11151789622 ns
+调用GetData 15231 次 共耗时 101367717 ns 发送 82444 返回 5763607
+调用PutData 15231 次，共耗时 360826685 ns 发送 5763607 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 97021071 ns
+调用PutData共耗时 354690097 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 100 
+搜索共耗时 1233326734 ns
+调用GetData 5716 次 共耗时 34976228 ns 发送 30247 返回 2162315
+调用PutData 5716 次，共耗时 127625038 ns 发送 2162315 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 33613357 ns
+调用PutData共耗时 126007892 ns
+接受加密数据文件共耗时 0 ns
+
+======== Start To Search ========
+result size 10 
+搜索共耗时 74427113 ns
+调用GetData 1174 次 共耗时 6868002 ns 发送 6011 返回 443913
+调用PutData 1174 次，共耗时 24960820 ns 发送 443913 返回 0
+传送加密后文件共耗时 0 ns 发送 0 返回 0
+调用GetData共耗时 6605306 ns
+调用PutData共耗时 24698922 ns
+接受加密数据文件共耗时 0 ns
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ exit
+exit
+Script done, file is log/temp2.log
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ a[Kmake
+g++ -std=c++17  -c Client/ClientTestApp.cpp -o Client/ClientTestApp.o
+g++ -std=c++17  -c Client/Client.cpp -o Client/Client.o
+[01m[KClient/Client.cpp:[m[K In member function ‘[01m[Kvoid Client::ClientLog()[m[K’:
+[01m[KClient/Client.cpp:36:27:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 2 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   36 |  printf("调用GetData [01;35m[K%lld[m[K 次 共耗时 %lld ns 发送 %lld 返回 %lld\n", [32m[KGetDataCount[m[K, GetDataTime, GetDataReqBytes, GetDataRespBytes);
+      |                        [01;35m[K~~~^[m[K                                                   [32m[K~~~~~~~~~~~~[m[K
+      |                           [01;35m[K|[m[K                                                   [32m[K|[m[K
+      |                           [01;35m[Klong long int[m[K                                       [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                        [32m[K%ld[m[K
+[01m[KClient/Client.cpp:36:46:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 3 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   36 |  printf("调用GetData %lld 次 共耗时 [01;35m[K%lld[m[K ns 发送 %lld 返回 %lld\n", GetDataCount, [32m[KGetDataTime[m[K, GetDataReqBytes, GetDataRespBytes);
+      |                                           [01;35m[K~~~^[m[K                                              [32m[K~~~~~~~~~~~[m[K
+      |                                              [01;35m[K|[m[K                                              [32m[K|[m[K
+      |                                              [01;35m[Klong long int[m[K                                  [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                           [32m[K%ld[m[K
+[01m[KClient/Client.cpp:36:61:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 4 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   36 |  printf("调用GetData %lld 次 共耗时 %lld ns 发送 [01;35m[K%lld[m[K 返回 %lld\n", GetDataCount, GetDataTime, [32m[KGetDataReqBytes[m[K, GetDataRespBytes);
+      |                                                          [01;35m[K~~~^[m[K                                            [32m[K~~~~~~~~~~~~~~~[m[K
+      |                                                             [01;35m[K|[m[K                                            [32m[K|[m[K
+      |                                                             [01;35m[Klong long int[m[K                                [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                                          [32m[K%ld[m[K
+[01m[KClient/Client.cpp:36:73:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 5 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   36 |  printf("调用GetData %lld 次 共耗时 %lld ns 发送 %lld 返回 [01;35m[K%lld[m[K\n", GetDataCount, GetDataTime, GetDataReqBytes, [32m[KGetDataRespBytes[m[K);
+      |                                                                      [01;35m[K~~~^[m[K                                                 [32m[K~~~~~~~~~~~~~~~~[m[K
+      |                                                                         [01;35m[K|[m[K                                                 [32m[K|[m[K
+      |                                                                         [01;35m[Klong long int[m[K                                     [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                                                      [32m[K%ld[m[K
+[01m[KClient/Client.cpp:37:27:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 2 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   37 |  printf("调用PutData [01;35m[K%lld[m[K 次，共耗时 %lld ns 发送 %lld 返回 %lld\n", [32m[KPutDataCount[m[K, PutDataTime, PutDataReqBytes, PutDataRespBytes);
+      |                        [01;35m[K~~~^[m[K                                                     [32m[K~~~~~~~~~~~~[m[K
+      |                           [01;35m[K|[m[K                                                     [32m[K|[m[K
+      |                           [01;35m[Klong long int[m[K                                         [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                        [32m[K%ld[m[K
+[01m[KClient/Client.cpp:37:48:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 3 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   37 |  printf("调用PutData %lld 次，共耗时 [01;35m[K%lld[m[K ns 发送 %lld 返回 %lld\n", PutDataCount, [32m[KPutDataTime[m[K, PutDataReqBytes, PutDataRespBytes);
+      |                                             [01;35m[K~~~^[m[K                                              [32m[K~~~~~~~~~~~[m[K
+      |                                                [01;35m[K|[m[K                                              [32m[K|[m[K
+      |                                                [01;35m[Klong long int[m[K                                  [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                             [32m[K%ld[m[K
+[01m[KClient/Client.cpp:37:63:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 4 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   37 |  printf("调用PutData %lld 次，共耗时 %lld ns 发送 [01;35m[K%lld[m[K 返回 %lld\n", PutDataCount, PutDataTime, [32m[KPutDataReqBytes[m[K, PutDataRespBytes);
+      |                                                            [01;35m[K~~~^[m[K                                            [32m[K~~~~~~~~~~~~~~~[m[K
+      |                                                               [01;35m[K|[m[K                                            [32m[K|[m[K
+      |                                                               [01;35m[Klong long int[m[K                                [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                                            [32m[K%ld[m[K
+[01m[KClient/Client.cpp:37:75:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 5 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   37 |  printf("调用PutData %lld 次，共耗时 %lld ns 发送 %lld 返回 [01;35m[K%lld[m[K\n", PutDataCount, PutDataTime, PutDataReqBytes, [32m[KPutDataRespBytes[m[K);
+      |                                                                        [01;35m[K~~~^[m[K                                                 [32m[K~~~~~~~~~~~~~~~~[m[K
+      |                                                                           [01;35m[K|[m[K                                                 [32m[K|[m[K
+      |                                                                           [01;35m[Klong long int[m[K                                     [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                                                        [32m[K%ld[m[K
+[01m[KClient/Client.cpp:38:44:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 2 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   38 |  printf("传送加密后文件共耗时 [01;35m[K%lld[m[K ns 发送 %lld 返回 %lld\n", [32m[KSendEncDocTime[m[K, SendEncDocReqBytes, SendEncDocRespBytes);
+      |                                         [01;35m[K~~~^[m[K                                [32m[K~~~~~~~~~~~~~~[m[K
+      |                                            [01;35m[K|[m[K                                [32m[K|[m[K
+      |                                            [01;35m[Klong long int[m[K                    [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                         [32m[K%ld[m[K
+[01m[KClient/Client.cpp:38:59:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 3 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   38 |  printf("传送加密后文件共耗时 %lld ns 发送 [01;35m[K%lld[m[K 返回 %lld\n", SendEncDocTime, [32m[KSendEncDocReqBytes[m[K, SendEncDocRespBytes);
+      |                                                        [01;35m[K~~~^[m[K                                 [32m[K~~~~~~~~~~~~~~~~~~[m[K
+      |                                                           [01;35m[K|[m[K                                 [32m[K|[m[K
+      |                                                           [01;35m[Klong long int[m[K                     [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                                        [32m[K%ld[m[K
+[01m[KClient/Client.cpp:38:71:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%lld[m[K’ expects argument of type ‘[01m[Klong long int[m[K’, but argument 4 has type ‘[01m[Kuint64_t[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K-Wformat=[m[K]
+   38 |  printf("传送加密后文件共耗时 %lld ns 发送 %lld 返回 [01;35m[K%lld[m[K\n", SendEncDocTime, SendEncDocReqBytes, [32m[KSendEncDocRespBytes[m[K);
+      |                                                                    [01;35m[K~~~^[m[K                                         [32m[K~~~~~~~~~~~~~~~~~~~[m[K
+      |                                                                       [01;35m[K|[m[K                                         [32m[K|[m[K
+      |                                                                       [01;35m[Klong long int[m[K                             [32m[Kuint64_t {aka long unsigned int}[m[K
+      |                                                                    [32m[K%ld[m[K
+g++ -std=c++17 common/Utils.o common//crypto.pb.o common//crypto.grpc.pb.o Server/Server.o Server/RAMStore_data.o Client/Omap.o Client/ClientTestApp.o Client/AVLTree.o Client/Oram.o Client/Bid.o Client/Client.o Client/Orion.o -L/usr/local/lib `pkg-config --libs protobuf grpc++` -pthread -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -lssl -lcrypto -o testApp
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ script add-part2.log
+Script started, file is add-part2.log
+(base) [01;32masunalxh@ubuntu[00m:[01;34m~/gRPC_Orion[00m$ bash run.sh 
+/home/asunalxh/data/enron.txt
+
+======== Start Addition ========
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+Total bucket count 8191
+Tree height 12
+Total numBucketLeaf 4096
+
+-------- add 10000 files--------
+包括初始化总用时： 305590176766 ns
+插入总用时： 305210983859 ns
+调用GetData 7835078 次 共耗时 44475813243 ns 发送 37272350 返回 2959756444
+调用PutData 7851460 次，共耗时 161710672592 ns 发送 2965948580 返回 0
+传送加密后文件共耗时 4878964 ns �
