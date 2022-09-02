@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 	// myClient = new Client(myServer, KF);
 	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
 
-	printf("\n######## 2^21 ########\n")
+	printf("\n######## 2^21 ########\n");
 
 	myClient->openFile(file);
 
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
 
 
-	printf("\n######## 2^18 ########\n")
+	printf("\n######## 2^18 ########\n");
 
 	myClient->openFile(file);
 
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
 
 
 
-	printf("\n######## 2^15 ########\n")
+	printf("\n######## 2^15 ########\n");
 
 	myClient->openFile(file);
 
