@@ -144,6 +144,65 @@ int main(int argc, char *argv[])
 	// myServer = new Server();
 	// myClient = new Client(myServer, KF);
 	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+
+	printf("\n######## 2^21 ########\n")
+
+	myClient->openFile(file);
+
+	uint64_t startTime = timeSinceEpochMillisec();
+
+	printf("\n======== Start Addition ========\n");
+	orion = new Orion(myClient, KW, KC, 20);
+
+	uint64_t endTime = timeSinceEpochMillisec();
+
+	printf("初始化： %ld ns\n", endTime - startTime);
+	myClient->ClientLog();
+	myClient->ServerLog();
+	myClient->ClearLog();
+
+	startTime = timeSinceEpochMillisec();
+	uint64_t calculate_time = addDoc(100);
+
+	endTime = timeSinceEpochMillisec();
+	printf("插入总用时： %ld ns\n", calculate_time);
+	myClient->ClientLog();
+	myClient->ServerLog();
+	myClient->ClearLog();
+	myClient->closeFile();
+
+
+
+	printf("\n######## 2^18 ########\n")
+
+	myClient->openFile(file);
+
+	uint64_t startTime = timeSinceEpochMillisec();
+
+	printf("\n======== Start Addition ========\n");
+	orion = new Orion(myClient, KW, KC, 17);
+
+	uint64_t endTime = timeSinceEpochMillisec();
+
+	printf("初始化： %ld ns\n", endTime - startTime);
+	myClient->ClientLog();
+	myClient->ServerLog();
+	myClient->ClearLog();
+
+	startTime = timeSinceEpochMillisec();
+	uint64_t calculate_time = addDoc(100);
+
+	endTime = timeSinceEpochMillisec();
+	printf("插入总用时： %ld ns\n", calculate_time);
+	myClient->ClientLog();
+	myClient->ServerLog();
+	myClient->ClearLog();
+	myClient->closeFile();
+
+
+
+	printf("\n######## 2^15 ########\n")
+
 	myClient->openFile(file);
 
 	uint64_t startTime = timeSinceEpochMillisec();
@@ -165,8 +224,13 @@ int main(int argc, char *argv[])
 	printf("插入总用时： %ld ns\n", calculate_time);
 	myClient->ClientLog();
 	myClient->ServerLog();
+	myClient->ClearLog();
+	myClient->closeFile();
 
-	search("includ");
+
+
+
+
 
 	// myClient->ClearLog();
 	// myServer->ClearLog();
