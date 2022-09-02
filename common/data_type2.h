@@ -23,6 +23,6 @@
 
 typedef std::vector<unsigned char> BUCKET;
 
-#define MAX_BUCKET_NUM 50000000
+#define MAX_BUCKET_NUM 5000000
 
 #endif

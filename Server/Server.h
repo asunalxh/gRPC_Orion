@@ -21,8 +21,7 @@ using grpc::ServerContext;
 class Server final : public CryptoService::Service
 {
 public:
-	Server(DBConnector<int, string> *db_update,
-		   DBConnector<int, string> *db_search, DBConnector<int, string> *db_raw_data);
+	Server();
 	~Server();
 
 	grpc::Status GetData(ServerContext *context, const OramMessage *req, OramBucketMessage *resp) override;

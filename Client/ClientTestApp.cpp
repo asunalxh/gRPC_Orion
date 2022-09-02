@@ -52,7 +52,7 @@ uint64_t addDoc(int add_no)
 
 		myClient->ReadNextPair(fetch_data);
 
-		myClient->SendEncDoc(fetch_data);
+		// myClient->SendEncDoc(fetch_data);
 
 		orion->addDoc(fetch_data->id.doc_id, fetch_data->id.id_length, fetch_data->id.doc_int, fetch_data->content);
 
@@ -120,8 +120,8 @@ int main()
 	initKey(KC, "KC");
 	initKey(KF, "KF");
 
-	// myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
-	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
+	//myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
+	 myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
 	myClient->openFile("/home/asunalxh/Data/enron.txt");
 
 	uint64_t startTime = timeSinceEpochMillisec();
@@ -139,6 +139,8 @@ int main()
 
 	myClient->ClientLog();
 	myClient->ServerLog();
+
+	search();
 
 	// free omap and client and server
 	delete orion;

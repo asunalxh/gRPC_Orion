@@ -5,13 +5,11 @@
 #include "../common/Utils.h"
 #include <fstream>
 
-Server::Server(DBConnector<int, string> *db_update,
-			   DBConnector<int, string> *db_search,
-			   DBConnector<int, string> *db_raw_data)
+Server::Server()
 {
-	this->db_raw_data = db_raw_data;
-	data_search = new RAMStore(db_search);
-	data_update = new RAMStore(db_update);
+	//this->db_raw_data = db_raw_data;
+	data_search = new RAMStore();
+	data_update = new RAMStore();
 }
 
 grpc::Status Server::ServerLog(ServerContext *context, const GeneralMessage *req, GeneralMessage *resp)
@@ -86,7 +84,7 @@ grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const DocMess
 	std::string enc_content = req->value();
 	if (db_raw_data == nullptr)
 	{
-		R_Doc.insert({id, enc_content});
+		//R_Doc.insert({id, enc_content});
 	}
 	else
 	{

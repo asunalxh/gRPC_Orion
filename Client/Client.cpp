@@ -117,6 +117,7 @@ void Client::GetData(int data_structure, size_t index,
 
 	ClientContext context;
 	stub_->GetData(&context, req, &resp);
+	usleep(1000);
 
 	GetDataRespBytes += resp.ByteSizeLong();
 
@@ -155,6 +156,7 @@ void Client::PutData(int data_structure, size_t index,
 
 	ClientContext context;
 	stub_->PutData(&context, req, &resp);
+	usleep(1000);
 
 	PutDataRespBytes += resp.ByteSizeLong();
 

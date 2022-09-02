@@ -13,7 +13,7 @@
 uint64_t timeSinceEpochMillisec()
 {
 	using namespace std::chrono;
-	return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+	return duration_cast<nanoseconds>(system_clock::now().time_since_epoch()).count();
 }
 
 void print_bytes(uint8_t *ptr, uint32_t len)
