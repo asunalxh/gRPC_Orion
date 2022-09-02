@@ -124,11 +124,11 @@ int main(int argc, char *argv[])
 {
 	// int del_percent = stoi(argv[1]);
 
-	char *file = argv[1];
-	int num_leaf = stoi(argv[2]);
-	int add_num = stoi(argv[3]);
-	printf("%s\n", file);
-	// sprintf(file, "/home/asunalxh/data/delete-search/wiki-10w_delete-%d%%_refer-1k.txt", del_percent);
+	// char *file = argv[1];
+	// int num_leaf = stoi(argv[2]);
+	// int add_num = stoi(argv[3]);
+	// printf("%s\n", file);
+	//  sprintf(file, "/home/asunalxh/data/delete-search/wiki-10w_delete-%d%%_refer-1k.txt", del_percent);
 
 	initKey(KW, "KW");
 	initKey(KC, "KC");
@@ -136,26 +136,37 @@ int main(int argc, char *argv[])
 
 	// const char* file = "/home/asunalxh/data/lineshipdate.txt";
 	// const char *file = "/home/asunalxh/data/crimePtype.txt";
-	// const char *file = "/home/asunalxh/data/enron.txt";
+	const char *file = "/home/asunalxh/data/enron.txt";
 	// const char *file = "/home/asunalxh/data/wiki.txt";
 
 	// myClient = new Client(grpc::CreateChannel("182.92.127.18:50052", grpc::InsecureChannelCredentials()), KF);
 	//  myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
-	myServer = new Server();
-	myClient = new Client(myServer, KF);
+	// myServer = new Server();
+	// myClient = new Client(myServer, KF);
+	myClient = new Client(grpc::CreateChannel("localhost:50052", grpc::InsecureChannelCredentials()), KF);
 	myClient->openFile(file);
 
 	uint64_t startTime = timeSinceEpochMillisec();
 
 	printf("\n======== Start Addition ========\n");
-	orion = new Orion(myClient, KW, KC, num_leaf);
-	uint64_t calculate_time = addDoc(add_num);
+	orion = new Orion(myClient, KW, KC, 14);
 
 	uint64_t endTime = timeSinceEpochMillisec();
-	printf("包括初始化总用时： %ld ns\n", endTime - startTime);
+
+	printf("初始化： %ld ns\n", endTime - startTime);
+	myClient->ClientLog();
+	myClient->ServerLog();
+	myClient->ClearLog();
+
+	startTime = timeSinceEpochMillisec();
+	uint64_t calculate_time = addDoc(100);
+
+	endTime = timeSinceEpochMillisec();
 	printf("插入总用时： %ld ns\n", calculate_time);
 	myClient->ClientLog();
-	myServer->ServerLog();
+	myClient->ServerLog();
+
+	search("includ");
 
 	// myClient->ClearLog();
 	// myServer->ClearLog();
@@ -166,10 +177,10 @@ int main(int argc, char *argv[])
 	// delDoc(90000);
 	//  delDoc(1000 * del_percent);
 
-	//myClient->ClearLog();
-	//myServer->ClearLog();
-	//myClient->closeFile();
-	//for (int i = 2; i <= 7; i++)
+	// myClient->ClearLog();
+	// myServer->ClearLog();
+	// myClient->closeFile();
+	// for (int i = 2; i <= 7; i++)
 	//{
 	//	char *keyword = argv[i];
 	//	uint64_t time_comsume = search(keyword);
@@ -178,12 +189,12 @@ int main(int argc, char *argv[])
 	//	myServer->ServerLog();
 	//	myClient->ClearLog();
 	//	myServer->ClearLog();
-	//}
+	// }
 
 	// free omap and client and server
 	delete orion;
 	delete myClient;
-	delete myServer;
+	// delete myServer;
 
 	return 0;
 }

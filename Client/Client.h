@@ -31,7 +31,7 @@ using std::string;
 class Client
 {
 public:
-	Client(Server *server, const unsigned char *KF);
+	Client(std::shared_ptr<Channel> channel, const unsigned char *KF);
 
 	void ReadNextPair(docContent *fetch_data);
 
@@ -41,6 +41,7 @@ public:
 				 const unsigned char *data, size_t data_size);
 
 	void SendEncDoc(const docContent *data);
+	void ServerLog();
 
 	void openFile(const char *addr);
 	void closeFile();
@@ -67,7 +68,9 @@ private:
 
 	unsigned char KF[ENC_KEY_SIZE];
 	int file_reading_counter;
-	Server *stub_;
+	//Server *stub_;
+
+	std::unique_ptr<CryptoService::Stub> stub_;
 };
 
 #endif

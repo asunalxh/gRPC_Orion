@@ -11,12 +11,14 @@ Server::Server()
 	data_update = new RAMStore();
 }
 
-void Server::ServerLog()
+grpc::Status Server::ServerLog(ServerContext *context, const GeneralMessage *req, GeneralMessage *resp)
 {
 
 	printf("调用GetData共耗时 %lld ns\n", GetDataTime);
 	printf("调用PutData共耗时 %lld ns\n", PutDataTime);
 	printf("接受加密数据文件共耗时 %lld ns\n", ReceiveEncDocTime);
+	ClearLog();
+	return grpc::Status::OK;
 }
 
 void Server::ClearLog()
@@ -34,7 +36,7 @@ Server::~Server()
 	delete data_update;
 }
 
-grpc::Status Server::GetData(const OramMessage *req, OramBucketMessage *resp)
+grpc::Status Server::GetData(ServerContext *context, const OramMessage *req, OramBucketMessage *resp)
 {
 	uint64_t startTime = timeSinceEpochMillisec();
 	int data_structure = req->data_structure();
@@ -62,7 +64,7 @@ grpc::Status Server::GetData(const OramMessage *req, OramBucketMessage *resp)
 	return grpc::Status::OK;
 }
 
-grpc::Status Server::PutData(const OramBucketMessage *req, GeneralMessage *resp)
+grpc::Status Server::PutData(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp)
 {
 	uint64_t startTime = timeSinceEpochMillisec();
 	int data_structure = req->data_structure();
@@ -85,7 +87,7 @@ grpc::Status Server::PutData(const OramBucketMessage *req, GeneralMessage *resp)
 	return grpc::Status::OK;
 }
 
-grpc::Status Server::Receive_Encrypted_Doc(const DocMessage *req, GeneralMessage *resp)
+grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const DocMessage *req, GeneralMessage *resp)
 {
 	uint64_t startTime = timeSinceEpochMillisec();
 	int id = req->id();

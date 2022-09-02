@@ -1,5 +1,6 @@
 CXXFLAGS := -std=c++17
 
+
 ######## gRPC Settings ########
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
@@ -31,7 +32,8 @@ GRPC_PB_CC_FILES = $(PROTO_FILES:.proto=.grpc.pb.cc)
 PROTO_OBJECT_FILES = $(PB_CC_FILES:.cc=.o) $(GRPC_PB_CC_FILES:.cc=.o) 
 
 ######## App Settings ########
-Target ?= testApp
+Server_Target := serverTestApp
+Client_Target := clientTestApp
 
 Client_App_Files := $(wildcard Client/*.cpp)
 Server_App_Files := $(wildcard Server/*.cpp)
@@ -41,11 +43,13 @@ Client_Object_Files := $(Client_App_Files:.cpp=.o)
 Server_Object_Files := $(Server_App_Files:.cpp=.o)
 Common_Object_Files := $(Common_App_Files:.cpp=.o)
 
+Include_Path := 
+
 Link_Flags = $(LDFLAGS) $(GRPC_LINK_FLAGS)
 
 .PHONY: all clean
 
-all: $(Target)
+all: $(Client_Target) $(Server_Target)
 
 $(PROTOS_PATH)/%.grpc.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(PROTOS_PATH) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
@@ -54,19 +58,22 @@ $(PROTOS_PATH)/%.pb.cc: $(PROTOS_PATH)/%.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 common/%.o: common/%.cpp
-	$(CXX) $(CXXFLAGS)  -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
 
 Client/%.o: Client/%.cpp
-	$(CXX) $(CXXFLAGS)  -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
 
 Server/%.o: Server/%.cpp
-	$(CXX) $(CXXFLAGS)  -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(Include_Path) -c $< -o $@
 
-$(Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Server_Object_Files) $(Client_Object_Files)
+$(Client_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Client_Object_Files)
+	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
+
+$(Server_Target): $(Common_Object_Files) $(PROTO_OBJECT_FILES) $(Server_Object_Files)
 	$(CXX) $(CXXFLAGS) $^ $(Link_Flags) -o $@
 
 
 clean:
 	@rm -f common/*.o common/*.pb.cc common/*.pb.h
 	@rm -f Client/*.o Server/*.o
-	@rm -f $(Target)
+	@rm -f $(Client_Target) $(Server_Target)

@@ -14,7 +14,7 @@
 
 using grpc::ClientContext;
 
-Client::Client(Server *server, const unsigned char *KF) : stub_(server)
+Client::Client(std::shared_ptr<Channel> channel, const unsigned char *KF) : stub_(CryptoService::NewStub(channel))
 {
 	file_reading_counter = 0;
 	memcpy(this->KF, KF, ENC_KEY_SIZE);
@@ -32,7 +32,6 @@ void Client::closeFile()
 
 void Client::ClientLog()
 {
-
 	printf("调用GetData %lld 次 共耗时 %lld ns 发送 %lld 返回 %lld\n", GetDataCount, GetDataTime, GetDataReqBytes, GetDataRespBytes);
 	printf("调用PutData %lld 次，共耗时 %lld ns 发送 %lld 返回 %lld\n", PutDataCount, PutDataTime, PutDataReqBytes, PutDataRespBytes);
 	printf("传送加密后文件共耗时 %lld ns 发送 %lld 返回 %lld\n", SendEncDocTime, SendEncDocReqBytes, SendEncDocRespBytes);
@@ -51,6 +50,14 @@ void Client::ClearLog()
 	SendEncDocTime = 0;
 	SendEncDocReqBytes = 0;
 	SendEncDocRespBytes = 0;
+}
+
+void Client::ServerLog()
+{
+
+	ClientContext context;
+	GeneralMessage req, resp;
+	stub_->ServerLog(&context, req, &resp);
 }
 
 void Client::ReadNextPair(docContent *content)
@@ -83,7 +90,7 @@ void Client::ReadNextPair(docContent *content)
 void Client::GetData(int data_structure, size_t index,
 					 unsigned char *bucket, size_t bucket_size)
 {
-
+	ClientContext context;
 	OramMessage req;
 	OramBucketMessage resp;
 
@@ -92,7 +99,7 @@ void Client::GetData(int data_structure, size_t index,
 	GetDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-	stub_->GetData(&req, &resp);
+	stub_->GetData(&context, req, &resp);
 	// usleep(1000);
 	uint64_t endTime = timeSinceEpochMillisec();
 
@@ -115,7 +122,7 @@ void Client::GetData(int data_structure, size_t index,
 void Client::PutData(int data_structure, size_t index,
 					 const unsigned char *data, size_t data_size)
 {
-
+	ClientContext context;
 	OramBucketMessage req;
 	GeneralMessage resp;
 
@@ -130,7 +137,7 @@ void Client::PutData(int data_structure, size_t index,
 	PutDataReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-	stub_->PutData(&req, &resp);
+	stub_->PutData(&context, req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
 
 	PutDataRespBytes += resp.ByteSizeLong();
@@ -141,7 +148,6 @@ void Client::PutData(int data_structure, size_t index,
 
 void Client::SendEncDoc(const docContent *data)
 {
-
 	unsigned char message[data->content_length + AESGCM_MAC_SIZE + AESGCM_IV_SIZE];
 	int message_len = enc_aes_gcm(
 		KF, (unsigned char *)data->content, data->content_length,
@@ -150,6 +156,7 @@ void Client::SendEncDoc(const docContent *data)
 	int len;
 	auto str = enc_base64(message, message_len, &len);
 
+	ClientContext context;
 	DocMessage req;
 	GeneralMessage resp;
 
@@ -161,7 +168,7 @@ void Client::SendEncDoc(const docContent *data)
 	SendEncDocReqBytes += req.ByteSizeLong();
 
 	uint64_t startTime = timeSinceEpochMillisec();
-	stub_->Receive_Encrypted_Doc(&req, &resp);
+	stub_->Receive_Encrypted_Doc(&context, req, &resp);
 	uint64_t endTime = timeSinceEpochMillisec();
 
 	SendEncDocRespBytes += resp.ByteSizeLong();
