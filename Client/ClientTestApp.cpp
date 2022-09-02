@@ -171,18 +171,18 @@ int main(int argc, char *argv[])
 	myClient->ClearLog();
 	myClient->closeFile();
 
-
+	delete orion;
 
 	printf("\n######## 2^18 ########\n");
 
 	myClient->openFile(file);
 
-	uint64_t startTime = timeSinceEpochMillisec();
+	startTime = timeSinceEpochMillisec();
 
 	printf("\n======== Start Addition ========\n");
 	orion = new Orion(myClient, KW, KC, 17);
 
-	uint64_t endTime = timeSinceEpochMillisec();
+	endTime = timeSinceEpochMillisec();
 
 	printf("初始化： %ld ns\n", endTime - startTime);
 	myClient->ClientLog();
@@ -190,7 +190,6 @@ int main(int argc, char *argv[])
 	myClient->ClearLog();
 
 	startTime = timeSinceEpochMillisec();
-	uint64_t calculate_time = addDoc(100);
 
 	endTime = timeSinceEpochMillisec();
 	printf("插入总用时： %ld ns\n", calculate_time);
@@ -199,18 +198,18 @@ int main(int argc, char *argv[])
 	myClient->ClearLog();
 	myClient->closeFile();
 
-
+	delete orion;
 
 	printf("\n######## 2^15 ########\n");
 
 	myClient->openFile(file);
 
-	uint64_t startTime = timeSinceEpochMillisec();
+	startTime = timeSinceEpochMillisec();
 
 	printf("\n======== Start Addition ========\n");
 	orion = new Orion(myClient, KW, KC, 14);
 
-	uint64_t endTime = timeSinceEpochMillisec();
+	endTime = timeSinceEpochMillisec();
 
 	printf("初始化： %ld ns\n", endTime - startTime);
 	myClient->ClientLog();
@@ -218,7 +217,7 @@ int main(int argc, char *argv[])
 	myClient->ClearLog();
 
 	startTime = timeSinceEpochMillisec();
-	uint64_t calculate_time = addDoc(100);
+	calculate_time = addDoc(100);
 
 	endTime = timeSinceEpochMillisec();
 	printf("插入总用时： %ld ns\n", calculate_time);
@@ -226,11 +225,6 @@ int main(int argc, char *argv[])
 	myClient->ServerLog();
 	myClient->ClearLog();
 	myClient->closeFile();
-
-
-
-
-
 
 	// myClient->ClearLog();
 	// myServer->ClearLog();
