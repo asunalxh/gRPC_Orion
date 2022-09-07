@@ -40,6 +40,9 @@ public:
 	void PutData(int data_structure, size_t index,
 				 const unsigned char *data, size_t data_size);
 
+	void Fill(int data_structure, size_t index,
+				 const unsigned char *data, size_t data_size);
+
 	void SendEncDoc(const docContent *data);
 	void ServerLog();
 

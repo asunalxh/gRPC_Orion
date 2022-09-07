@@ -145,6 +145,23 @@ void Client::PutData(int data_structure, size_t index,
 	PutDataCount++;
 	PutDataTime += endTime - startTime;
 }
+void Client::Fill(int data_structure, size_t index,
+				  const unsigned char *data, size_t data_size)
+{
+	ClientContext context;
+	OramBucketMessage req;
+	GeneralMessage resp;
+
+	req.set_data_structure(data_structure);
+	req.set_pos(index);
+
+	int len;
+	auto base64_str = enc_base64(data, data_size, &len);
+	req.set_bucket(base64_str);
+	delete[] base64_str;
+
+	stub_->Fill(&context, req, &resp);
+}
 
 void Client::SendEncDoc(const docContent *data)
 {

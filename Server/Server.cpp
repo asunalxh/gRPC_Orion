@@ -87,6 +87,28 @@ grpc::Status Server::PutData(ServerContext *context, const OramBucketMessage *re
 	return grpc::Status::OK;
 }
 
+grpc::Status Server::Fill(ServerContext *context, const OramBucketMessage *req, GeneralMessage *resp)
+{
+	int data_structure = req->data_structure();
+	size_t pos = req->pos();
+	std::string bucket_str = req->bucket();
+	BUCKET b = StringToBucket(bucket_str);
+
+	// usleep(100);
+
+	if (data_structure == 1)
+	{
+		for (int i = 0; i <= pos; i++)
+			data_search->Write(i, b);
+	}
+	else
+	{
+		for (int i = 0; i <= pos; i++)
+			data_update->Write(i, b);
+	}
+	return grpc::Status::OK;
+}
+
 grpc::Status Server::Receive_Encrypted_Doc(ServerContext *context, const DocMessage *req, GeneralMessage *resp)
 {
 	uint64_t startTime = timeSinceEpochMillisec();
